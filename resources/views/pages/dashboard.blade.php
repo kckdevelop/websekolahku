@@ -533,26 +533,59 @@
         </div>
     </section>
 
-    <!-- Logo Mitra Industri -->
-    <section class="py-12 bg-white dark:bg-slate-800 fade-in-scroll">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-center mb-10 text-primary">Mitra Industri</h2>
-            <div class="flex flex-wrap justify-center gap-10 items-center">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Logo_Telkom_Indonesia.svg/600px-Logo_Telkom_Indonesia.svg.png"
-                    alt="Telkom" class="h-12 grayscale hover:grayscale-0 transition">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Honda_logo.svg/600px-Honda_logo.svg.png"
-                    alt="Honda" class="h-12 grayscale hover:grayscale-0 transition">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Logo_Garuda_Indonesia.svg/600px-Logo_Garuda_Indonesia.svg.png"
-                    alt="Garuda" class="h-12 grayscale hover:grayscale-0 transition">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Logo_PT_Astra_International_Tbk.svg/600px-Logo_PT_Astra_International_Tbk.svg.png"
-                    alt="Astra" class="h-12 grayscale hover:grayscale-0 transition">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Gojek_logo_2019.svg/600px-Gojek_logo_2019.svg.png"
-                    alt="Gojek" class="h-12 grayscale hover:grayscale-0 transition">
+    <!-- Logo Mitra Industri - Marquee -->
+<section class="py-12 bg-white dark:bg-slate-800 fade-in-scroll overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold text-center mb-8 text-primary">Mitra Industri</h2>
+        <div class="relative">
+            <div class="flex whitespace-nowrap animate-marquee">
+                <!-- Ulangi logo 2x untuk efek seamless loop -->
+                @php
+                    $logos = [
+                        'https://upload.wikimedia.org/wikipedia/commons/9/96/Logo_Telkom_Indonesia.svg',
+                        'https://upload.wikimedia.org/wikipedia/commons/e/e4/Honda_logo.svg',
+                        'https://upload.wikimedia.org/wikipedia/commons/2/2f/Logo_Garuda_Indonesia.svg',
+                        'https://upload.wikimedia.org/wikipedia/commons/2/2f/Logo_PT_Astra_International_Tbk.svg',
+                        'https://upload.wikimedia.org/wikipedia/commons/6/69/Gojek_logo_2019.svg',
+                        'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Xi%27an_Jiaotong-Liverpool_University_Logo.svg/800px-Xi%27an_Jiaotong-Liverpool_University_Logo.svg.png',
+                        'https://upload.wikimedia.org/wikipedia/commons/d/d4/Microsoft_logo.svg',
+                    ];
+                @endphp
+
+                @foreach(array_merge($logos, $logos) as $logo)
+                    <div class="flex items-center mx-6">
+                        <img src="{{ $logo }}" alt="Mitra" class="h-10 md:h-12 grayscale hover:grayscale-0 transition-all duration-300">
+                    </div>
+                @endforeach
             </div>
         </div>
-    </section>
-@endsection
+    </div>
+</section>
 
+@section('style')
+    @parent
+    <style>
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .animate-marquee {
+            animation: marquee 20s linear infinite;
+            width: 200%;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+    </style>
+@endsection
 @section('script')
     <script>
         // Hero Carousel

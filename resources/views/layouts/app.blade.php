@@ -476,10 +476,7 @@
       <div class="border-t border-slate-700 mt-8 pt-6 text-center text-slate-400">
         <p>© 2025 SMK Muhammadiyah 1 Bantul. Dikembangkan oleh:</p>
         <div class="flex justify-center space-x-4 mt-2">
-          <span>Tim IT</span> •
-          <span>Tim Media</span> •
-          <span>K3</span> •
-          <span>Management</span>
+          <span>Tim IT MUSABA</span>
         </div>
       </div>
     </div>

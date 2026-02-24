@@ -577,7 +577,7 @@
         <!-- Video Item 6 -->
         <div class="video-item card-gradient rounded-lg overflow-hidden shadow-lg" 
              data-category="pembelajaran" 
-             data-video-id="YQHsXMglC9A"
+             data-video-id="PG08dXR642w"
              data-title="Coding Class Jurusan RPL"
              data-description="Siswa jurusan Rekayasa Perangkat Lunak sedang belajar pemrograman web dengan framework modern."
              data-date="20 April 2024"

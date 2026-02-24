@@ -1,6 +1,30 @@
 @extends('layouts.app')
 @section('title', 'Beranda')
+
 @section('style')
+    @parent
+    <style>
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .animate-marquee {
+            animation: marquee 20s linear infinite;
+            width: 200%;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+    </style>
+
     <style>
         /* Hero teks animasi */
         @keyframes fade-in-up {
@@ -561,30 +585,6 @@
         </div>
     </div>
 </section>
-
-@section('style')
-    @parent
-    <style>
-        @keyframes marquee {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-
-        .animate-marquee {
-            animation: marquee 20s linear infinite;
-            width: 200%;
-            display: flex;
-            justify-content: space-around;
-        }
-
-        .animate-marquee:hover {
-            animation-play-state: paused;
-        }
-    </style>
 @endsection
 @section('script')
     <script>

@@ -67,7 +67,7 @@
     <div class="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent z-10"></div>
     <img src="https://picsum.photos/seed/spmb-hero/1920/600" alt="SPMB SMK Muhammadiyah 1 Bantul" class="w-full h-full object-cover">
     <div class="absolute top-1/2 left-8 md:left-16 transform -translate-y-1/2 text-white z-20">
-      <h1 class="text-3xl md:text-5xl font-bold mb-2">SPMB 2025/2026</h1>
+      <h1 class="text-3xl md:text-5xl font-bold mb-2">SPMB 2026/2027</h1>
       <p class="text-lg md:text-xl">Seleksi Penerimaan Peserta Didik Baru</p>
     </div>
   </section>
@@ -77,7 +77,7 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <h2 class="text-2xl font-bold text-primary mb-6 text-center">Kuota Program Keahlian</h2>
     <p class="text-center text-slate-600 dark:text-slate-400 mb-8">
-      Daya tampung untuk tahun ajaran 2025/2026 berdasarkan kuota resmi sekolah:
+      Daya tampung untuk tahun ajaran 2026/2027 berdasarkan kuota resmi sekolah:
     </p>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
       <!-- TKRO -->

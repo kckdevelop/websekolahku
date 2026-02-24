@@ -296,179 +296,107 @@
     </div>
   </section>
 
-  <!-- Filter Section -->
-  <section class="py-8 bg-white dark:bg-slate-800 fade-in-scroll">
+    <!-- Google Drive Folder Section -->
+   <!-- Google Drive Folder Section -->
+  <section class="py-16 bg-slate-100 dark:bg-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-wrap justify-center">
-        <button class="filter-btn active" data-filter="all">Semua</button>
-        <button class="filter-btn" data-filter="kegiatan">Kegiatan</button>
-        <button class="filter-btn" data-filter="prestasi">Prestasi</button>
-        <button class="filter-btn" data-filter="fasilitas">Fasilitas</button>
-        <button class="filter-btn" data-filter="ekstrakurikuler">Ekstrakurikuler</button>
-        <button class="filter-btn" data-filter="kunjungan-industri">Kunjungan Industri</button>
+      
+      <!-- Header & Toolbar -->
+      <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 fade-in-scroll">
+        
+        <!-- Judul Section -->
+        <div class="text-center md:text-left">
+          <h2 class="text-3xl font-bold text-slate-800 dark:text-white mb-1">Album Foto Kegiatan</h2>
+          <div class="w-24 h-1 bg-primary rounded-full md:mx-0 mx-auto"></div>
+        </div>
+
+        <!-- Tombol Fungsi -->
+        <div class="flex items-center space-x-3">
+          
+          <!-- Toggle View (Grid / List) -->
+          <div class="flex bg-white dark:bg-slate-700 rounded-lg p-1 shadow-sm border border-slate-200 dark:border-slate-600" role="group">
+            <button id="btn-grid" class="px-4 py-2 rounded-md text-sm font-medium transition-all bg-primary text-white shadow-sm focus:outline-none">
+              <i class="fas fa-th-large mr-1"></i> Grid
+            </button>
+            <button id="btn-list" class="px-4 py-2 rounded-md text-sm font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 focus:outline-none">
+              <i class="fas fa-list mr-1"></i> List
+            </button>
+          </div>
+
+          <!-- Tombol Share -->
+          <button id="btn-share" class="px-4 py-2 bg-slate-600 hover:bg-slate-700 dark:bg-slate-600 dark:hover:bg-slate-500 text-white rounded-lg text-sm font-medium transition-all shadow-sm focus:outline-none flex items-center">
+            <i class="fas fa-share-alt mr-2"></i> Share
+          </button>
+
+        </div>
       </div>
+
+      <!-- Iframe Container -->
+      <div class="card-gradient rounded-2xl p-2 md:p-4 fade-in-scroll overflow-hidden">
+        <div class="relative w-full h-[60vh] md:h-[70vh] rounded-xl overflow-hidden bg-slate-200 dark:bg-slate-700">
+          
+          <!-- 
+            ID Folder: 0B6IFRRkB6oTeLTg4UDM0WDdvNFk
+            Default view: #grid (diatur melalui script di bawah)
+            https://drive.google.com/drive/folders/0B6IFRRkB6oTeSUVBc1E2U3JxQVk?resourcekey=0-inVQC--DRmO_OmGRjf9RcQ&usp=sharing
+          -->
+          <iframe 
+            id="gdrive-frame"
+            src="https://drive.google.com/embeddedfolderview?id=0B6IFRRkB6oTeSUVBc1E2U3JxQVk#grid" 
+            width="100%" 
+            height="100%" 
+            frameborder="0"
+            class="absolute inset-0 w-full h-full border-0"
+            allowfullscreen
+          >
+            Browser Anda tidak mendukung iframe.
+          </iframe>
+        </div>
+      </div>
+
+      <!-- Info Tambahan -->
+      <div class="text-center mt-6 fade-in-scroll">
+        <p class="text-sm text-slate-500 dark:text-slate-400">
+          <i class="fas fa-info-circle mr-1"></i> 
+          Pastikan akses folder Google Drive diatur ke "Siapa saja yang memiliki link" agar dapat ditampilkan.
+        </p>
+      </div>
+
     </div>
   </section>
 
-  <!-- Gallery Section -->
-  <section class="py-12 bg-slate-100 dark:bg-slate-800/50 fade-in-scroll">
+  <!-- Keterangan Fitur (Seperti Gambar) -->
+  <section class="py-12 bg-slate-50 dark:bg-slate-900">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="gallery-container">
-        <!-- Gallery Item 1 -->
-        <div class="gallery-item rounded-lg overflow-hidden shadow-lg card-gradient" 
-             data-category="kegiatan" 
-             data-title="Upacara Bendera"
-             data-description="Upacara bendera rutin setiap hari Senin yang diikuti oleh seluruh siswa dan guru SMK Muhammadiyah 1 Bantul untuk menumbuhkan rasa cinta tanah air dan disiplin."
-             data-date="15 Mei 2024">
-          <img src="https://picsum.photos/seed/upacara/400/300.jpg" alt="Upacara Bendera" class="w-full h-64 object-cover transition-transform duration-300">
-          <div class="gallery-overlay">
-            <i class="fas fa-search-plus text-white text-3xl mb-2"></i>
-            <p class="text-white text-center">Upacara Bendera</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- Card 1: Dokumentasi Lengkap -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 text-center transform hover:-translate-y-2 transition-all duration-300 fade-in-scroll border border-slate-100 dark:border-slate-700">
+          <div class="w-16 h-16 mx-auto bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mb-6">
+            <i class="fas fa-camera text-2xl text-primary"></i>
           </div>
+          <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-3">Dokumentasi Lengkap</h3>
+          <p class="text-slate-600 dark:text-slate-300">Berbagai kegiatan sekolah tersimpan dengan rapi</p>
         </div>
 
-        <!-- Gallery Item 2 -->
-        <div class="gallery-item rounded-lg overflow-hidden shadow-lg card-gradient" 
-             data-category="prestasi" 
-             data-title="Penerimaan Trofi Juara"
-             data-description="Tim robotik SMK Muhammadiyah 1 Bantul berhasil meraih juara 1 dalam kompetisi robotik tingkat nasional setelah mengalahkan 50 tim dari seluruh Indonesia."
-             data-date="10 Mei 2024">
-          <img src="https://picsum.photos/seed/trophy/400/300.jpg" alt="Penerimaan Trofi Juara" class="w-full h-64 object-cover transition-transform duration-300">
-          <div class="gallery-overlay">
-            <i class="fas fa-search-plus text-white text-3xl mb-2"></i>
-            <p class="text-white text-center">Penerimaan Trofi Juara</p>
+        <!-- Card 2: Mudah Diakses -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 text-center transform hover:-translate-y-2 transition-all duration-300 fade-in-scroll border border-slate-100 dark:border-slate-700">
+          <div class="w-16 h-16 mx-auto bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mb-6">
+            <i class="fas fa-folder-open text-2xl text-primary"></i>
           </div>
+          <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-3">Mudah Diakses</h3>
+          <p class="text-slate-600 dark:text-slate-300">Dapat diakses kapan saja dan dimana saja</p>
         </div>
 
-        <!-- Gallery Item 3 -->
-        <div class="gallery-item rounded-lg overflow-hidden shadow-lg card-gradient" 
-             data-category="fasilitas" 
-             data-title="Laboratorium Komputer"
-             data-description="Laboratorium komputer dengan 40 unit PC spesifikasi tinggi, internet fiber optic, dan software terbaru untuk mendukung pembelajaran jurusan RPL."
-             data-date="5 Mei 2024">
-          <img src="https://picsum.photos/seed/lab-komputer/400/300.jpg" alt="Laboratorium Komputer" class="w-full h-64 object-cover transition-transform duration-300">
-          <div class="gallery-overlay">
-            <i class="fas fa-search-plus text-white text-3xl mb-2"></i>
-            <p class="text-white text-center">Laboratorium Komputer</p>
+        <!-- Card 3: Selalu Diperbarui -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 text-center transform hover:-translate-y-2 transition-all duration-300 fade-in-scroll border border-slate-100 dark:border-slate-700">
+          <div class="w-16 h-16 mx-auto bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mb-6">
+            <i class="fas fa-clock text-2xl text-primary"></i>
           </div>
+          <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-3">Selalu Diperbarui</h3>
+          <p class="text-slate-600 dark:text-slate-300">Foto kegiatan terbaru ditambahkan berkala</p>
         </div>
 
-        <!-- Gallery Item 4 -->
-        <div class="gallery-item rounded-lg overflow-hidden shadow-lg card-gradient" 
-             data-category="ekstrakurikuler" 
-             data-title="Kegiatan Pramuka"
-             data-description="Kegiatan ekstrakurikuler Pramuka yang rutin diadakan setiap hari Sabtu untuk melatih kedisiplinan, kepemimpinan, dan karakter siswa."
-             data-date="1 Mei 2024">
-          <img src="https://picsum.photos/seed/pramuka/400/300.jpg" alt="Kegiatan Pramuka" class="w-full h-64 object-cover transition-transform duration-300">
-          <div class="gallery-overlay">
-            <i class="fas fa-search-plus text-white text-3xl mb-2"></i>
-            <p class="text-white text-center">Kegiatan Pramuka</p>
-          </div>
-        </div>
-
-        <!-- Gallery Item 5 -->
-        <div class="gallery-item rounded-lg overflow-hidden shadow-lg card-gradient" 
-             data-category="kunjungan-industri" 
-             data-title="Kunjungan Industri"
-             data-description="Kunjungan industri ke PT Astra International untuk melihat langsung proses produksi dan memahami aplikasi teknologi di dunia industri."
-             data-date="25 April 2024">
-          <img src="https://picsum.photos/seed/factory-visit/400/300.jpg" alt="Kunjungan Industri" class="w-full h-64 object-cover transition-transform duration-300">
-          <div class="gallery-overlay">
-            <i class="fas fa-search-plus text-white text-3xl mb-2"></i>
-            <p class="text-white text-center">Kunjungan Industri</p>
-          </div>
-        </div>
-
-        <!-- Gallery Item 6 -->
-        <div class="gallery-item rounded-lg overflow-hidden shadow-lg card-gradient" 
-             data-category="kegiatan" 
-             data-title="Kegiatan Belajar Mengajar"
-             data-description="Proses pembelajaran interaktif dengan metode project-based learning untuk meningkatkan pemahaman dan keterampilan praktis siswa."
-             data-date="20 April 2024">
-          <img src="https://picsum.photos/seed/classroom/400/300.jpg" alt="Kegiatan Belajar Mengajar" class="w-full h-64 object-cover transition-transform duration-300">
-          <div class="gallery-overlay">
-            <i class="fas fa-search-plus text-white text-3xl mb-2"></i>
-            <p class="text-white text-center">Kegiatan Belajar Mengajar</p>
-          </div>
-        </div>
-
-        <!-- Gallery Item 7 -->
-        <div class="gallery-item rounded-lg overflow-hidden shadow-lg card-gradient" 
-             data-category="prestasi" 
-             data-title="Lomba Robotik"
-             data-description="Siswa sedang mendemonstrasikan robot ciptaan mereka dalam lomba robotik yang diselenggarakan oleh Kementerian Pendidikan."
-             data-date="15 April 2024">
-          <img src="https://picsum.photos/seed/robotics/400/300.jpg" alt="Lomba Robotik" class="w-full h-64 object-cover transition-transform duration-300">
-          <div class="gallery-overlay">
-            <i class="fas fa-search-plus text-white text-3xl mb-2"></i>
-            <p class="text-white text-center">Lomba Robotik</p>
-          </div>
-        </div>
-
-        <!-- Gallery Item 8 -->
-        <div class="gallery-item rounded-lg overflow-hidden shadow-lg card-gradient" 
-             data-category="fasilitas" 
-             data-title="Bengkel Otomotif"
-             data-description="Bengkel otomotif modern dengan peralatan lengkap untuk praktik jurusan TKR dan TBSM, didukung oleh mitra industri ternama."
-             data-date="10 April 2024">
-          <img src="https://picsum.photos/seed/workshop/400/300.jpg" alt="Bengkel Otomotif" class="w-full h-64 object-cover transition-transform duration-300">
-          <div class="gallery-overlay">
-            <i class="fas fa-search-plus text-white text-3xl mb-2"></i>
-            <p class="text-white text-center">Bengkel Otomotif</p>
-          </div>
-        </div>
-
-        <!-- Gallery Item 9 -->
-        <div class="gallery-item rounded-lg overflow-hidden shadow-lg card-gradient" 
-             data-category="ekstrakurikuler" 
-             data-title="Ekstrakurikuler Musik"
-             data-description="Ekstrakurikuler musik dengan berbagai alat musik modern untuk mengembangkan bakat seni dan kreativitas siswa."
-             data-date="5 April 2024">
-          <img src="https://picsum.photos/seed/band/400/300.jpg" alt="Ekstrakurikuler Musik" class="w-full h-64 object-cover transition-transform duration-300">
-          <div class="gallery-overlay">
-            <i class="fas fa-search-plus text-white text-3xl mb-2"></i>
-            <p class="text-white text-center">Ekstrakurikuler Musik</p>
-          </div>
-        </div>
-
-        <!-- Gallery Item 10 -->
-        <div class="gallery-item rounded-lg overflow-hidden shadow-lg card-gradient" 
-             data-category="kunjungan-industri" 
-             data-title="Kunjungan ke Perusahaan Teknologi"
-             data-description="Kunjungan ke startup teknologi di Yogyakarta untuk mempelajari pengembangan software dan kultur kerja industri digital."
-             data-date="1 April 2024">
-          <img src="https://picsum.photos/seed/tech-company/400/300.jpg" alt="Kunjungan ke Perusahaan Teknologi" class="w-full h-64 object-cover transition-transform duration-300">
-          <div class="gallery-overlay">
-            <i class="fas fa-search-plus text-white text-3xl mb-2"></i>
-            <p class="text-white text-center">Kunjungan ke Perusahaan Teknologi</p>
-          </div>
-        </div>
-
-        <!-- Gallery Item 11 -->
-        <div class="gallery-item rounded-lg overflow-hidden shadow-lg card-gradient" 
-             data-category="kegiatan" 
-             data-title="Olahraga Bersama"
-             data-description="Kegiatan olahraga bersama untuk menjaga kesehatan dan kebugaran siswa serta mempererat tali persaudaraan antar siswa."
-             data-date="25 Maret 2024">
-          <img src="https://picsum.photos/seed/sports/400/300.jpg" alt="Olahraga Bersama" class="w-full h-64 object-cover transition-transform duration-300">
-          <div class="gallery-overlay">
-            <i class="fas fa-search-plus text-white text-3xl mb-2"></i>
-            <p class="text-white text-center">Olahraga Bersama</p>
-          </div>
-        </div>
-
-        <!-- Gallery Item 12 -->
-        <div class="gallery-item rounded-lg overflow-hidden shadow-lg card-gradient" 
-             data-category="prestasi" 
-             data-title="Kompetisi Siswa"
-             data-description="Siswa berprestasi dalam berbagai kompetisi tingkat provinsi dan nasional, menunjukkan kualitas pendidikan vokasi yang unggul."
-             data-date="20 Maret 2024">
-          <img src="https://picsum.photos/seed/competition/400/300.jpg" alt="Kompetisi Siswa" class="w-full h-64 object-cover transition-transform duration-300">
-          <div class="gallery-overlay">
-            <i class="fas fa-search-plus text-white text-3xl mb-2"></i>
-            <p class="text-white text-center">Kompetisi Siswa</p>
-          </div>
-        </div>
       </div>
     </div>
   </section>
@@ -505,6 +433,66 @@
  
 @section('script')
     <script>
+
+      //google drive
+          // === Google Drive Custom Controls ===
+    const folderId = '0B6IFRRkB6oTeSUVBc1E2U3JxQVk';
+    const iframe = document.getElementById('gdrive-frame');
+    const btnGrid = document.getElementById('btn-grid');
+    const btnList = document.getElementById('btn-list');
+    const btnShare = document.getElementById('btn-share');
+
+    // Function to set active button style
+    function setActiveView(activeBtn, inactiveBtn) {
+      activeBtn.classList.add('bg-primary', 'text-white', 'shadow-sm');
+      activeBtn.classList.remove('text-slate-600', 'dark:text-slate-300', 'hover:bg-slate-100', 'dark:hover:bg-slate-600');
+      
+      inactiveBtn.classList.remove('bg-primary', 'text-white', 'shadow-sm');
+      inactiveBtn.classList.add('text-slate-600', 'dark:text-slate-300', 'hover:bg-slate-100', 'dark:hover:bg-slate-600');
+    }
+
+    // Event Listener for Grid View
+    btnGrid?.addEventListener('click', () => {
+      if (iframe) {
+        iframe.src = `https://drive.google.com/embeddedfolderview?id=${folderId}#grid`;
+        setActiveView(btnGrid, btnList);
+      }
+    });
+
+    // Event Listener for List View
+    btnList?.addEventListener('click', () => {
+      if (iframe) {
+        iframe.src = `https://drive.google.com/embeddedfolderview?id=${folderId}#list`;
+        setActiveView(btnList, btnGrid);
+      }
+    });
+
+    // Event Listener for Share Button
+    btnShare?.addEventListener('click', () => {
+      const shareLink = `https://drive.google.com/drive/folders/${folderId}?usp=sharing`;
+      
+      // Copy to clipboard logic
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(shareLink).then(() => {
+          // Visual feedback
+          const originalText = btnShare.innerHTML;
+          btnShare.innerHTML = '<i class="fas fa-check mr-2"></i> Link Disalin!';
+          btnShare.classList.add('bg-green-600');
+          
+          setTimeout(() => {
+            btnShare.innerHTML = originalText;
+            btnShare.classList.remove('bg-green-600');
+          }, 2000);
+        }).catch(err => {
+          console.error('Gagal menyalin link: ', err);
+          alert('Gagal menyalin link. Silakan salin manual: ' + shareLink);
+        });
+      } else {
+        // Fallback for older browsers
+        prompt("Salin link ini (Ctrl+C):", shareLink);
+      }
+    });
+    
     // Mobile Menu
     document.getElementById('mobile-menu-button')?.addEventListener('click', () => {
       document.getElementById('mobile-menu').classList.toggle('hidden');

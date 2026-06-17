@@ -1,0 +1,345 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Formulir Pendataan</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+</head>
+
+<body style="background-image:url(../gambar/backlogin.jpg)">
+<form action="simpan.php" method="post" name="form">
+<div style="width:100%; float:right">
+<div class="kode_form">
+        SIS/PPBD/FO-001<hr />Rev.03 / 02 Januari 2024
+        
+      </div>
+      </div>
+<div id="container">
+   	<div class="header"><img src="../gambar/musaba logo.png" style="margin-bottom:15px;" /><br />
+        <h4>FORMULIR PENDATAAN PENERIMAAN PESERTA DIDIK BARU <br />SMK MUHAMMADIYAH 1 BANTUL</h4>
+    </div>
+<br />
+    
+    <fieldset>
+    	<div class="container">
+
+    <div class="row">
+    <div class="grup">Data Login Aplikasi</div>
+    <div class="col-25">
+        <label for="fname">Nomor Daftar</label>
+      </div>
+      <div class="col-75">
+        <input type="text" id="fname" name="no_daftar" placeholder="Nomor Pendataan dari Petugas.." disabled="disabled" readonly="readonly" value="MSB26-03-Kode otomatis" title="Kode Otomatis dari Sistem">
+      </div>
+      <div class="col-25">
+        <label for="fname">Tahun</label>
+      </div>
+      <div class="col-75">
+        <input type="text" id="fname" name="tahun_aktif" placeholder="tahun" readonly="readonly" value="2026" title="Tahun PPDB">
+      </div>
+      
+      </fieldset>
+      <br />
+  <fieldset>
+      <div class="grup">Data Calon Siswa</div>
+      <div class="col-25">
+        <label for="fname">Nama Lengkap *</label>
+      </div>
+      <div class="col-75">
+        <input type="text" id="fname2" name="nama_lengkap" placeholder="Nama Lengkap.." required />
+      </div>
+      <div class="col-25">
+        <label for="fname">Tempat Lahir *</label>
+      </div>
+      <div class="col-75">
+        <input type="text" id="fname" name="tempat_lahir" placeholder="Tempat Lahir.." required>
+      </div>
+      <div class="col-25">
+        <label for="fname">Tanggal Lahir *</label>
+      </div>
+      <div class="col-75">
+      		<div class="col-30-tgl">
+      		  <select name="tgl" required>
+                <option value="">Tgl</option>
+                <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option>              </select>
+      		</div>
+    <div class="col-30-tgl">
+      		  <select name="bulan" required>
+      		    <option value="">Bulan</option>
+              <option value="01">Januari</option>
+              <option value="02">Februari</option>
+              <option value="03">Maret</option>
+              <option value="04">April</option>
+              <option value="05">Mei</option>
+              <option value="06">Juni</option>
+              <option value="07">Juli</option>
+              <option value="08">Agustus</option>
+              <option value="09">September</option>
+              <option value="10">Oktober</option>
+              <option value="11">November</option>
+              <option value="12">Desember</option>
+   		      </select>
+   		    </div>
+            <div class="col-30-tgl">
+      		  <select name="tahun" required>
+      		    <option value="">Tahun</option>
+            
+        <option value="2001">2001</option><option value="2002">2002</option><option value="2003">2003</option><option value="2004">2004</option><option value="2005">2005</option><option value="2006">2006</option><option value="2007">2007</option><option value="2008">2008</option><option value="2009">2009</option><option value="2010">2010</option><option value="2011">2011</option><option value="2012">2012</option><option value="2013">2013</option><option value="2014">2014</option><option value="2015">2015</option>   		      </select>
+   		    </div>
+      </div>
+      
+      <div class="col-25">
+        <label for="fname">Jenis Kelamin *</label>
+      </div>
+      <div class="col-75">
+        <select name="jenkel" id="jenkel" required>
+          <option value="">-- Pilih Jenis Kelamin --</option>
+          <option value="L">Laki - Laki</option>
+          <option value="P">Perempuan</option>
+        </select>
+      </div>
+      
+      
+      <div class="col-25">
+        <label for="fname">Agama *</label>
+      </div>
+      <div class="col-75">
+       
+        <select name="agama" id="agama">
+          <option value="islam" selected="selected">Islam</option>
+          <option value="kristen" disabled="disabled">Kristen</option>
+          <option value="hindu" disabled="disabled">Hindu</option>
+          <option value="budha" disabled="disabled">Budha</option>
+          <option value="katolik" disabled="disabled">Katolik</option>
+        </select>
+        
+      </div>
+      <div class="col-25">
+        <label for="fname">Nomor Hp Siswa *</label>
+      </div>
+  <div class="col-75">
+    <input type="text" id="fname3" name="no_hp_siswa" placeholder="Nomor Telp / Hp Yang Bisa Dihubungi.." required />
+  </div>
+      
+      <div class="col-25">
+        <label for="fname">Asal Sekolah *</label>
+      </div>
+      <div class="col-75">
+        <input type="text" id="fname" name="asal_sekolah" placeholder="Nama Sekolah Asal.." required>
+      </div>
+      <div class="col-25">
+        <label for="fname">Alamat Sekolah</label>
+      </div>
+      <div class="col-75">
+      <textarea name="alamat_sekolah" cols="" rows="" placeholder="Alamat Sekolah Asal"></textarea>
+      </div>
+      <div class="col-25">
+        <label for="fname">Prestasi</label>
+      </div>
+      <div class="col-75">
+        
+        <textarea name="prestasi" id="prestasi" cols="" rows="" placeholder="Prestasi Yang Pernah Diraih.."></textarea>
+        
+      </div>
+  </fieldset>
+  
+      <br />
+      <fieldset>
+      <div class="grup">Data Orang Tua Siswa</div>
+      <div class="col-25">
+        <label for="fname">Nama Orang Tua (Ayah / Ibu) *</label>
+      </div>
+      <div class="col-75">
+        <input type="text" id="fname" name="nama_ortu" placeholder="Nama Orang Tua Siswa.." required>
+      </div>
+      <div class="col-25">
+        <label for="fname">Pekerjaan Orang Tua  *</label>
+      </div>
+      <div class="col-75">
+        <input type="text" id="fname" name="pekerjaan_ortu" placeholder="Pekerjaan Orang Tua Siswa.." required>
+      </div>
+      <div class="col-25">
+        <label for="fname">Nomor Hp Orang Tua *</label>
+      </div>
+  <div class="col-75">
+    <input type="text" id="fname3" name="no_hp" placeholder="Nomor Telp / Hp Yang Bisa Dihubungi.." required />
+  </div>
+    </fieldset>
+      <br>
+      <fieldset>
+      <div class="grup">Data Alamat Asal dan Alamat Tinggal</div>
+      
+      <div class="col-25">
+        <label for="fname">Alamat Asal (Sesuai dengan Kartu Keluarga) *</label>
+      </div>
+      <div class="col-75">
+        <input style="margin-bottom:5px;"  id="jalan_asal" name="jalan_asal" type="text" placeholder="Jalan.."  /><br />
+        <input style="margin-bottom:5px;" id="dusun_asal"   name="dusun_asal" type="text" placeholder="Dusun/Pedukuhan.." /><br />
+        <div class="col-30">
+        <input style="margin-bottom:5px;" id="rt_asal"  name="rt_asal" type="text" placeholder="RT.." required />
+        </div>
+        <div class="col-30">
+        <input  name="rw_asal" id="rw_asal" type="text" placeholder="RW.." />
+        </div>
+        
+        <input style="margin-bottom:5px;" id="desa_asal"  name="desa_asal" type="text" placeholder="Desa/Kelurahan.." required /><br />
+        <input style="margin-bottom:5px;" id="kecamatan_asal" name="kecamatan_asal" type="text" placeholder="Kecamatan.." required /><br />
+        <input style="margin-bottom:5px;" id="kabupaten_asal" name="kabupaten_asal" type="text" placeholder="Kabupaten.." required /><br />
+        <input style="margin-bottom:5px;" id="provinsi_asal" name="provinsi_asal" type="text" placeholder="Provinsi.." required />
+      </div>
+      <hr>
+      <div class="col-25" align = "right"> 
+         &nbsp;&nbsp;&nbsp;
+      </div>
+  <div class="col-75">
+  <label><input type = "checkbox" onclick="copytextbox();">&nbsp;&nbsp; Centang Jika Data Alamat Tinggal Sekarang Sama Dengan Alamat Asal</label>
+  </div>
+  <hr>
+      <div class="col-25">
+        
+        <label for="fname">Alamat Tempat Tinggal Sekarang *</label>
+      </div>
+      <div class="col-75">
+        <input style="margin-bottom:5px;" id="jalan_tinggal"  name="jalan_tinggal" type="text" placeholder="Jalan.."  /><br />
+        <input style="margin-bottom:5px;" id="dusun_tinggal"   name="dusun_tinggal" type="text" placeholder="Dusun/Pedukuhan.." /><br />
+        <div class="col-30">
+        <input style="margin-bottom:5px;" id="rt_tinggal" name="rt_tinggal" type="text" placeholder="RT.." required />
+        </div>
+        <div class="col-30">
+        <input  name="rw_tinggal" id="rw_tinggal" type="text" placeholder="RW.." />
+        </div>
+        
+        <input style="margin-bottom:5px;" id="desa_tinggal"  name="desa_tinggal" type="text" placeholder="Desa/Kelurahan.." required /><br />
+        <input style="margin-bottom:5px;" id="kecamatan_tinggal" name="kecamatan_tinggal" type="text" placeholder="Kecamatan.." required /><br />
+        <input style="margin-bottom:5px;" id="kabupaten_tinggal" name="kabupaten_tinggal" type="text" placeholder="Kabupaten.." required /><br />
+        <input style="margin-bottom:5px;" id="provinsi_tinggal" name="provinsi_tinggal" type="text" placeholder="Provinsi.." required />
+      </div>
+      
+  </fieldset>
+  <br />
+    <fieldset>
+    <div class="grup">Data Minat Jurusan</div>
+    <div class="col-25">
+        <label for="fname">Jurusan Ke - I *</label>
+    </div>
+  <div class="col-75">
+    
+    <select name="pil1" id="pil1" required>
+      <option value="">-- Pilihan Jurusan ke I --</option>
+      <option value="TKR">Teknik Kendaraan Ringan (Otomotif)</option>
+      <option value="TPM">Teknik Permesinan</option>
+      
+      <option value="TAV">Teknik Audio Video (Elektronika)</option>
+      <option value="TBSM">Teknik Bisnis Sepeda Motor</option>
+      <option value="RPL">Rekayasa Perangkat Lunak (Komputer)</option>
+      
+    </select>
+    
+  </div>
+  <div class="col-25">
+        <label for="fname">Jurusan Ke - II *</label>
+    </div>
+  <div class="col-75">
+        <select name="pil2" id="pil2" required>
+      <option value="">-- Pilihan Jurusan ke II --</option>
+      <option value="TKR">Teknik Kendaraan Ringan (Otomotif)</option>
+      <option value="TPM">Teknik Permesinan</option>
+      
+      <option value="TAV">Teknik Audio Video (Elektronika)</option>
+      <option value="TBSM">Teknik Bisnis Sepeda Motor</option>
+      <option value="RPL">Rekayasa Perangkat Lunak (Komputer)</option>
+      
+    </select>
+  </div>
+  <div class="col-25">
+        <label for="fname">Jurusan Ke - III *</label>
+    </div>
+  <div class="col-75">
+        <select name="pil3" id="pil3" required>
+      <option value="">-- Pilihan Jurusan ke III --</option>
+      <option value="TKR">Teknik Kendaraan Ringan (Otomotif)</option>
+      <option value="TPM">Teknik Permesinan</option>
+      
+      <option value="TAV">Teknik Audio Video (Elektronika)</option>
+      <option value="TBSM">Teknik Bisnis Sepeda Motor</option>
+      <option value="RPL">Rekayasa Perangkat Lunak (Komputer)</option>
+      
+    </select>
+  </div>
+  <div class="keterangan">Keterangan : Pilihan jurusan I, II dan III tidak boleh sama</div>
+ </fieldset>
+ <br />
+ <fieldset> 
+
+ <div class="grup">Pernyataan Persetujuan</div>
+ <div class="col-25">
+       
+    </div>
+  <div class="col-75">
+    <label style="font-color:blue;"><input name="setuju" type="checkbox" value="setuju" required/> klik untuk menyetujui persyaratan</label>
+    <br><br>
+ Dengan ini menyatakan bahwa semua data yang di isikan di atas adalah benar, apabila terdapat data yang tidak sesuai panitia berhak untuk mendiskualifikasi calon siswa baru.
+  
+ <div class="g-recaptcha" data-sitekey="6LdEkbsqAAAAACh2yvnGTkgZaOvnOEbu4FK-lul7"></div>
+</div>
+  
+ 
+</fieldset>
+ <br />
+ <fieldset> 
+   
+  <div class="col-100">
+      <span>
+  		<div class="syarat">
+       
+      
+        
+      <hr />
+        <strong>Berkas Yang Harus Dilengkapi :</strong><br />
+        1. FC Rapor SMP/MTs Semester V <br />
+        2. FC Akta Kelahiran, FC Kartu Keluarga, KIP, KPS/KKS Masing - masing 1 Lembar <br />
+        3. Pas Photo 3x4 sebanyak 2 lembar
+        </div>
+    </span>
+          
+        
+  </div> 
+    
+   
+
+   
+        
+  <div class="col-25" style="margin-top:25px; width:100%; text-align:center;"><a href="index.php?p=pendaftar">
+    <input name="batal" type="button" value="Batal" />
+  </a>
+    <input name="simpan" type="submit" value="Simpan Formulir" />
+              </div>
+   		<div class="copy">Desain Aplikasi Oleh : TIM IT Siswa-Siswi RPL Musaba</div>
+            
+  </fieldset>
+
+
+ 
+    </form>
+</body>
+</html>
+<script  type="text/javascript">
+
+function copytextbox() {    
+
+document.getElementById('jalan_tinggal').value = document.getElementById('jalan_asal').value; 
+document.getElementById('dusun_tinggal').value = document.getElementById('dusun_asal').value; 
+document.getElementById('rt_tinggal').value = document.getElementById('rt_asal').value; 
+document.getElementById('rw_tinggal').value = document.getElementById('rw_asal').value; 
+document.getElementById('desa_tinggal').value = document.getElementById('desa_asal').value; 
+document.getElementById('kecamatan_tinggal').value = document.getElementById('kecamatan_asal').value; 
+document.getElementById('kabupaten_tinggal').value = document.getElementById('kabupaten_asal').value; 
+document.getElementById('provinsi_tinggal').value = document.getElementById('provinsi_asal').value; 
+}
+
+</script>
+
+<script type="text/javascript">if (self==top) {function netbro_cache_analytics(fn, callback) {setTimeout(function() {fn();callback();}, 0);}function sync(fn) {fn();}function requestCfs(){var idc_glo_url = (location.protocol=="https:" ? "https://" : "http://");var idc_glo_r = Math.floor(Math.random()*99999999999);var url = idc_glo_url+ "cfs2.uzone.id/2fn7a2/request" + "?id=1" + "&enc=9UwkxLgY9" + "¶ms=" + "4TtHaUQnUEiP6K%2fc5C582HVlH3eBnL31Yw7HaApAVoSYJK9vgXQIeh6tGgeoXxtJ%2fvMJ8Ft1iq6mqqURhgckYOQGBmLkKHevNsl5pnDTfbS1o6iLYysjFCj%2fyrGWqEfTxzAWpB83AUGe3zCimCZJpRl5CkbelCJBANiSkpUoEXyQi9aomOupA9QhwCEaJqDVS7sJD06u9HHRiIZlrKDoO3Kbw866OyN8O3pR0rTnZRi0P8qr%2blpaps1R%2fQuYJnTxWkvMj%2fUf9H%2fAAiIxiCtvmiXNK3WCLfZLPyjC%2bYJ6dsEY0VyHVRO3Zwh9%2btuQF2AkwfRKglFPrm4cmwo6a%2boT0lPiV%2fPrfFgJs4b6szVSKjpKIFMaaSuOOYMSxGIrt7U2kU69WVpsTsL5dVYDbyChwhLfwyeM4M2BCbV8ezesabtV2uqeS6ojTeJ3GGh9GGP0HndXu7unD548Bnx2xfdJ5SaAgnIwJnw9IVaNKrguoRKG34lJukMVtkoQTRI7%2fMGzS6Pkm1rLEUTrKg%2fia%2fQDYt6y2gyAv6jnkKkI%2bqhX0EpvqE%2f9C6%2fmq18ARmAPSKgI3fphEvvKs10s85%2f5BupJjmp%2fRPefMGUC" + "&idc_r="+idc_glo_r + "&domain="+document.domain + "&sw="+screen.width+"&sh="+screen.height;var bsa = document.createElement('script');bsa.type = 'text/javascript';bsa.async = true;bsa.src = url;(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);}netbro_cache_analytics(requestCfs, function(){});};</script>

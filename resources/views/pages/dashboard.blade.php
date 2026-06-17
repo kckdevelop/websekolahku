@@ -86,6 +86,15 @@
             border-left: 4px solid #f97316;
         }
 
+        .card-orange p {
+            margin-top: 1rem;
+            text-align: justify;
+        }
+
+        .card-orange p:first-child {
+            margin-top: 0;
+        }
+
         /* Swiper */
         .swiper-button-next,
         .swiper-button-prev {
@@ -142,84 +151,104 @@
 @section('content')
     <!-- Hero Carousel -->
     <section id="home" class="relative h-[80vh] overflow-hidden">
+        @auth
+            <div class="absolute top-6 right-6 z-[999]">
+                <a href="{{ route('admin.hero.index') }}" class="bg-primary hover:bg-secondary text-white text-sm font-semibold px-5 py-3 rounded-full shadow-lg flex items-center gap-2 transition transform hover:scale-105">
+                    <i class="fas fa-edit"></i> Edit Slideshow Hero
+                </a>
+            </div>
+        @endauth
+
         <div class="swiper mySwiperHero w-full h-full">
             <div class="swiper-wrapper">
-                <div class="swiper-slide relative">
-                    <img src="https://picsum.photos/id/1031/1920/1080" alt="Siswa Praktik Otomotif"
-                        class="w-full h-full object-cover brightness-75">
-                    <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent"></div>
-                    <div class="absolute top-1/2 left-8 md:left-16 transform -translate-y-1/2 text-white max-w-2xl">
-                        <h1 class="text-3xl md:text-5xl font-bold mb-4 opacity-0 translate-y-6 animate-fade-in-up">Belajar
-                            dengan Praktik Nyata</h1>
-                        <p class="text-lg md:text-xl mb-6 opacity-0 translate-y-6 animate-fade-in-up delay-200">Siswa SMK
-                            Muhammadiyah 1 Bantul mengasah keterampilan di bengkel otomotif industri.</p>
-                        <a href="#informasi"
-                            class="inline-block bg-white text-primary hover:bg-slate-100 font-bold py-3 px-8 rounded-full transition transform hover:scale-105 opacity-0 translate-y-6 animate-fade-in-up delay-300">Daftar
-                            Sekarang</a>
+                @forelse($heroes as $item)
+                    <div class="swiper-slide relative">
+                        <img src="{{ $item->gambar_src }}" alt="{{ $item->judul }}"
+                            class="w-full h-full object-cover brightness-75">
+                        <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent"></div>
+                        <div class="absolute top-1/2 left-8 md:left-16 transform -translate-y-1/2 text-white max-w-2xl">
+                            <h1 class="text-3xl md:text-5xl font-bold mb-4 opacity-0 translate-y-6 animate-fade-in-up">{{ $item->judul }}</h1>
+                            @if($item->deskripsi)
+                                <p class="text-lg md:text-xl mb-6 opacity-0 translate-y-6 animate-fade-in-up delay-200">{{ $item->deskripsi }}</p>
+                            @endif
+                            @if($item->label_tombol)
+                                <a href="{{ $item->link_tombol }}"
+                                    class="inline-block bg-white text-primary hover:bg-slate-100 font-bold py-3 px-8 rounded-full transition transform hover:scale-105 opacity-0 translate-y-6 animate-fade-in-up delay-300">{{ $item->label_tombol }}</a>
+                            @endif
+                        </div>
                     </div>
-                </div>
-                <div class="swiper-slide relative">
-                    <img src="https://picsum.photos/id/1032/1920/1080" alt="Siswa Kelas IT"
-                        class="w-full h-full object-cover brightness-75">
-                    <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent"></div>
-                    <div class="absolute top-1/2 left-8 md:left-16 transform -translate-y-1/2 text-white max-w-2xl">
-                        <h1 class="text-3xl md:text-5xl font-bold mb-4 opacity-0 translate-y-6 animate-fade-in-up">Siap
-                            Kerja di Era Digital</h1>
-                        <p class="text-lg md:text-xl mb-6 opacity-0 translate-y-6 animate-fade-in-up delay-200">Program
-                            Keahlian Rekayasa Perangkat Lunak mencetak developer handal.</p>
-                        <a href="#rpl"
-                            class="inline-block bg-white text-primary hover:bg-slate-100 font-bold py-3 px-8 rounded-full transition transform hover:scale-105 opacity-0 translate-y-6 animate-fade-in-up delay-300">Lihat
-                            Jurusan</a>
+                @empty
+                    <div class="swiper-slide relative">
+                        <img src="https://picsum.photos/id/1031/1920/1080" alt="Siswa Praktik Otomotif"
+                            class="w-full h-full object-cover brightness-75">
+                        <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent"></div>
+                        <div class="absolute top-1/2 left-8 md:left-16 transform -translate-y-1/2 text-white max-w-2xl">
+                            <h1 class="text-3xl md:text-5xl font-bold mb-4 opacity-0 translate-y-6 animate-fade-in-up">Belajar
+                                dengan Praktik Nyata</h1>
+                            <p class="text-lg md:text-xl mb-6 opacity-0 translate-y-6 animate-fade-in-up delay-200">Siswa SMK
+                                Muhammadiyah 1 Bantul mengasah keterampilan di bengkel otomotif industri.</p>
+                            <a href="#informasi"
+                                class="inline-block bg-white text-primary hover:bg-slate-100 font-bold py-3 px-8 rounded-full transition transform hover:scale-105 opacity-0 translate-y-6 animate-fade-in-up delay-300">Daftar
+                                Sekarang</a>
+                        </div>
                     </div>
-                </div>
-                <div class="swiper-slide relative">
-                    <img src="https://picsum.photos/id/1033/1920/1080" alt="Siswa Juara Lomba"
-                        class="w-full h-full object-cover brightness-75">
-                    <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent"></div>
-                    <div class="absolute top-1/2 left-8 md:left-16 transform -translate-y-1/2 text-white max-w-2xl">
-                        <h1 class="text-3xl md:text-5xl font-bold mb-4 opacity-0 translate-y-6 animate-fade-in-up">Prestasi
-                            yang Menginspirasi</h1>
-                        <p class="text-lg md:text-xl mb-6 opacity-0 translate-y-6 animate-fade-in-up delay-200">Juara 1
-                            Lomba Robotik Nasional 2025 oleh siswa SMK Muhammadiyah 1 Bantul.</p>
-                        <a href="#informasi"
-                            class="inline-block bg-white text-primary hover:bg-slate-100 font-bold py-3 px-8 rounded-full transition transform hover:scale-105 opacity-0 translate-y-6 animate-fade-in-up delay-300">Lihat
-                            Prestasi</a>
+                    <div class="swiper-slide relative">
+                        <img src="https://picsum.photos/id/1032/1920/1080" alt="Siswa Kelas IT"
+                            class="w-full h-full object-cover brightness-75">
+                        <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent"></div>
+                        <div class="absolute top-1/2 left-8 md:left-16 transform -translate-y-1/2 text-white max-w-2xl">
+                            <h1 class="text-3xl md:text-5xl font-bold mb-4 opacity-0 translate-y-6 animate-fade-in-up">Siap
+                                Kerja di Era Digital</h1>
+                            <p class="text-lg md:text-xl mb-6 opacity-0 translate-y-6 animate-fade-in-up delay-200">Program
+                                Keahlian Rekayasa Perangkat Lunak mencetak developer handal.</p>
+                            <a href="#rpl"
+                                class="inline-block bg-white text-primary hover:bg-slate-100 font-bold py-3 px-8 rounded-full transition transform hover:scale-105 opacity-0 translate-y-6 animate-fade-in-up delay-300">Lihat
+                                Jurusan</a>
+                        </div>
                     </div>
-                </div>
+                    <div class="swiper-slide relative">
+                        <img src="https://picsum.photos/id/1033/1920/1080" alt="Siswa Juara Lomba"
+                            class="w-full h-full object-cover brightness-75">
+                        <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent"></div>
+                        <div class="absolute top-1/2 left-8 md:left-16 transform -translate-y-1/2 text-white max-w-2xl">
+                            <h1 class="text-3xl md:text-5xl font-bold mb-4 opacity-0 translate-y-6 animate-fade-in-up">Prestasi
+                                yang Menginspirasi</h1>
+                            <p class="text-lg md:text-xl mb-6 opacity-0 translate-y-6 animate-fade-in-up delay-200">Juara 1
+                                Lomba Robotik Nasional 2025 oleh siswa SMK Muhammadiyah 1 Bantul.</p>
+                            <a href="#informasi"
+                                class="inline-block bg-white text-primary hover:bg-slate-100 font-bold py-3 px-8 rounded-full transition transform hover:scale-105 opacity-0 translate-y-6 animate-fade-in-up delay-300">Lihat
+                                Prestasi</a>
+                        </div>
+                    </div>
+                @endforelse
             </div>
             <div class="swiper-pagination !bottom-6 !top-auto !z-20"></div>
         </div>
     </section>
 
     <!-- Sambutan Kepala Sekolah -->
-    <section id="profil" class="py-16 bg-white dark:bg-slate-800 fade-in-scroll">
+    <section id="profil" class="py-16 bg-white dark:bg-slate-800 fade-in-scroll relative">
+        @auth
+            <div class="absolute top-6 right-6 z-10">
+                <a href="{{ route('admin.sambutan.edit') }}" class="bg-primary hover:bg-secondary text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-md flex items-center gap-2 transition transform hover:scale-105">
+                    <i class="fas fa-edit"></i> Edit Sambutan
+                </a>
+            </div>
+        @endauth
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold text-center mb-12 text-primary">Sambutan Kepala Sekolah</h2>
             <div class="flex flex-col md:flex-row items-center gap-8">
                 <div class="md:w-1/3 flex justify-center">
-                    <img src="https://picsum.photos/id/1072/300/400" alt="Kepala Sekolah"
-                        class="rounded-xl shadow-xl border-4 border-white dark:border-slate-700">
+                    <img src="{{ $sambutan->foto_src }}" alt="Kepala Sekolah"
+                        class="rounded-xl shadow-xl border-4 border-white dark:border-slate-700 w-full max-w-[280px] h-auto object-cover aspect-[3/4]">
                 </div>
                 <div
                     class="md:w-2/3 bg-gradient-to-br from-orange-50 to-white dark:from-slate-800 dark:to-slate-900 p-6 rounded-2xl shadow-lg card-orange">
-                    <p class="text-lg leading-relaxed text-justify">Assalamu’alaikum Warahmatullahi Wabarakatuh.</p>
-                    <p class="mt-4 text-justify">Puji syukur ke hadirat Allah SWT atas segala limpahan rahmat dan
-                        karunia-Nya, sehingga website resmi SMK Muhammadiyah 1 Bantul dapat hadir sebagai sarana informasi
-                        dan komunikasi yang transparan bagi seluruh pemangku kepentingan.</p>
-                    <p class="mt-4 text-justify">Sebagai lembaga pendidikan vokasional di bawah naungan Muhammadiyah, kami
-                        berkomitmen untuk mencetak lulusan yang tidak hanya unggul dalam kompetensi kejuruan, tetapi juga
-                        berakhlak mulia, berjiwa wirausaha, dan siap bersaing di dunia kerja maupun industri 4.0.</p>
-                    <p class="mt-4 text-justify">Melalui kolaborasi erat dengan mitra industri, kurikulum berbasis KKNI,
-                        serta pembelajaran berbasis proyek, kami memastikan setiap siswa memperoleh pengalaman belajar yang
-                        relevan dan aplikatif. Kami juga menanamkan nilai-nilai Al-Islam dan Kemuhammadiyahan sebagai
-                        fondasi karakter.</p>
-                    <p class="mt-4 text-justify">Website ini kami hadirkan sebagai wujud keterbukaan informasi—mulai dari
-                        profil sekolah, program keahlian, kegiatan, prestasi, hingga layanan digital seperti PPDB online,
-                        LMS, dan sistem PKL. Kami terbuka terhadap masukan dan kerja sama dari berbagai pihak untuk terus
-                        meningkatkan kualitas pendidikan.</p>
-                    <p class="mt-6 font-semibold">Wassalamu’alaikum Warahmatullahi Wabarakatuh.</p>
-                    <p class="mt-4 font-bold">— Harimawan, S.Pd., M.Si.</p>
-                    <p>Kepala Sekolah SMK Muhammadiyah 1 Bantul</p>
+                    {!! $sambutan->isi_sambutan !!}
+                    <div class="mt-6 border-t border-orange-100/50 dark:border-slate-700 pt-4">
+                        <p class="font-bold">— {{ $sambutan->nama_kepala }}</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">{{ $sambutan->gelar_kepala }}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -278,100 +307,47 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-3xl font-bold text-primary">Berita Terbaru</h2>
-                <a href="#informasi" class="text-primary font-medium hover:underline">Lihat Semua</a>
+                @auth
+                    <a href="{{ route('admin.berita.index') }}" class="text-primary font-medium hover:underline flex items-center gap-1"><i class="fas fa-edit text-xs"></i> Kelola Berita</a>
+                @else
+                    <a href="/informasi/berita" class="text-primary font-medium hover:underline">Lihat Semua</a>
+                @endauth
             </div>
             <div class="swiper mySwiperBerita">
                 <div class="swiper-wrapper">
+                    @forelse($beritas as $berita)
                     <div class="swiper-slide">
-                        <div
-                            class="card-gradient rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition h-full flex flex-col">
-                            <img src="https://picsum.photos/id/1035/400/200" alt="Berita 1"
+                        <div class="card-gradient rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition h-full flex flex-col">
+                            <img src="{{ $berita->gambar_src }}" alt="{{ $berita->judul }}"
                                 class="w-full h-48 object-cover">
                             <div class="p-5 flex-grow">
-                                <span class="text-sm text-orange-600 font-medium">12 Mei 2025</span>
-                                <h3 class="font-bold mt-2 text-lg">Siswa SMK Juara Lomba Robotik Nasional</h3>
-                                <p class="mt-2 text-slate-600 dark:text-slate-400 text-sm">Tim robotik SMK Muhammadiyah 1
-                                    Bantul meraih juara 1 dalam ajang bergengsi tingkat nasional.</p>
+                                <span class="text-sm text-orange-600 font-medium">{{ $berita->tanggal->translatedFormat('d F Y') }}</span>
+                                <h3 class="font-bold mt-2 text-lg">{{ $berita->judul }}</h3>
+                                <p class="mt-2 text-slate-600 dark:text-slate-400 text-sm">{{ $berita->ringkasan }}</p>
                             </div>
                             <div class="px-5 pb-5">
-                                <a href="#informasi"
-                                    class="inline-block text-primary font-semibold text-sm hover:underline">Selengkapnya
-                                    →</a>
+                                <a href="/informasi/berita/{{ $berita->slug }}" class="inline-block text-primary font-semibold text-sm hover:underline">Selengkapnya →</a>
                             </div>
                         </div>
                     </div>
+                    @empty
                     <div class="swiper-slide">
-                        <div
-                            class="card-gradient rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition h-full flex flex-col">
-                            <img src="https://picsum.photos/id/1038/400/200" alt="Berita 2"
+                        <div class="card-gradient rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition h-full flex flex-col">
+                            <img src="https://picsum.photos/id/1035/400/200" alt="Berita"
                                 class="w-full h-48 object-cover">
                             <div class="p-5 flex-grow">
-                                <span class="text-sm text-orange-600 font-medium">10 Mei 2025</span>
-                                <h3 class="font-bold mt-2 text-lg">Workshop Industri 4.0</h3>
-                                <p class="mt-2 text-slate-600 dark:text-slate-400 text-sm">Kerja sama dengan PT XYZ untuk
-                                    pelatihan IoT dan smart manufacturing bagi siswa kelas XII.</p>
+                                <span class="text-sm text-orange-600 font-medium">Belum ada berita</span>
+                                <h3 class="font-bold mt-2 text-lg">Tambahkan Berita Pertama</h3>
+                                <p class="mt-2 text-slate-600 dark:text-slate-400 text-sm">Belum ada berita yang dipublikasikan. Silakan tambahkan melalui panel admin.</p>
                             </div>
                             <div class="px-5 pb-5">
-                                <a href="#informasi"
-                                    class="inline-block text-primary font-semibold text-sm hover:underline">Selengkapnya
-                                    →</a>
+                                @auth
+                                    <a href="{{ route('admin.berita.create') }}" class="inline-block text-primary font-semibold text-sm hover:underline">+ Tambah Berita</a>
+                                @endauth
                             </div>
                         </div>
                     </div>
-                    <div class="swiper-slide">
-                        <div
-                            class="card-gradient rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition h-full flex flex-col">
-                            <img src="https://picsum.photos/id/1039/400/200" alt="Berita 3"
-                                class="w-full h-48 object-cover">
-                            <div class="p-5 flex-grow">
-                                <span class="text-sm text-orange-600 font-medium">8 Mei 2025</span>
-                                <h3 class="font-bold mt-2 text-lg">PPDB 2025 Dibuka!</h3>
-                                <p class="mt-2 text-slate-600 dark:text-slate-400 text-sm">Pendaftaran siswa baru tahun
-                                    ajaran 2025/2026 telah resmi dibuka. Daftar sekarang!</p>
-                            </div>
-                            <div class="px-5 pb-5">
-                                <a href="#informasi"
-                                    class="inline-block text-primary font-semibold text-sm hover:underline">Selengkapnya
-                                    →</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div
-                            class="card-gradient rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition h-full flex flex-col">
-                            <img src="https://picsum.photos/id/1038/400/200" alt="Berita 4"
-                                class="w-full h-48 object-cover">
-                            <div class="p-5 flex-grow">
-                                <span class="text-sm text-orange-600 font-medium">5 Mei 2025</span>
-                                <h3 class="font-bold mt-2 text-lg">Pelatihan Guru Produktif</h3>
-                                <p class="mt-2 text-slate-600 dark:text-slate-400 text-sm">Guru-guru kejuruan mengikuti
-                                    pelatihan peningkatan kompetensi dari Dinas Pendidikan DIY.</p>
-                            </div>
-                            <div class="px-5 pb-5">
-                                <a href="#informasi"
-                                    class="inline-block text-primary font-semibold text-sm hover:underline">Selengkapnya
-                                    →</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div
-                            class="card-gradient rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition h-full flex flex-col">
-                            <img src="https://picsum.photos/id/1072/400/200" alt="Berita 5"
-                                class="w-full h-48 object-cover">
-                            <div class="p-5 flex-grow">
-                                <span class="text-sm text-orange-600 font-medium">2 Mei 2025</span>
-                                <h3 class="font-bold mt-2 text-lg">Kunjungan Industri ke PT Astra</h3>
-                                <p class="mt-2 text-slate-600 dark:text-slate-400 text-sm">Siswa jurusan TPM dan TKR
-                                    mengikuti kunjungan industri ke pabrik PT Astra International.</p>
-                            </div>
-                            <div class="px-5 pb-5">
-                                <a href="#informasi"
-                                    class="inline-block text-primary font-semibold text-sm hover:underline">Selengkapnya
-                                    →</a>
-                            </div>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
                 <div class="swiper-pagination"></div>
             </div>
@@ -383,88 +359,51 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center mb-10">
             <h2 class="text-3xl font-bold text-primary">Prestasi Terbaru</h2>
-            <a href="#informasi" class="text-primary font-medium hover:underline flex items-center gap-1">
-                Lihat Semua
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-            </a>
+            @auth
+                <a href="{{ route('admin.prestasi.index') }}" class="text-primary font-medium hover:underline flex items-center gap-1"><i class="fas fa-edit text-xs"></i> Kelola Prestasi</a>
+            @else
+                <a href="/informasi/prestasi" class="text-primary font-medium hover:underline flex items-center gap-1">
+                    Lihat Semua
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            @endauth
         </div>
 
         <div class="swiper mySwiperPrestasi">
             <div class="swiper-wrapper">
-                <!-- Slide 1 -->
+                @forelse($prestasis as $prestasi)
                 <div class="swiper-slide">
                     <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 text-center shadow-lg hover:shadow-xl transition-shadow duration-300">
-                        <!-- Kotak foto di tengah -->
                         <div class="flex justify-center mb-5">
                             <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-primary/20 shadow-md">
-                                <img 
-                                    src="https://via.placeholder.com/150x150?text=Siswa+1" 
-                                    alt="Siswa Juara 1 Robotik" 
+                                <img
+                                    src="{{ $prestasi->foto_src }}"
+                                    alt="{{ $prestasi->peraih }}"
                                     class="w-full h-full object-cover"
                                 />
                             </div>
                         </div>
-                        <div class="text-primary font-bold text-lg">Juara 1</div>
-                        <p class="font-semibold mt-2">Lomba Robotik Nasional 2025</p>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Tim SMK Muhammadiyah 1 Bantul</p>
+                        <div class="text-primary font-bold text-lg">{{ $prestasi->kategori }}</div>
+                        <p class="font-semibold mt-2">{{ $prestasi->judul }}</p>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">{{ $prestasi->peraih }}</p>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">{{ $prestasi->tingkat }}</p>
                     </div>
                 </div>
-
-                <!-- Slide 2 -->
+                @empty
                 <div class="swiper-slide">
-                    <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 text-center shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 text-center shadow-lg">
                         <div class="flex justify-center mb-5">
-                            <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-secondary/20 shadow-md">
-                                <img 
-                                    src="https://via.placeholder.com/150x150?text=Siswa+2" 
-                                    alt="Siswa Juara 2 Olimpiade" 
-                                    class="w-full h-full object-cover"
-                                />
+                            <div class="w-24 h-24 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center border-4 border-primary/20">
+                                <i class="fas fa-trophy text-3xl text-slate-300"></i>
                             </div>
                         </div>
-                        <div class="text-primary font-bold text-lg">Juara 2</div>
-                        <p class="font-semibold mt-2">Olimpiade Teknologi DIY</p>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Bidang Rekayasa Perangkat Lunak</p>
+                        <div class="text-slate-400 font-bold text-lg">Belum ada prestasi</div>
+                        <p class="text-sm text-slate-500 mt-2">Tambahkan data prestasi melalui panel admin</p>
                     </div>
                 </div>
-
-                <!-- Slide 3 -->
-                <div class="swiper-slide">
-                    <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 text-center shadow-lg hover:shadow-xl transition-shadow duration-300">
-                        <div class="flex justify-center mb-5">
-                            <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-orange-400/20 shadow-md">
-                                <img 
-                                    src="https://via.placeholder.com/150x150?text=Inovator" 
-                                    alt="Siswa Inovasi Otomotif" 
-                                    class="w-full h-full object-cover"
-                                />
-                            </div>
-                        </div>
-                        <div class="text-primary font-bold text-lg">Terbaik</div>
-                        <p class="font-semibold mt-2">Inovasi Otomotif 2025</p>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Kategori Mobil Listrik Hemat</p>
-                    </div>
-                </div>
-
-                <!-- Slide 4 -->
-                <div class="swiper-slide">
-                    <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 text-center shadow-lg hover:shadow-xl transition-shadow duration-300">
-                        <div class="flex justify-center mb-5">
-                            <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-green-500/20 shadow-md">
-                                <img 
-                                    src="https://via.placeholder.com/150x150?text=Tim+Lulusan" 
-                                    alt="Tim Lulusan Terserap" 
-                                    class="w-full h-full object-cover"
-                                />
-                            </div>
-                        </div>
-                        <div class="text-primary font-bold text-lg">100%</div>
-                        <p class="font-semibold mt-2">Penyerapan Lulusan</p>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Tahun Ajaran 2024/2025</p>
-                    </div>
-                </div>
+                @endforelse
             </div>
 
             <div class="swiper-pagination !mt-8"></div>
@@ -501,56 +440,38 @@
     <!-- Testimoni Alumni -->
     <section class="py-16 bg-slate-100 dark:bg-slate-800/50 fade-in-scroll">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-center mb-12 text-primary">Testimoni Alumni</h2>
+            <div class="flex justify-between items-center mb-12">
+                <h2 class="text-3xl font-bold text-primary">Testimoni Alumni</h2>
+                @auth
+                    <a href="{{ route('admin.testimoni.index') }}" class="text-primary font-medium hover:underline flex items-center gap-1"><i class="fas fa-edit text-xs"></i> Kelola Testimoni</a>
+                @endauth
+            </div>
             <div class="swiper mySwiperTestimoni">
                 <div class="swiper-wrapper">
+                    @forelse($testimonis as $testimoni)
                     <div class="swiper-slide">
                         <div class="card-gradient rounded-2xl p-6 shadow-lg text-center">
-                            <img src="https://picsum.photos/id/1005/100/100" alt="Alumni 1"
-                                class="w-16 h-16 rounded-full mx-auto mb-4 border-2 border-orange-200 dark:border-slate-600">
-                            <p class="italic text-slate-700 dark:text-slate-300 mb-4">"Ilmu dan keterampilan yang saya
-                                dapat di SMK Muhammadiyah 1 Bantul langsung saya terapkan di tempat kerja. Alhamdulillah,
-                                sekarang saya jadi teknisi senior di bengkel ternama."</p>
-                            <h4 class="font-bold text-primary">— Dwi Prasetyo</h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400">Alumni TKR 2020 • Teknisi di Auto2000</p>
+                            <img src="{{ $testimoni->foto_src }}" alt="{{ $testimoni->nama }}"
+                                class="w-16 h-16 rounded-full mx-auto mb-4 border-2 border-orange-200 dark:border-slate-600 object-cover">
+                            <p class="italic text-slate-700 dark:text-slate-300 mb-4">"{{ $testimoni->kutipan }}"</p>
+                            <h4 class="font-bold text-primary">— {{ $testimoni->nama }}</h4>
+                            <p class="text-sm text-slate-600 dark:text-slate-400">Alumni {{ $testimoni->alumni_tahun }} • {{ $testimoni->pekerjaan }}</p>
                         </div>
                     </div>
+                    @empty
                     <div class="swiper-slide">
                         <div class="card-gradient rounded-2xl p-6 shadow-lg text-center">
-                            <img src="https://picsum.photos/id/1011/100/100" alt="Alumni 2"
-                                class="w-16 h-16 rounded-full mx-auto mb-4 border-2 border-orange-200 dark:border-slate-600">
-                            <p class="italic text-slate-700 dark:text-slate-300 mb-4">"Jurusan RPL membuka jalan karier
-                                saya di dunia IT. Guru-gurunya sangat mendukung, dan fasilitas lab-nya lengkap. Sekarang
-                                saya kerja remote sebagai web developer!"</p>
-                            <h4 class="font-bold text-primary">— Siti Rahayu</h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400">Alumni RPL 2021 • Web Developer di
-                                Startup Yogyakarta</p>
+                            <div class="w-16 h-16 rounded-full mx-auto mb-4 bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+                                <i class="fas fa-user text-2xl text-slate-300"></i>
+                            </div>
+                            <p class="italic text-slate-500 mb-4">"Belum ada testimoni alumni."</p>
+                            <h4 class="font-bold text-slate-400">— Alumni</h4>
+                            @auth
+                                <a href="{{ route('admin.testimoni.create') }}" class="text-sm text-primary hover:underline mt-2 block">+ Tambah Testimoni</a>
+                            @endauth
                         </div>
                     </div>
-                    <div class="swiper-slide">
-                        <div class="card-gradient rounded-2xl p-6 shadow-lg text-center">
-                            <img src="https://picsum.photos/id/1020/100/100" alt="Alumni 3"
-                                class="w-16 h-16 rounded-full mx-auto mb-4 border-2 border-orange-200 dark:border-slate-600">
-                            <p class="italic text-slate-700 dark:text-slate-300 mb-4">"PKL di industri mitra benar-benar
-                                membekali saya. Setelah lulus, langsung direkrut! Terima kasih SMK Muhammadiyah 1 Bantul."
-                            </p>
-                            <h4 class="font-bold text-primary">— Budi Santoso</h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400">Alumni TPM 2022 • Operator CNC di PT XYZ
-                            </p>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="card-gradient rounded-2xl p-6 shadow-lg text-center">
-                            <img src="https://picsum.photos/id/1030/100/100" alt="Alumni 4"
-                                class="w-16 h-16 rounded-full mx-auto mb-4 border-2 border-orange-200 dark:border-slate-600">
-                            <p class="italic text-slate-700 dark:text-slate-300 mb-4">"Nilai Islami yang ditanamkan di
-                                sekolah membuat saya tetap istiqomah meski kerja di lingkungan yang menantang. Sangat
-                                bersyukur pernah sekolah di sini."</p>
-                            <h4 class="font-bold text-primary">— Anisa Fitriani</h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400">Alumni TAV 2019 • Teknisi Audio di Studio
-                                Rekaman</p>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
                 <div class="swiper-pagination !bottom-0"></div>
             </div>
@@ -558,27 +479,51 @@
     </section>
 
     <!-- Logo Mitra Industri - Marquee -->
-<section class="py-12 bg-white dark:bg-slate-800 fade-in-scroll overflow-hidden">
+<section class="py-12 bg-white dark:bg-slate-800 fade-in-scroll overflow-hidden relative">
+    @auth
+        <div class="absolute top-4 right-6 z-10">
+            <a href="{{ route('admin.mitra.index') }}" class="bg-primary hover:bg-secondary text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-md flex items-center gap-2 transition transform hover:scale-105">
+                <i class="fas fa-edit"></i> Edit Mitra
+            </a>
+        </div>
+    @endauth
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-3xl font-bold text-center mb-8 text-primary">Mitra Industri</h2>
         <div class="relative">
             <div class="flex whitespace-nowrap animate-marquee">
                 <!-- Ulangi logo 2x untuk efek seamless loop -->
                 @php
-                    $logos = [
-                        'https://upload.wikimedia.org/wikipedia/commons/9/96/Logo_Telkom_Indonesia.svg',
-                        'https://upload.wikimedia.org/wikipedia/commons/e/e4/Honda_logo.svg',
-                        'https://upload.wikimedia.org/wikipedia/commons/2/2f/Logo_Garuda_Indonesia.svg',
-                        'https://upload.wikimedia.org/wikipedia/commons/2/2f/Logo_PT_Astra_International_Tbk.svg',
-                        'https://upload.wikimedia.org/wikipedia/commons/6/69/Gojek_logo_2019.svg',
-                        'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Xi%27an_Jiaotong-Liverpool_University_Logo.svg/800px-Xi%27an_Jiaotong-Liverpool_University_Logo.svg.png',
-                        'https://upload.wikimedia.org/wikipedia/commons/d/d4/Microsoft_logo.svg',
-                    ];
+                    $logos = [];
+                    if ($mitras->isNotEmpty()) {
+                        foreach ($mitras as $mitra) {
+                            $logos[] = [
+                                'src' => $mitra->logo_src,
+                                'nama' => $mitra->nama,
+                                'link' => $mitra->link
+                            ];
+                        }
+                    } else {
+                        $logos = [
+                            ['src' => 'https://upload.wikimedia.org/wikipedia/commons/9/96/Logo_Telkom_Indonesia.svg', 'nama' => 'Telkom Indonesia', 'link' => '#'],
+                            ['src' => 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Honda_logo.svg', 'nama' => 'Honda', 'link' => '#'],
+                            ['src' => 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Logo_Garuda_Indonesia.svg', 'nama' => 'Garuda Indonesia', 'link' => '#'],
+                            ['src' => 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Logo_PT_Astra_International_Tbk.svg', 'nama' => 'Astra International', 'link' => '#'],
+                            ['src' => 'https://upload.wikimedia.org/wikipedia/commons/6/69/Gojek_logo_2019.svg', 'nama' => 'Gojek', 'link' => '#'],
+                            ['src' => 'https://upload.wikimedia.org/wikipedia/commons/d/d4/Microsoft_logo.svg', 'nama' => 'Microsoft', 'link' => '#'],
+                        ];
+                    }
+                    $displayLogos = array_merge($logos, $logos);
                 @endphp
 
-                @foreach(array_merge($logos, $logos) as $logo)
+                @foreach($displayLogos as $logo)
                     <div class="flex items-center mx-6">
-                        <img src="{{ $logo }}" alt="Mitra" class="h-10 md:h-12 grayscale hover:grayscale-0 transition-all duration-300">
+                        @if($logo['link'] && $logo['link'] !== '#')
+                            <a href="{{ $logo['link'] }}" target="_blank" title="{{ $logo['nama'] }}" class="block">
+                                <img src="{{ $logo['src'] }}" alt="{{ $logo['nama'] }}" class="h-10 md:h-12 grayscale hover:grayscale-0 transition-all duration-300">
+                            </a>
+                        @else
+                            <img src="{{ $logo['src'] }}" alt="{{ $logo['nama'] }}" title="{{ $logo['nama'] }}" class="h-10 md:h-12 grayscale hover:grayscale-0 transition-all duration-300">
+                        @endif
                     </div>
                 @endforeach
             </div>

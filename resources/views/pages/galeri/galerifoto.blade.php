@@ -306,7 +306,7 @@
         
         <!-- Judul Section -->
         <div class="text-center md:text-left">
-          <h2 class="text-3xl font-bold text-slate-800 dark:text-white mb-1">Album Foto Kegiatan</h2>
+          <h2 class="text-3xl font-bold text-slate-800 dark:text-white mb-1">{{ $galeriFoto->judul }}</h2>
           <div class="w-24 h-1 bg-primary rounded-full md:mx-0 mx-auto"></div>
         </div>
 
@@ -335,14 +335,9 @@
       <div class="card-gradient rounded-2xl p-2 md:p-4 fade-in-scroll overflow-hidden">
         <div class="relative w-full h-[60vh] md:h-[70vh] rounded-xl overflow-hidden bg-slate-200 dark:bg-slate-700">
           
-          <!-- 
-            ID Folder: 0B6IFRRkB6oTeLTg4UDM0WDdvNFk
-            Default view: #grid (diatur melalui script di bawah)
-            https://drive.google.com/drive/folders/0B6IFRRkB6oTeSUVBc1E2U3JxQVk?resourcekey=0-inVQC--DRmO_OmGRjf9RcQ&usp=sharing
-          -->
           <iframe 
             id="gdrive-frame"
-            src="https://drive.google.com/embeddedfolderview?id=0B6IFRRkB6oTeSUVBc1E2U3JxQVk#grid" 
+            src="https://drive.google.com/embeddedfolderview?id={{ $galeriFoto->folder_id }}#grid" 
             width="100%" 
             height="100%" 
             frameborder="0"
@@ -436,7 +431,7 @@
 
       //google drive
           // === Google Drive Custom Controls ===
-    const folderId = '0B6IFRRkB6oTeSUVBc1E2U3JxQVk';
+    const folderId = '{{ $galeriFoto->folder_id }}';
     const iframe = document.getElementById('gdrive-frame');
     const btnGrid = document.getElementById('btn-grid');
     const btnList = document.getElementById('btn-list');

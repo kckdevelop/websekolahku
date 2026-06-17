@@ -192,16 +192,16 @@
             <a href="/profil/identitas" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-id-card mr-2 text-primary"></i> Identitas Sekolah
             </a>
-            <a href="#visi-misi" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
+            <a href="/profil/visi-misi" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-bullseye mr-2 text-primary"></i> Visi dan Misi
             </a>
-            <a href="#sejarah" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
+            <a href="/profil/sejarah" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-history mr-2 text-primary"></i> Sejarah Singkat
             </a>
-            <a href="#fasilitas" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
+            <a href="/profil/fasilitas" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-building mr-2 text-primary"></i> Fasilitas
             </a>
-            <a href="#mitra" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
+            <a href="/profil/mitra" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-handshake mr-2 text-primary"></i> Mitra Industri
             </a>
           </div>
@@ -216,19 +216,19 @@
             </svg>
           </button>
           <div class="dropdown-menu absolute left-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-md shadow-xl py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-            <a href="/jurusan/tkr" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
+            <a href="{{ route('jurusan.show', 'tkr') }}" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-car mr-2 text-primary"></i> Teknik Kendaraan Ringan (TKR)
             </a>
-            <a href="#tbsm" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
+            <a href="{{ route('jurusan.show', 'tbsm') }}" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-motorcycle mr-2 text-primary"></i> Teknik Bisnis Sepeda Motor (TBSM)
             </a>
-            <a href="#tpm" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
+            <a href="{{ route('jurusan.show', 'tpm') }}" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-cogs mr-2 text-primary"></i> Teknik Pemesinan (TPM)
             </a>
-            <a href="#tav" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
+            <a href="{{ route('jurusan.show', 'tav') }}" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-tv mr-2 text-primary"></i> Teknik Audio Video (TAV)
             </a>
-            <a href="#rpl" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
+            <a href="{{ route('jurusan.show', 'rpl') }}" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-laptop-code mr-2 text-primary"></i> Rekayasa Perangkat Lunak (RPL)
             </a>
           </div>
@@ -288,13 +288,13 @@
             <a href="/informasi/spmb" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-clipboard-list mr-2 text-primary"></i> SPMB
             </a>
-            <a href="#berita" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
+            <a href="/informasi/berita" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-newspaper mr-2 text-primary"></i> Berita
             </a>
-            <a href="#prestasi" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
+            <a href="/informasi/prestasi" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-trophy mr-2 text-primary"></i> Prestasi
             </a>
-            <a href="#kontak" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
+            <a href="/informasi/kontak" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-phone-alt mr-2 text-primary"></i> Hubungi Kami
             </a>
           </div>
@@ -326,19 +326,19 @@
           </svg>
         </button>
         <div id="mobile-profil" class="mobile-submenu pl-4 mt-1 space-y-2">
-          <a href="#identitas" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+          <a href="/profil/identitas" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-id-card mr-2"></i> Identitas Sekolah
           </a>
-          <a href="#visi-misi" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+          <a href="/profil/visi-misi" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-bullseye mr-2"></i> Visi dan Misi
           </a>
-          <a href="#sejarah" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+          <a href="/profil/sejarah" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-history mr-2"></i> Sejarah Singkat
           </a>
-          <a href="#fasilitas" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+          <a href="/profil/fasilitas" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-building mr-2"></i> Fasilitas
           </a>
-          <a href="#mitra" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+          <a href="/profil/mitra" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-handshake mr-2"></i> Mitra Industri
           </a>
         </div>
@@ -353,19 +353,19 @@
           </svg>
         </button>
         <div id="mobile-program" class="mobile-submenu pl-4 mt-1 space-y-2">
-          <a href="/tkr" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+          <a href="{{ route('jurusan.show', 'tkr') }}" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-car mr-2"></i> TKR
           </a>
-          <a href="#tbsm" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+          <a href="{{ route('jurusan.show', 'tbsm') }}" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-motorcycle mr-2"></i> TBSM
           </a>
-          <a href="#tpm" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+          <a href="{{ route('jurusan.show', 'tpm') }}" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-cogs mr-2"></i> TPM
           </a>
-          <a href="#tav" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+          <a href="{{ route('jurusan.show', 'tav') }}" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-tv mr-2"></i> TAV
           </a>
-          <a href="#rpl" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+          <a href="{{ route('jurusan.show', 'rpl') }}" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-laptop-code mr-2"></i> RPL
           </a>
         </div>
@@ -422,16 +422,16 @@
           </svg>
         </button>
         <div id="mobile-informasi" class="mobile-submenu pl-4 mt-1 space-y-2">
-          <a href="#spmb" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+          <a href="/informasi/spmb" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-clipboard-list mr-2"></i> SPMB
           </a>
-          <a href="#berita" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+          <a href="/informasi/berita" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-newspaper mr-2"></i> Berita
           </a>
-          <a href="#prestasi" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+          <a href="/informasi/prestasi" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-trophy mr-2"></i> Prestasi
           </a>
-          <a href="#kontak" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+          <a href="/informasi/kontak" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-phone-alt mr-2"></i> Hubungi Kami
           </a>
         </div>
@@ -590,6 +590,21 @@
       }
       updateThemeIcon();
     });
+
+    // === Scroll Animation ===
+    {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, {
+        threshold: 0.1
+      });
+
+      document.querySelectorAll('.fade-in-scroll').forEach(el => observer.observe(el));
+    }
   </script>
 
 </body>

@@ -1,0 +1,282 @@
+$nama_lengkap = addslashes($_POST['nama_lengkap']);
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Halaman Panitia Pendaftaran</title>
+<link href="../css/admin.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div class="header_menu">
+    		<div class="logo">
+    		  <img src="../gambar/logoadmin.png"  style="margin-left:5px;"/>
+    		  
+      </div>
+            <div class="navbar">
+  <a href="index.php">Beranda</a>
+  <a href="index.php?p=pendaftar">Data Pendaftar</a>
+  <a href="index.php?p=cetak">Cetak Kartu</a>
+
+  <div class="dropdown">
+    <button class="dropbtn">Data Hasil 
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a href="index.php?p=hasil&sub=pendaftar">Pendaftar</a>
+      <a href="index.php?p=hasil&aksi=calsis">Calon Siswa</a>
+      <a href="hasil/tidakhadir.php" target="_blank">Tidak Hadir</a>
+      
+    </div>
+  </div> 
+  <a href="../logout.php" class="logout">Keluar</a>
+</div>
+</div>
+
+
+<div class="isi">
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="../../css/admin.css" rel="stylesheet" type="text/css" />
+
+	<div class="judul_halaman">Halaman Beranda Panitia Pendaftaran</div>
+    <div class="welcome">Selamat Datang di Aplikasi Pendaftaran Peserta Didik Baru SMK Muhammadiyah 1 Bantul</div>
+    <div class="col-100">
+    <div class="col-30" style="font-size:10px;">
+    	<div class="judul">
+   			 Statistik Pendaftar
+    	</div>
+      <table class="table col-100" border="1">
+        <tr>
+        <th>Jurusan</th>
+        <th>Gel 0</th>
+        <th>Gel 1</th>
+        <th>Gel 2</th>
+        <th>Gel 3</th>
+        <th>Gel 4</th>
+        <th>Total</th>
+</tr>
+<tr>
+  <td>TKRO</td>
+  <td>48</td>
+  <td>19</td>
+  <td>20</td>
+  <td>34</td>
+  <td>0</td>
+  <td>121</td>
+</tr>
+<tr>
+  <td>TPM</td>
+  <td>3</td>
+  <td>7</td>
+  <td>6</td>
+  <td>16</td>
+  <td>0</td>
+  <td>32</td>
+</tr>
+<tr>
+  <td>TAV</td>
+  <td>1</td>
+  <td>1</td>
+  <td>2</td>
+  <td>3</td>
+  <td>0</td>
+  <td>7</td>
+</tr>
+<tr>
+  <td>TBSM</td>
+  <td>25</td>
+  <td>18</td>
+  <td>9</td>
+  <td>20</td>
+  <td>0</td>
+  <td>72</td>
+</tr>
+<tr>
+  <td>RPL</td>
+  <td>4</td>
+  <td>3</td>
+  <td>9</td>
+  <td>9</td>
+  <td>0</td>
+  <td>25</td>
+</tr>
+<tr style="font-weight:bold;">
+  <td>Total Pendaftar</td>
+  <td>81</td>
+  <td>55</td>
+  <td>50</td>
+  <td>83</td>
+  <td>0</td>
+  <td>269
+</td>
+</tr>
+</table>
+        
+    
+    </div>
+    <div class="col-30" style="font-size:10px;">
+      <div class="judul"> Statistik Data Calon Siswa</div>
+      <table class="table col-100" border="1">
+        <tr>
+        <th>Jurusan</th>
+        <th>Gel 0</th>
+        <th>Gel 1</th>
+        <th>Gel 2</th>
+        <th>Gel 3</th>
+        <th>Gel 4</th>
+        <th>Total</th>
+</tr>
+<tr>
+  <td>TKRO</td>
+  <td>46</td>
+  <td>17</td>
+  <td>20</td>
+  <td>0</td>
+  <td>0</td>
+  <td>83</td>
+</tr>
+<tr>
+  <td>TPM</td>
+  <td>3</td>
+  <td>7</td>
+  <td>4</td>
+  <td>0</td>
+  <td>0</td>
+  <td>14</td>
+</tr>
+<tr>
+  <td>TAV</td>
+  <td>1</td>
+  <td>1</td>
+  <td>2</td>
+  <td>0</td>
+  <td>0</td>
+  <td>4</td>
+</tr>
+<tr>
+  <td>TBSM</td>
+  <td>23</td>
+  <td>17</td>
+  <td>7</td>
+  <td>0</td>
+  <td>0</td>
+  <td>47</td>
+</tr>
+<tr>
+  <td>RPL</td>
+  <td>4</td>
+  <td>2</td>
+  <td>8</td>
+  <td>1</td>
+  <td>0</td>
+  <td>15</td>
+</tr>
+<tr style="font-weight:bold;">
+  <td>Total Pencalsis</td>
+  <td>77</td>
+  <td>44</td>
+  <td>41</td>
+  <td>1</td>
+  <td>0</td>
+  <td>163
+</td>
+</tr>
+</table>
+      
+      </div>
+    <div class="col-30" style="font-size:10px;">
+      <div class="judul"> Statistik Siswa Diterima</div>
+      <table class="table col-100" border="1">
+        <tr>
+        <th>Jurusan</th>
+        <th>Gel 0</th>
+        <th>Gel 1</th>
+        <th>Gel 2</th>
+        <th>Gel 3</th>
+        <th>Gel 4</th>
+        <th>Total</th>
+</tr>
+<tr>
+  <td>TKRO</td>
+  <td>44</td>
+  <td>16</td>
+  <td>20</td>
+  <td>0</td>
+  <td>0</td>
+  <td>80</td>
+</tr>
+<tr>
+  <td>TPM</td>
+  <td>5</td>
+  <td>6</td>
+  <td>2</td>
+  <td>0</td>
+  <td>0</td>
+  <td>13</td>
+</tr>
+<tr>
+  <td>TAV</td>
+  <td>0</td>
+  <td>3</td>
+  <td>1</td>
+  <td>0</td>
+  <td>0</td>
+  <td>4</td>
+</tr>
+<tr>
+  <td>TBSM</td>
+  <td>22</td>
+  <td>16</td>
+  <td>10</td>
+  <td>0</td>
+  <td>0</td>
+  <td>48</td>
+</tr>
+<tr>
+  <td>RPL</td>
+  <td>6</td>
+  <td>3</td>
+  <td>8</td>
+  <td>1</td>
+  <td>0</td>
+  <td>18</td>
+</tr>
+<tr style="font-weight:bold;">
+  <td>Total Penterima</td>
+  <td>77</td>
+  <td>44</td>
+  <td>41</td>
+  <td>1</td>
+  <td>0</td>
+  <td>163
+</td>
+</tr>
+</table>
+    </div>
+    
+</div>
+
+
+
+    <div class="footer">Design : TIM IT RPL Musaba</div>
+</body>
+</html>

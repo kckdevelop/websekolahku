@@ -181,36 +181,74 @@
   <!-- Jadwal Penting -->
   <section class="py-12 bg-slate-100 dark:bg-slate-800/50 fade-in-scroll">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-2xl font-bold text-primary mb-6 text-center">Jadwal Penting SPMB 2025/2026</h2>
+      @php
+        $activeWave = $gelombangs->where('is_aktif', true)->first();
+        $tahunAjaran = $activeWave ? $activeWave->tahun_ajaran : '2026/2027';
+      @endphp
+      <h2 class="text-2xl font-bold text-primary mb-6 text-center">Jadwal Penting SPMB {{ $tahunAjaran }}</h2>
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="border-b border-slate-300 dark:border-slate-600">
-              <th class="py-3 px-4 font-semibold">Kegiatan</th>
-              <th class="py-3 px-4 font-semibold">Waktu</th>
+              <th class="py-3 px-4 font-semibold text-slate-800 dark:text-slate-200">Kegiatan</th>
+              <th class="py-3 px-4 font-semibold text-slate-800 dark:text-slate-200">Waktu</th>
+              <th class="py-3 px-4 font-semibold text-slate-800 dark:text-slate-200 text-center">Status</th>
             </tr>
           </thead>
           <tbody class="text-slate-700 dark:text-slate-300">
-            <tr class="border-b border-slate-200 dark:border-slate-700">
-              <td class="py-3 px-4">Pendaftaran Gelombang I</td>
-              <td class="py-3 px-4">15 Januari – 15 Maret 2025</td>
-            </tr>
-            <tr class="border-b border-slate-200 dark:border-slate-700">
-              <td class="py-3 px-4">Pengumuman Gelombang I</td>
-              <td class="py-3 px-4">20 Maret 2025</td>
-            </tr>
-            <tr class="border-b border-slate-200 dark:border-slate-700">
-              <td class="py-3 px-4">Pendaftaran Gelombang II</td>
-              <td class="py-3 px-4">16 Maret – 30 Mei 2025</td>
-            </tr>
-            <tr class="border-b border-slate-200 dark:border-slate-700">
-              <td class="py-3 px-4">Pengumuman Gelombang II</td>
-              <td class="py-3 px-4">5 Juni 2025</td>
-            </tr>
-            <tr>
-              <td class="py-3 px-4">Daftar Ulang</td>
-              <td class="py-3 px-4">10–20 Juni 2025</td>
-            </tr>
+            @forelse($gelombangs as $item)
+              <tr class="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors {{ $item->is_aktif ? 'font-semibold text-primary dark:text-orange-400 bg-orange-55/10' : '' }}">
+                <td class="py-3 px-4">
+                  <div>Pendaftaran {{ $item->nama_gelombang }}</div>
+                  @if($item->keterangan)
+                    <span class="text-xxs font-normal text-slate-400 block mt-0.5">{{ $item->keterangan }}</span>
+                  @endif
+                </td>
+                <td class="py-3 px-4">
+                  @if($item->tanggal_mulai && $item->tanggal_selesai)
+                    {{ $item->tanggal_mulai->translatedFormat('d F Y') }} – {{ $item->tanggal_selesai->translatedFormat('d F Y') }}
+                  @else
+                    Akan ditentukan kemudian
+                  @endif
+                </td>
+                <td class="py-3 px-4 text-center">
+                  @if($item->is_aktif)
+                    <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 px-2.5 py-0.5 rounded-full text-xs font-semibold">
+                      <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Aktif
+                    </span>
+                  @else
+                    <span class="text-slate-400 text-xs">Tutup</span>
+                  @endif
+                </td>
+              </tr>
+            @empty
+              {{-- Fallback jika database kosong --}}
+              <tr class="border-b border-slate-200 dark:border-slate-700">
+                <td class="py-3 px-4">Pendaftaran Gelombang I</td>
+                <td class="py-3 px-4">15 Januari – 15 Maret 2025</td>
+                <td class="py-3 px-4 text-center"><span class="text-slate-400 text-xs">Tutup</span></td>
+              </tr>
+              <tr class="border-b border-slate-200 dark:border-slate-700">
+                <td class="py-3 px-4">Pengumuman Gelombang I</td>
+                <td class="py-3 px-4">20 Maret 2025</td>
+                <td class="py-3 px-4 text-center"><span class="text-slate-400 text-xs">Tutup</span></td>
+              </tr>
+              <tr class="border-b border-slate-200 dark:border-slate-700">
+                <td class="py-3 px-4">Pendaftaran Gelombang II</td>
+                <td class="py-3 px-4">16 Maret – 30 Mei 2025</td>
+                <td class="py-3 px-4 text-center"><span class="text-slate-400 text-xs">Tutup</span></td>
+              </tr>
+              <tr class="border-b border-slate-200 dark:border-slate-700">
+                <td class="py-3 px-4">Pengumuman Gelombang II</td>
+                <td class="py-3 px-4">5 Juni 2025</td>
+                <td class="py-3 px-4 text-center"><span class="text-slate-400 text-xs">Tutup</span></td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4">Daftar Ulang</td>
+                <td class="py-3 px-4">10–20 Juni 2025</td>
+                <td class="py-3 px-4 text-center"><span class="text-slate-400 text-xs">Tutup</span></td>
+              </tr>
+            @endforelse
           </tbody>
         </table>
       </div>
@@ -236,8 +274,7 @@
       <h2 class="text-2xl md:text-3xl font-bold mb-4">Siap Bergabung?</h2>
       <p class="mb-6 text-lg opacity-90">Daftar sekarang dan dapatkan bonus eksklusif untuk pendaftar awal!</p>
       <a 
-        href="https://ppdb.smkmuh1bantul.sch.id/" 
-        target="_blank"
+        href="{{ route('spmb.daftar') }}" 
         class="inline-block bg-white text-primary font-bold py-3 px-8 rounded-full text-lg shadow-lg hover:bg-slate-100 transition-all duration-300"
       >
         <i class="fas fa-user-plus mr-2"></i> Daftar Sekarang

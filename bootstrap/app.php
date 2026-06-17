@@ -11,7 +11,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'siswa.auth'   => \App\Http\Middleware\SiswaAuth::class,
+            'petugas.auth' => \App\Http\Middleware\PetugasAuth::class,
+            'petugas.kesehatan.auth'  => \App\Http\Middleware\PetugasKesehatanAuth::class,
+            'petugas.wawancara.auth'  => \App\Http\Middleware\PetugasWawancaraAuth::class,
+            'petugas.pembayaran.auth' => \App\Http\Middleware\PetugasPembayaranAuth::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

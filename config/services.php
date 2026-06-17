@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'nobox' => [
+        'account_ids' => env('NOBOX_ACCOUNT_IDS', '812975583269637'),
+        'api_key'     => env('NOBOX_API_KEY', ''),
+        'channel_id'  => env('NOBOX_CHANNEL_ID', '1'),
+        'url'         => env('NOBOX_API_URL', 'https://id.nobox.ai'),
+    ],
+
 ];

@@ -22,3 +22,8 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# File lokal tidak perlu di-push
+/ngrok.exe
+/scratch
+*.html

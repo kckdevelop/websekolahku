@@ -416,11 +416,9 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex flex-wrap justify-center">
         <button class="filter-btn active" data-filter="all">Semua</button>
-        <button class="filter-btn" data-filter="profil">Profil Sekolah</button>
-        <button class="filter-btn" data-filter="kegiatan">Kegiatan</button>
-        <button class="filter-btn" data-filter="prestasi">Prestasi</button>
-        <button class="filter-btn" data-filter="pembelajaran">Pembelajaran</button>
-        <button class="filter-btn" data-filter="ekstrakurikuler">Ekstrakurikuler</button>
+        @foreach($kategoriList as $kat)
+        <button class="filter-btn" data-filter="{{ $kat }}">{{ ucfirst($kat) }}</button>
+        @endforeach
       </div>
     </div>
   </section>
@@ -428,26 +426,35 @@
   <!-- Video Gallery Section -->
   <section class="py-12 bg-slate-100 dark:bg-slate-800/50 fade-in-scroll">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      @auth
+      <div class="flex justify-end mb-4">
+        <a href="{{ route('admin.galeri_video.create') }}" class="bg-primary hover:bg-secondary text-white text-sm font-semibold px-4 py-2 rounded-lg shadow flex items-center gap-2 transition">
+          <i class="fas fa-plus"></i> Tambah Video
+        </a>
+      </div>
+      @endauth
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="video-gallery">
-        <!-- Video Item 1 - Using real working YouTube video -->
-        <div class="video-item card-gradient rounded-lg overflow-hidden shadow-lg" 
-             data-category="profil" 
-             data-video-id="LXb3EKWsInQ"
-             data-title="Profil SMK Muhammadiyah 1 Bantul"
-             data-description="Video profil lengkap SMK Muhammadiyah 1 Bantul yang menampilkan fasilitas, program keahlian, dan berbagai kegiatan unggulan sekolah."
-             data-date="15 Mei 2024"
-             data-views="1.2K">
+        @forelse($galeriVideos as $video)
+        <div class="video-item card-gradient rounded-lg overflow-hidden shadow-lg"
+             data-category="{{ $video->kategori }}"
+             data-video-id="{{ $video->youtube_id }}"
+             data-title="{{ $video->judul }}"
+             data-description="{{ $video->deskripsi }}"
+             data-date="{{ $video->tanggal->translatedFormat('d F Y') }}"
+             data-views="{{ number_format($video->views) }}">
           <div class="video-thumbnail">
-            <img src="https://img.youtube.com/vi/LXb3EKWsInQ/hqdefault.jpg" alt="Profil SMK Muhammadiyah 1 Bantul">
-            <span class="video-duration">5:42</span>
+            <img src="https://img.youtube.com/vi/{{ $video->youtube_id }}/hqdefault.jpg" alt="{{ $video->judul }}">
+            @if($video->durasi)
+            <span class="video-duration">{{ $video->durasi }}</span>
+            @endif
           </div>
           <div class="p-4">
-            <h3 class="font-bold text-lg mb-2 line-clamp-2">Profil SMK Muhammadiyah 1 Bantul</h3>
+            <h3 class="font-bold text-lg mb-2 line-clamp-2">{{ $video->judul }}</h3>
             <div class="flex items-center text-sm text-slate-600 dark:text-slate-400">
               <i class="fas fa-eye mr-2"></i>
-              <span>1.2K views</span>
-              <span class="mx-2">•</span>
-              <span>15 Mei 2024</span>
+              <span>{{ number_format($video->views) }} views</span>
+              <span class="mx-2">&bull;</span>
+              <span>{{ $video->tanggal->translatedFormat('d M Y') }}</span>
             </div>
           </div>
           <div class="video-overlay">
@@ -457,209 +464,20 @@
             <p class="text-white text-center mt-3">Putar Video</p>
           </div>
         </div>
-
-        <!-- Video Item 2 -->
-        <div class="video-item card-gradient rounded-lg overflow-hidden shadow-lg" 
-             data-category="prestasi" 
-             data-video-id="9bZkp7q19f0"
-             data-title="Juara 1 Lomba Robotik Nasional 2024"
-             data-description="Dokumentasi perjalanan tim robotik SMK Muhammadiyah 1 Bantul meraih juara 1 dalam kompetisi robotik tingkat nasional."
-             data-date="10 Mei 2024"
-             data-views="3.5K">
-          <div class="video-thumbnail">
-            <img src="https://img.youtube.com/vi/9bZkp7q19f0/hqdefault.jpg" alt="Juara 1 Lomba Robotik">
-            <span class="video-duration">8:15</span>
+        @empty
+        <div class="col-span-full text-center py-16">
+          <div class="w-20 h-20 bg-slate-200 dark:bg-slate-700 rounded-full mx-auto mb-4 flex items-center justify-center">
+            <i class="fas fa-video text-3xl text-slate-400"></i>
           </div>
-          <div class="p-4">
-            <h3 class="font-bold text-lg mb-2 line-clamp-2">Juara 1 Lomba Robotik Nasional 2024</h3>
-            <div class="flex items-center text-sm text-slate-600 dark:text-slate-400">
-              <i class="fas fa-eye mr-2"></i>
-              <span>3.5K views</span>
-              <span class="mx-2">•</span>
-              <span>10 Mei 2024</span>
-            </div>
-          </div>
-          <div class="video-overlay">
-            <div class="play-button">
-              <i class="fas fa-play"></i>
-            </div>
-            <p class="text-white text-center mt-3">Putar Video</p>
-          </div>
+          <p class="text-slate-500 dark:text-slate-400 font-medium text-lg">Belum ada video</p>
+          <p class="text-slate-400 dark:text-slate-500 text-sm mt-1">Tambahkan video melalui panel admin</p>
+          @auth
+          <a href="{{ route('admin.galeri_video.create') }}" class="inline-block mt-4 bg-primary text-white px-6 py-2 rounded-lg font-semibold hover:bg-secondary transition">
+            + Tambah Video Pertama
+          </a>
+          @endauth
         </div>
-
-        <!-- Video Item 3 -->
-        <div class="video-item card-gradient rounded-lg overflow-hidden shadow-lg" 
-             data-category="pembelajaran" 
-             data-video-id="hT_nvWreIhg"
-             data-title="Praktikum Bengkel TKR"
-             data-description="Siswa jurusan TKR sedang melakukan praktikum perbaikan mesin di bengkel sekolah dengan bimbingan guru profesional."
-             data-date="5 Mei 2024"
-             data-views="856">
-          <div class="video-thumbnail">
-            <img src="https://img.youtube.com/vi/hT_nvWreIhg/hqdefault.jpg" alt="Praktikum Bengkel TKR">
-            <span class="video-duration">6:30</span>
-          </div>
-          <div class="p-4">
-            <h3 class="font-bold text-lg mb-2 line-clamp-2">Praktikum Bengkel TKR</h3>
-            <div class="flex items-center text-sm text-slate-600 dark:text-slate-400">
-              <i class="fas fa-eye mr-2"></i>
-              <span>856 views</span>
-              <span class="mx-2">•</span>
-              <span>5 Mei 2024</span>
-            </div>
-          </div>
-          <div class="video-overlay">
-            <div class="play-button">
-              <i class="fas fa-play"></i>
-            </div>
-            <p class="text-white text-center mt-3">Putar Video</p>
-          </div>
-        </div>
-
-        <!-- Video Item 4 -->
-        <div class="video-item card-gradient rounded-lg overflow-hidden shadow-lg" 
-             data-category="kegiatan" 
-             data-video-id="ScMzIvxBSi4"
-             data-title="Peringatan Hari Pendidikan Nasional"
-             data-description="Rangkaian kegiatan dalam memperingati Hari Pendidikan Nasional 2024 di SMK Muhammadiyah 1 Bantul."
-             data-date="2 Mei 2024"
-             data-views="1.8K">
-          <div class="video-thumbnail">
-            <img src="https://img.youtube.com/vi/ScMzIvxBSi4/hqdefault.jpg" alt="Hardiknas 2024">
-            <span class="video-duration">4:20</span>
-          </div>
-          <div class="p-4">
-            <h3 class="font-bold text-lg mb-2 line-clamp-2">Peringatan Hari Pendidikan Nasional</h3>
-            <div class="flex items-center text-sm text-slate-600 dark:text-slate-400">
-              <i class="fas fa-eye mr-2"></i>
-              <span>1.8K views</span>
-              <span class="mx-2">•</span>
-              <span>2 Mei 2024</span>
-            </div>
-          </div>
-          <div class="video-overlay">
-            <div class="play-button">
-              <i class="fas fa-play"></i>
-            </div>
-            <p class="text-white text-center mt-3">Putar Video</p>
-          </div>
-        </div>
-
-        <!-- Video Item 5 -->
-        <div class="video-item card-gradient rounded-lg overflow-hidden shadow-lg" 
-             data-category="ekstrakurikuler" 
-             data-video-id="kJQP7kiw5Fk"
-             data-title="Pentas Seni Ekstrakurikuler"
-             data-description="Penampilan memukau dari berbagai ekstrakurikuler seni dalam acara pentas seni tahunan SMK Muhammadiyah 1 Bantul."
-             data-date="25 April 2024"
-             data-views="2.3K">
-          <div class="video-thumbnail">
-            <img src="https://img.youtube.com/vi/kJQP7kiw5Fk/hqdefault.jpg" alt="Pentas Seni">
-            <span class="video-duration">12:45</span>
-          </div>
-          <div class="p-4">
-            <h3 class="font-bold text-lg mb-2 line-clamp-2">Pentas Seni Ekstrakurikuler</h3>
-            <div class="flex items-center text-sm text-slate-600 dark:text-slate-400">
-              <i class="fas fa-eye mr-2"></i>
-              <span>2.3K views</span>
-              <span class="mx-2">•</span>
-              <span>25 April 2024</span>
-            </div>
-          </div>
-          <div class="video-overlay">
-            <div class="play-button">
-              <i class="fas fa-play"></i>
-            </div>
-            <p class="text-white text-center mt-3">Putar Video</p>
-          </div>
-        </div>
-
-        <!-- Video Item 6 -->
-        <div class="video-item card-gradient rounded-lg overflow-hidden shadow-lg" 
-             data-category="pembelajaran" 
-             data-video-id="PG08dXR642w"
-             data-title="Coding Class Jurusan RPL"
-             data-description="Siswa jurusan Rekayasa Perangkat Lunak sedang belajar pemrograman web dengan framework modern."
-             data-date="20 April 2024"
-             data-views="1.5K">
-          <div class="video-thumbnail">
-            <img src="https://img.youtube.com/vi/YQHsXMglC9A/hqdefault.jpg" alt="Coding Class">
-            <span class="video-duration">7:15</span>
-          </div>
-          <div class="p-4">
-            <h3 class="font-bold text-lg mb-2 line-clamp-2">Coding Class Jurusan RPL</h3>
-            <div class="flex items-center text-sm text-slate-600 dark:text-slate-400">
-              <i class="fas fa-eye mr-2"></i>
-              <span>1.5K views</span>
-              <span class="mx-2">•</span>
-              <span>20 April 2024</span>
-            </div>
-          </div>
-          <div class="video-overlay">
-            <div class="play-button">
-              <i class="fas fa-play"></i>
-            </div>
-            <p class="text-white text-center mt-3">Putar Video</p>
-          </div>
-        </div>
-
-        <!-- Video Item 7 -->
-        <div class="video-item card-gradient rounded-lg overflow-hidden shadow-lg" 
-             data-category="kegiatan" 
-             data-video-id="jNQXAC9IVRw"
-             data-title="Wisuda Angkatan 2024"
-             data-description="Prosesi wisuda dan pelepasan siswa angkatan 2024 SMK Muhammadiyah 1 Bantul."
-             data-date="15 April 2024"
-             data-views="4.2K">
-          <div class="video-thumbnail">
-            <img src="https://img.youtube.com/vi/jNQXAC9IVRw/hqdefault.jpg" alt="Wisuda 2024">
-            <span class="video-duration">15:30</span>
-          </div>
-          <div class="p-4">
-            <h3 class="font-bold text-lg mb-2 line-clamp-2">Wisuda Angkatan 2024</h3>
-            <div class="flex items-center text-sm text-slate-600 dark:text-slate-400">
-              <i class="fas fa-eye mr-2"></i>
-              <span>4.2K views</span>
-              <span class="mx-2">•</span>
-              <span>15 April 2024</span>
-            </div>
-          </div>
-          <div class="video-overlay">
-            <div class="play-button">
-              <i class="fas fa-play"></i>
-            </div>
-            <p class="text-white text-center mt-3">Putar Video</p>
-          </div>
-        </div>
-
-        <!-- Video Item 8 -->
-        <div class="video-item card-gradient rounded-lg overflow-hidden shadow-lg" 
-             data-category="prestasi" 
-             data-video-id="dQw4w9WgXcQ"
-             data-title="Debat Bahasa Inggris Juara 2"
-             data-description="Tim debat bahasa Inggris SMK Muhammadiyah 1 Bantul berhasil meraih juara 2 tingkat provinsi DIY."
-             data-date="10 April 2024"
-             data-views="980">
-          <div class="video-thumbnail">
-            <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg" alt="Debat Competition">
-            <span class="video-duration">9:45</span>
-          </div>
-          <div class="p-4">
-            <h3 class="font-bold text-lg mb-2 line-clamp-2">Debat Bahasa Inggris Juara 2</h3>
-            <div class="flex items-center text-sm text-slate-600 dark:text-slate-400">
-              <i class="fas fa-eye mr-2"></i>
-              <span>980 views</span>
-              <span class="mx-2">•</span>
-              <span>10 April 2024</span>
-            </div>
-          </div>
-          <div class="video-overlay">
-            <div class="play-button">
-              <i class="fas fa-play"></i>
-            </div>
-            <p class="text-white text-center mt-3">Putar Video</p>
-          </div>
-        </div>
+        @endforelse
       </div>
     </div>
   </section>

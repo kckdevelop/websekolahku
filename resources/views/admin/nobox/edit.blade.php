@@ -1,6 +1,6 @@
 @extends('layouts.admin')
-@section('title', 'Pengaturan Nobox (WhatsApp OTP)')
-@section('subtitle', 'Konfigurasi integrasi WhatsApp gateway menggunakan API Nobox.ai')
+@section('title', 'Pengaturan WhatsApp (Fonnte)')
+@section('subtitle', 'Konfigurasi integrasi WhatsApp gateway menggunakan API Fonnte')
 
 @section('content')
 <div class="max-w-4xl space-y-6">
@@ -9,53 +9,24 @@
   <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
     <div class="border-b border-slate-100 px-6 py-4 bg-slate-50 flex items-center justify-between">
       <h3 class="font-bold text-slate-800 flex items-center gap-2">
-        <i class="fas fa-sliders-h text-primary"></i> Kredensial Nobox
+        <i class="fab fa-whatsapp text-green-500"></i> Kredensial Fonnte
       </h3>
-      <span class="text-xs bg-orange-100 text-primary px-2.5 py-1 rounded-full font-semibold">Active</span>
+      <span class="text-xs bg-green-100 text-green-700 px-2.5 py-1 rounded-full font-semibold">Active</span>
     </div>
 
     <form method="POST" action="{{ route('admin.nobox.update') }}" class="p-6 space-y-6">
       @csrf
       @method('PUT')
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {{-- Account ID --}}
+      <div class="space-y-4">
+        {{-- API Key / Token Fonnte --}}
         <div>
-          <label for="account_ids" class="block text-sm font-medium text-slate-700 mb-1.5">Account ID <span class="text-red-500">*</span></label>
-          <input type="text" id="account_ids" name="account_ids" value="{{ old('account_ids', $setting->account_ids) }}" required
-            class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm @error('account_ids') border-red-400 @enderror"
-            placeholder="Contoh: 812975583269637">
-          <p class="text-slate-400 text-xs mt-1">Dapat ditemukan di dashboard Nobox.ai > WhatsApp.</p>
-          @error('account_ids') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-        </div>
-
-        {{-- API Key / x-api-key --}}
-        <div>
-          <label for="api_key" class="block text-sm font-medium text-slate-700 mb-1.5">API Key (x-api-key) <span class="text-red-500">*</span></label>
+          <label for="api_key" class="block text-sm font-medium text-slate-700 mb-1.5">Fonnte API Token <span class="text-red-500">*</span></label>
           <input type="password" id="api_key" name="api_key" value="{{ old('api_key', $setting->api_key) }}" required
             class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm @error('api_key') border-red-400 @enderror"
-            placeholder="Ketik API Key Anda">
-          <p class="text-slate-400 text-xs mt-1">Token autentikasi HTTP header <code>x-api-key</code>.</p>
+            placeholder="Ketik atau tempel Token API Fonnte Anda">
+          <p class="text-slate-400 text-xs mt-1">Dapatkan token Anda dari halaman profile / device di dashboard <a href="https://fonnte.com" target="_blank" class="text-primary hover:underline font-semibold">Fonnte</a>.</p>
           @error('api_key') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-        </div>
-
-        {{-- Channel ID --}}
-        <div>
-          <label for="channel_id" class="block text-sm font-medium text-slate-700 mb-1.5">Channel ID <span class="text-red-500">*</span></label>
-          <input type="text" id="channel_id" name="channel_id" value="{{ old('channel_id', $setting->channel_id) }}" required
-            class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm @error('channel_id') border-red-400 @enderror">
-          <p class="text-slate-400 text-xs mt-1">Default channel ID untuk pengiriman pesan teks (biasanya 1).</p>
-          @error('channel_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-        </div>
-
-        {{-- Gateway URL --}}
-        <div>
-          <label for="url" class="block text-sm font-medium text-slate-700 mb-1.5">Gateway URL <span class="text-red-500">*</span></label>
-          <input type="url" id="url" name="url" value="{{ old('url', $setting->url) }}" required
-            class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm @error('url') border-red-400 @enderror"
-            placeholder="https://id.nobox.ai">
-          <p class="text-slate-400 text-xs mt-1">Alamat endpoint URL Nobox (default: <code>https://id.nobox.ai</code>).</p>
-          @error('url') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
       </div>
 
@@ -63,7 +34,7 @@
       <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
         <div class="pr-4">
           <h4 class="text-sm font-bold text-slate-800">Mode Development (Log OTP Bypass)</h4>
-          <p class="text-xs text-slate-500 mt-0.5">Jika diaktifkan, OTP tidak dikirim ke WhatsApp tujuan melainkan hanya dicatat di sistem dan langsung ditampilkan di layar verifikasi siswa untuk mempermudah testing.</p>
+          <p class="text-xs text-slate-500 mt-0.5">Jika diaktifkan, OTP tidak dikirim ke WhatsApp tujuan melainkan hanya dicatat di log sistem dan langsung ditampilkan di layar verifikasi siswa untuk mempermudah testing.</p>
         </div>
         <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
           <input type="checkbox" name="otp_via_log" value="1" class="sr-only peer" {{ $setting->otp_via_log ? 'checked' : '' }}>
@@ -89,9 +60,9 @@
   <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
     <div class="border-b border-slate-100 px-6 py-4 bg-slate-50">
       <h3 class="font-bold text-slate-800 flex items-center gap-2">
-        <i class="fab fa-whatsapp text-green-500 text-lg"></i> Uji Coba Koneksi WhatsApp
+        <i class="fab fa-whatsapp text-green-500 text-lg"></i> Uji Coba Pengiriman WhatsApp
       </h3>
-      <p class="text-xs text-slate-500 mt-0.5">Kirimkan pesan uji coba untuk memvalidasi kredensial Nobox yang aktif saat ini.</p>
+      <p class="text-xs text-slate-500 mt-0.5">Kirimkan pesan uji coba untuk memvalidasi Token Fonnte yang aktif saat ini.</p>
     </div>
 
     <form id="test-wa-form" class="p-6 space-y-4">

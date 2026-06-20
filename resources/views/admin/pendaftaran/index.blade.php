@@ -51,219 +51,84 @@
   </div>
 </div>
 
-{{-- Statistik PPDB --}}
-<div class="mb-8">
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-    <div>
-      <h2 class="text-base font-bold text-slate-800 dark:text-white">Statistik Penerimaan Peserta Didik Baru (PPDB)</h2>
-      <p class="text-xs text-slate-500 dark:text-slate-400">Ringkasan pendaftaran siswa berdasarkan jurusan dan gelombang</p>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-    {{-- Card 1: Statistik Pendaftar --}}
-    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col">
-      <div class="bg-slate-500 dark:bg-slate-700 px-6 py-4 flex items-center justify-between">
-        <h3 class="font-bold text-white text-sm tracking-wide">Statistik Pendaftar</h3>
-        <span class="text-xs bg-slate-600 dark:bg-slate-800 text-slate-200 px-2.5 py-1 rounded-full font-semibold">Total: {{ $totalPendaftar['total'] }}</span>
-      </div>
-      <div class="p-4 overflow-x-auto flex-grow">
-        <table class="w-full text-xs text-left border-collapse border border-slate-200 dark:border-slate-700">
-          <thead>
-            <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
-              <th class="py-2.5 px-2 font-semibold text-slate-700 dark:text-slate-300 text-center border-r border-slate-200 dark:border-slate-700">Jurusan</th>
-              @foreach($gelMap as $gelKey => $gelNama)
-                <th class="py-2.5 px-2 font-semibold text-slate-700 dark:text-slate-300 text-center border-r border-slate-200 dark:border-slate-700">{{ $gelNama }}</th>
-              @endforeach
-              <th class="py-2.5 px-2 font-semibold text-slate-800 dark:text-slate-200 text-center">Total</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
-            @foreach($jurusans as $jur)
-              <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors">
-                <td class="py-2.5 px-2 font-bold text-slate-800 dark:text-slate-200 text-center border-r border-slate-200 dark:border-slate-700">{{ $jur === 'TKR' ? 'TKRO' : $jur }}</td>
-                @foreach($gelMap as $gelKey => $gelNama)
-                  <td class="py-2.5 px-2 text-slate-600 dark:text-slate-400 text-center font-medium border-r border-slate-200 dark:border-slate-700">{{ $dataPendaftar[$jur][$gelKey] ?? 0 }}</td>
-                @endforeach
-                <td class="py-2.5 px-2 font-bold text-slate-800 dark:text-slate-200 text-center bg-slate-50/50 dark:bg-slate-900/50">{{ $dataPendaftar[$jur]['total'] }}</td>
-              </tr>
-            @endforeach
-          </tbody>
-          <tfoot>
-            <tr class="border-t border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/70 font-bold">
-              <td class="py-2.5 px-2 text-slate-850 dark:text-slate-100 text-center border-r border-slate-200 dark:border-slate-700 text-xs">Total Pendaftar</td>
-              @foreach($gelMap as $gelKey => $gelNama)
-                <td class="py-2.5 px-2 text-slate-850 dark:text-slate-100 text-center border-r border-slate-200 dark:border-slate-700">{{ $totalPendaftar[$gelKey] ?? 0 }}</td>
-              @endforeach
-              <td class="py-2.5 px-2 text-primary dark:text-orange-400 text-center bg-slate-100/80 dark:bg-slate-900 font-extrabold">{{ $totalPendaftar['total'] }}</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </div>
-
-    {{-- Card 2: Statistik Data Calon Siswa --}}
-    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col">
-      <div class="bg-slate-500 dark:bg-slate-700 px-6 py-4 flex items-center justify-between">
-        <h3 class="font-bold text-white text-sm tracking-wide">Statistik Data Calon Siswa</h3>
-        <span class="text-xs bg-slate-600 dark:bg-slate-800 text-slate-200 px-2.5 py-1 rounded-full font-semibold">Total: {{ $totalCalon['total'] }}</span>
-      </div>
-      <div class="p-4 overflow-x-auto flex-grow">
-        <table class="w-full text-xs text-left border-collapse border border-slate-200 dark:border-slate-700">
-          <thead>
-            <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
-              <th class="py-2.5 px-2 font-semibold text-slate-700 dark:text-slate-300 text-center border-r border-slate-200 dark:border-slate-700">Jurusan</th>
-              @foreach($gelMap as $gelKey => $gelNama)
-                <th class="py-2.5 px-2 font-semibold text-slate-700 dark:text-slate-300 text-center border-r border-slate-200 dark:border-slate-700">{{ $gelNama }}</th>
-              @endforeach
-              <th class="py-2.5 px-2 font-semibold text-slate-800 dark:text-slate-200 text-center">Total</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
-            @foreach($jurusans as $jur)
-              <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors">
-                <td class="py-2.5 px-2 font-bold text-slate-800 dark:text-slate-200 text-center border-r border-slate-200 dark:border-slate-700">{{ $jur === 'TKR' ? 'TKRO' : $jur }}</td>
-                @foreach($gelMap as $gelKey => $gelNama)
-                  <td class="py-2.5 px-2 text-slate-600 dark:text-slate-400 text-center font-medium border-r border-slate-200 dark:border-slate-700">{{ $dataCalon[$jur][$gelKey] ?? 0 }}</td>
-                @endforeach
-                <td class="py-2.5 px-2 font-bold text-slate-800 dark:text-slate-200 text-center bg-slate-50/50 dark:bg-slate-900/50">{{ $dataCalon[$jur]['total'] }}</td>
-              </tr>
-            @endforeach
-          </tbody>
-          <tfoot>
-            <tr class="border-t border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/70 font-bold">
-              <td class="py-2.5 px-2 text-slate-850 dark:text-slate-100 text-center border-r border-slate-200 dark:border-slate-700 text-xs">Total Pencasis</td>
-              @foreach($gelMap as $gelKey => $gelNama)
-                <td class="py-2.5 px-2 text-slate-850 dark:text-slate-100 text-center border-r border-slate-200 dark:border-slate-700">{{ $totalCalon[$gelKey] ?? 0 }}</td>
-              @endforeach
-              <td class="py-2.5 px-2 text-primary dark:text-orange-400 text-center bg-slate-100/80 dark:bg-slate-900 font-extrabold">{{ $totalCalon['total'] }}</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </div>
-
-    {{-- Card 3: Statistik Siswa Diterima --}}
-    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col">
-      <div class="bg-slate-500 dark:bg-slate-700 px-6 py-4 flex items-center justify-between">
-        <h3 class="font-bold text-white text-sm tracking-wide">Statistik Siswa Diterima</h3>
-        <span class="text-xs bg-slate-600 dark:bg-slate-800 text-slate-200 px-2.5 py-1 rounded-full font-semibold">Total: {{ $totalDiterima['total'] }}</span>
-      </div>
-      <div class="p-4 overflow-x-auto flex-grow">
-        <table class="w-full text-xs text-left border-collapse border border-slate-200 dark:border-slate-700">
-          <thead>
-            <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
-              <th class="py-2.5 px-2 font-semibold text-slate-700 dark:text-slate-300 text-center border-r border-slate-200 dark:border-slate-700">Jurusan</th>
-              @foreach($gelMap as $gelKey => $gelNama)
-                <th class="py-2.5 px-2 font-semibold text-slate-700 dark:text-slate-300 text-center border-r border-slate-200 dark:border-slate-700">{{ $gelNama }}</th>
-              @endforeach
-              <th class="py-2.5 px-2 font-semibold text-slate-800 dark:text-slate-200 text-center">Total</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
-            @foreach($jurusans as $jur)
-              <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors">
-                <td class="py-2.5 px-2 font-bold text-slate-800 dark:text-slate-200 text-center border-r border-slate-200 dark:border-slate-700">{{ $jur === 'TKR' ? 'TKRO' : $jur }}</td>
-                @foreach($gelMap as $gelKey => $gelNama)
-                  <td class="py-2.5 px-2 text-slate-600 dark:text-slate-400 text-center font-medium border-r border-slate-200 dark:border-slate-700">{{ $dataDiterima[$jur][$gelKey] ?? 0 }}</td>
-                @endforeach
-                <td class="py-2.5 px-2 font-bold text-slate-800 dark:text-slate-200 text-center bg-slate-50/50 dark:bg-slate-900/50">{{ $dataDiterima[$jur]['total'] }}</td>
-              </tr>
-            @endforeach
-          </tbody>
-          <tfoot>
-            <tr class="border-t border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/70 font-bold">
-              <td class="py-2.5 px-2 text-slate-850 dark:text-slate-100 text-center border-r border-slate-200 dark:border-slate-700 text-xs">Total Penerima</td>
-              @foreach($gelMap as $gelKey => $gelNama)
-                <td class="py-2.5 px-2 text-slate-850 dark:text-slate-100 text-center border-r border-slate-200 dark:border-slate-700">{{ $totalDiterima[$gelKey] ?? 0 }}</td>
-              @endforeach
-              <td class="py-2.5 px-2 text-primary dark:text-orange-400 text-center bg-slate-100/80 dark:bg-slate-900 font-extrabold">{{ $totalDiterima['total'] }}</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
   <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
     <h2 class="font-semibold text-slate-800">Daftar Pendaftar</h2>
     <span class="text-sm text-slate-500">Total: {{ $pendaftaran->total() }} pendaftar</span>
   </div>
   <div class="overflow-x-auto">
-    <table class="min-w-full divide-y divide-slate-100 table-auto">
+    <table class="min-w-full divide-y divide-slate-100 table-auto" style="font-family:'Inter',system-ui,sans-serif;">
       <thead class="bg-slate-50">
-        <tr class="text-xs font-semibold text-slate-500 uppercase tracking-wider text-left">
-          <th class="px-4 py-3">No</th>
-          <th class="px-4 py-3">No Daftar</th> 
-          <th class="px-4 py-3">Tgl Daftar</th>
-          <th class="px-4 py-3">Nama Lengkap</th>
-          <th class="px-4 py-3">Nama Ortu</th>
-          <th class="px-4 py-3 text-center">JK</th>
-          <th class="px-4 py-3">Agama</th>
-          <th class="px-4 py-3">Asal Sekolah</th>
-          <th class="px-4 py-3">Telp Siswa</th>
-          <th class="px-4 py-3">Telp Ortu</th>
-          <th class="px-3 py-3 text-center">Pil 1</th>
-          <th class="px-3 py-3 text-center">Pil 2</th>
-          <th class="px-3 py-3 text-center">Pil 3</th>
-          <th class="px-4 py-3">Status</th>
-          <th class="px-4 py-3 text-right">Aksi</th>
+        <tr class="text-[11px] font-semibold text-slate-400 uppercase tracking-wide text-left">
+          <th class="px-3 py-2.5">No</th>
+          <th class="px-3 py-2.5">No Daftar</th>
+          <th class="px-3 py-2.5">Tgl Daftar</th>
+          <th class="px-3 py-2.5">Nama Lengkap</th>
+          <th class="px-3 py-2.5">Nama Ortu</th>
+          <th class="px-3 py-2.5 text-center">JK</th>
+          <th class="px-3 py-2.5">Agama</th>
+          <th class="px-3 py-2.5">Asal Sekolah</th>
+          <th class="px-3 py-2.5">Telp Siswa</th>
+          <th class="px-3 py-2.5">Telp Ortu</th>
+          <th class="px-2 py-2.5 text-center">Pil 1</th>
+          <th class="px-2 py-2.5 text-center">Pil 2</th>
+          <th class="px-2 py-2.5 text-center">Pil 3</th>
+          <th class="px-3 py-2.5">Status</th>
+          <th class="px-3 py-2.5 text-right">Aksi</th>
         </tr>
       </thead>
-      <tbody class="bg-white divide-y divide-slate-100 text-sm">
+      <tbody class="bg-white divide-y divide-slate-100 text-xs" style="font-size:12px;font-family:'Inter',system-ui,sans-serif;">
         @forelse($pendaftaran as $index => $item)
-        <tr class="hover:bg-slate-50 transition-colors" data-row-id="{{ $item->id }}">
-          <td class="px-4 py-4 text-slate-500">{{ $pendaftaran->firstItem() + $index }}</td>
-          <td class="px-4 py-4 font-semibold text-slate-800 cell-no-daftar">
-            <div class="no-daftar-text">{{ $item->no_daftar }}</div>
+        <tr class="hover:bg-blue-50/30 transition-colors" data-row-id="{{ $item->id }}">
+          <td class="px-3 py-2.5 text-slate-400 text-center">{{ $pendaftaran->firstItem() + $index }}</td>
+          <td class="px-3 py-2.5 cell-no-daftar">
+            <div class="no-daftar-text font-semibold text-slate-700" style="font-size:12px;letter-spacing:0.02em;">{{ $item->no_daftar }}</div>
             @if($item->gelombang)
-              <span class="gelombang-badge inline-block text-[10px] font-normal text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded mt-0.5">{{ $item->gelombang }}</span>
+              <span class="gelombang-badge inline-block font-normal text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded mt-0.5" style="font-size:10px;">{{ $item->gelombang }}</span>
             @else
-              <span class="gelombang-badge inline-block text-[10px] font-normal text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded mt-0.5 hidden"></span>
+              <span class="gelombang-badge inline-block font-normal text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded mt-0.5 hidden" style="font-size:10px;"></span>
             @endif
           </td>
-          <td class="px-4 py-4 text-xs text-slate-400">{{ $item->created_at->format('d/m/Y') }}</td>
-          <td class="px-4 py-4 font-medium text-slate-800 max-w-[150px] truncate cell-nama" title="{{ $item->nama_lengkap }}">{{ $item->nama_lengkap }}</td>
-          <td class="px-4 py-4 text-slate-600 max-w-[120px] truncate cell-ortu" title="{{ $item->nama_ortu }}">{{ $item->nama_ortu }}</td>
-          <td class="px-4 py-4 text-center cell-jk">{{ $item->jenis_kelamin }}</td>
-          <td class="px-4 py-4 text-xs uppercase cell-agama">{{ $item->agama }}</td>
-          <td class="px-4 py-4 text-slate-600 max-w-[120px] truncate cell-asal" title="{{ $item->asal_sekolah }}">{{ $item->asal_sekolah }}</td>
-          <td class="px-4 py-4 text-xs cell-telp-siswa">{{ $item->no_hp_siswa }}</td>
-          <td class="px-4 py-4 text-xs cell-telp-ortu">{{ $item->no_hp_ortu }}</td>
-          <td class="px-3 py-4 text-center text-xs font-semibold cell-pil1"><span class="bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded">{{ $item->pil1 }}</span></td>
-          <td class="px-3 py-4 text-center text-xs font-semibold cell-pil2"><span class="bg-slate-50 text-slate-600 px-1.5 py-0.5 rounded">{{ $item->pil2 }}</span></td>
-          <td class="px-3 py-4 text-center text-xs font-semibold cell-pil3"><span class="bg-slate-50 text-slate-600 px-1.5 py-0.5 rounded">{{ $item->pil3 }}</span></td>
-          <td class="px-4 py-4 cell-status">
+          <td class="px-3 py-2.5 text-slate-400 whitespace-nowrap" style="font-size:11px;">{{ $item->created_at->format('d/m/Y') }}</td>
+          <td class="px-3 py-2.5 font-medium text-slate-700 max-w-[140px] truncate cell-nama" title="{{ $item->nama_lengkap }}" style="font-size:12px;">{{ $item->nama_lengkap }}</td>
+          <td class="px-3 py-2.5 text-slate-500 max-w-[120px] truncate cell-ortu" title="{{ $item->nama_ortu }}" style="font-size:12px;">{{ $item->nama_ortu }}</td>
+          <td class="px-3 py-2.5 text-center text-slate-600 font-medium cell-jk" style="font-size:12px;">{{ $item->jenis_kelamin }}</td>
+          <td class="px-3 py-2.5 text-slate-500 capitalize cell-agama" style="font-size:12px;">{{ $item->agama }}</td>
+          <td class="px-3 py-2.5 text-slate-500 max-w-[120px] truncate cell-asal" title="{{ $item->asal_sekolah }}" style="font-size:12px;">{{ $item->asal_sekolah }}</td>
+          <td class="px-3 py-2.5 text-slate-500 whitespace-nowrap cell-telp-siswa" style="font-size:11.5px;letter-spacing:0.01em;">{{ $item->no_hp_siswa }}</td>
+          <td class="px-3 py-2.5 text-slate-500 whitespace-nowrap cell-telp-ortu" style="font-size:11.5px;letter-spacing:0.01em;">{{ $item->no_hp_ortu }}</td>
+          <td class="px-2 py-2.5 text-center font-semibold cell-pil1"><span class="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded" style="font-size:11px;">{{ $item->pil1 }}</span></td>
+          <td class="px-2 py-2.5 text-center font-medium cell-pil2"><span class="bg-slate-50 text-slate-500 px-1.5 py-0.5 rounded" style="font-size:11px;">{{ $item->pil2 }}</span></td>
+          <td class="px-2 py-2.5 text-center font-medium cell-pil3"><span class="bg-slate-50 text-slate-500 px-1.5 py-0.5 rounded" style="font-size:11px;">{{ $item->pil3 }}</span></td>
+          <td class="px-3 py-2.5 cell-status">
             @php
-              $badge = ['pending' => 'bg-yellow-100 text-yellow-700', 'verifikasi' => 'bg-blue-100 text-blue-700', 'diterima' => 'bg-green-100 text-green-700', 'ditolak' => 'bg-red-100 text-red-700'];
+              $badge = ['pending' => 'bg-amber-50 text-amber-600 border border-amber-200', 'verifikasi' => 'bg-blue-50 text-blue-600 border border-blue-200', 'diterima' => 'bg-emerald-50 text-emerald-600 border border-emerald-200', 'ditolak' => 'bg-red-50 text-red-500 border border-red-200'];
             @endphp
-            <span class="status-badge inline-flex items-center px-2 py-0.5 rounded-full text-xxs font-medium {{ $badge[$item->status] ?? 'bg-slate-100 text-slate-600' }}">
+            <span class="status-badge inline-flex items-center px-2 py-0.5 rounded-full font-medium {{ $badge[$item->status] ?? 'bg-slate-100 text-slate-500 border border-slate-200' }}" style="font-size:10.5px;">
               {{ ucfirst($item->status) }}
             </span>
           </td>
-          <td class="px-4 py-4 text-right">
-            <div class="flex items-center justify-end gap-1.5">
+          <td class="px-3 py-2.5 text-right">
+            <div class="flex items-center justify-end gap-1">
               {{-- Cetak --}}
-              <a href="{{ route('admin.pendaftaran.cetak', $item) }}" target="_blank" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 hover:text-primary hover:bg-orange-50 transition-colors" title="Cetak Bukti">
+              <a href="{{ route('admin.pendaftaran.cetak', $item) }}" target="_blank" class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-primary hover:bg-orange-50 transition-colors" title="Cetak Bukti" style="font-size:12px;">
                 <i class="fas fa-print"></i>
               </a>
               {{-- Detail --}}
-              <button type="button" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-colors btn-detail" data-id="{{ $item->id }}" title="Detail Info">
+              <button type="button" class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors btn-detail" data-id="{{ $item->id }}" title="Detail Info" style="font-size:12px;">
                 <i class="fas fa-eye"></i>
               </button>
               {{-- Edit --}}
-              <button type="button" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 hover:text-yellow-600 hover:bg-yellow-50 transition-colors btn-edit" data-id="{{ $item->id }}" title="Edit Data">
+              <button type="button" class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-amber-500 hover:bg-amber-50 transition-colors btn-edit" data-id="{{ $item->id }}" title="Edit Data" style="font-size:12px;">
                 <i class="fas fa-edit"></i>
               </button>
               {{-- Hapus --}}
               <button type="button"
-                class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 hover:text-red-600 hover:bg-red-50 transition-colors btn-delete"
+                class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors btn-delete"
                 data-nama="{{ $item->nama_lengkap }}"
                 data-no="{{ $item->no_daftar }}"
                 data-url="{{ route('admin.pendaftaran.destroy', $item) }}"
-                title="Hapus Data">
+                title="Hapus Data" style="font-size:12px;">
                 <i class="fas fa-trash"></i>
               </button>
             </div>

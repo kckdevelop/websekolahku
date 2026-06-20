@@ -208,48 +208,73 @@
 </div>
 @endsection
 
-@section('styles')
+@push('styles')
 <style>
   @media print {
-    aside, header, .no-print, .flash-message {
+    /* Hide non-print elements */
+    aside, header, .no-print, .flash-message, nav, topbar {
       display: none !important;
     }
-    body {
+    
+    /* Reset layout structures for print */
+    body, html {
       background: white !important;
       color: black !important;
       padding: 0 !important;
       margin: 0 !important;
+      width: 100% !important;
+      height: auto !important;
     }
+    
+    /* Reset flex/grid container layout */
+    div[style*="display:flex"], 
+    div[style*="display: flex"],
+    div[style*="margin-left"] {
+      display: block !important;
+      margin-left: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      min-height: auto !important;
+      box-shadow: none !important;
+    }
+    
     main {
       padding: 0 !important;
       margin: 0 !important;
+      width: 100% !important;
     }
-    div[style*="margin-left"] {
-      margin-left: 0 !important;
-    }
+    
     .print-only {
       display: block !important;
     }
+    
     .print-table {
       width: 100% !important;
-      border: 1px solid #cbd5e1 !important;
+      border: 1px solid #000 !important;
+      border-collapse: collapse !important;
+      margin-top: 15px;
     }
+    
     .print-table th, .print-table td {
-      border: 1px solid #cbd5e1 !important;
-      padding: 8px !important;
-      color: black !important;
+      border: 1px solid #000 !important;
+      padding: 6px 8px !important;
+      color: #000 !important;
+      font-size: 10px !important;
     }
+    
     .print-bg-gray {
       background-color: #f1f5f9 !important;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
+    
     .print-w-full {
       width: 100% !important;
       border-radius: 0 !important;
       box-shadow: none !important;
       border: none !important;
+      padding: 0 !important;
     }
   }
 </style>
-@endsection
+@endpush

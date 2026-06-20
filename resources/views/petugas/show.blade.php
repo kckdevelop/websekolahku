@@ -79,6 +79,10 @@
             ['No. HP Siswa', $pendaftaran->no_hp_siswa],
             ['Nama Ortu', $pendaftaran->nama_ortu],
             ['No. HP Ortu', $pendaftaran->no_hp_ortu],
+            ['Alamat', ($pendaftaran->jalan_tinggal ? $pendaftaran->jalan_tinggal . ', ' : '') .
+                       ($pendaftaran->dusun_tinggal ? 'Dsn. ' . $pendaftaran->dusun_tinggal . ', ' : '') .
+                       'RT ' . $pendaftaran->rt_tinggal . ($pendaftaran->rw_tinggal ? '/RW ' . $pendaftaran->rw_tinggal : '') . ', ' .
+                       $pendaftaran->desa_tinggal . ', ' . $pendaftaran->kecamatan_tinggal . ', ' . $pendaftaran->kabupaten_tinggal],
             ['Pil. Jurusan I', $pendaftaran->pil1],
             ['Pil. Jurusan II', $pendaftaran->pil2],
             ['Pil. Jurusan III', $pendaftaran->pil3],

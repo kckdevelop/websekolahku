@@ -167,12 +167,12 @@
 <nav id="navbar" class="navbar-gradient navbar-shadow text-white sticky top-0 z-50 transition-all duration-300">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between h-16 items-center">
-      <div class="flex items-center space-x-2">
-        <div class="logo-container bg-white w-10 h-10 rounded-full flex items-center justify-center text-primary font-bold shadow-lg">
-          <i class="fas fa-graduation-cap"></i>
+      <a href="/" class="flex items-center space-x-2 group">
+        <div class="logo-container bg-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg overflow-hidden transition-transform group-hover:scale-105">
+          <img src="{{ asset('storage/logomusaba.png') }}" alt="Logo" class="w-8 h-8 object-contain">
         </div>
-        <span class="font-bold text-lg hidden sm:block">SMK Muhammadiyah 1 Bantul</span>
-      </div>
+        <span class="font-bold text-lg hidden sm:block group-hover:text-white/90 transition-colors">SMK MUSABA</span>
+      </a>
 
       <!-- Desktop Menu -->
       <div class="hidden md:flex items-center space-x-6">
@@ -299,6 +299,12 @@
             </a>
           </div>
         </div>
+
+        <!-- Tombol Daftar Sekarang -->
+        <a href="{{ route('spmb.daftar') }}" class="bg-white text-primary dark:bg-slate-800 dark:text-white px-4 py-2 rounded-full font-bold hover:bg-orange-50 dark:hover:bg-slate-700 transition-all duration-300 shadow-md hover:shadow-lg flex items-center space-x-1 hover:scale-105 transform">
+          <i class="fas fa-user-plus mr-1"></i>
+          <span>Daftar</span>
+        </a>
       </div>
 
       <!-- Mobile Menu Button -->
@@ -313,6 +319,13 @@
   <!-- Mobile Menu -->
   <div id="mobile-menu" class="hidden md:hidden bg-secondary pb-4">
     <div class="px-4 pt-2 space-y-2">
+      <!-- Tombol Daftar Sekarang (Mobile) -->
+      <div class="pb-3 border-b border-white/20">
+        <a href="{{ route('spmb.daftar') }}" class="block text-center bg-white text-primary py-2.5 rounded-full font-bold hover:bg-orange-50 transition-colors shadow-md">
+          <i class="fas fa-user-plus mr-2"></i> Daftar
+        </a>
+      </div>
+      
       <a href="#home" class="block py-2 text-white hover:text-white/90 transition-colors duration-200">
         <i class="fas fa-home mr-2"></i> Home
       </a>
@@ -482,6 +495,30 @@
     </div>
   </footer>
 
+  <!-- Lightbox / Image Preview Modal -->
+  <div id="image-preview-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/90 backdrop-blur-md transition-opacity duration-300 opacity-0">
+    <!-- Close Button (Top Right) -->
+    <button id="close-preview-modal" class="absolute top-6 right-6 text-white/80 hover:text-white text-3xl md:text-4xl transition duration-200 focus:outline-none z-50 p-2" aria-label="Close preview">
+      <i class="fas fa-times"></i>
+    </button>
+
+    <!-- Navigation Buttons -->
+    <button id="prev-preview-image" class="absolute left-4 md:left-8 text-white/60 hover:text-white text-4xl md:text-5xl transition duration-200 focus:outline-none z-50 p-3 select-none" aria-label="Previous image">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button id="next-preview-image" class="absolute right-4 md:right-8 text-white/60 hover:text-white text-4xl md:text-5xl transition duration-200 focus:outline-none z-50 p-3 select-none" aria-label="Next image">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <!-- Modal Content -->
+    <div class="max-w-5xl max-h-[85vh] w-full px-4 flex flex-col items-center justify-center relative">
+      <div class="relative overflow-hidden rounded-xl border border-white/10 shadow-2xl bg-black/40 max-w-full">
+        <img id="preview-modal-img" src="" alt="" class="max-w-full max-h-[70vh] object-contain transition-all duration-300 transform scale-95 opacity-0">
+      </div>
+      <p id="preview-modal-desc" class="mt-4 text-white text-center text-base md:text-lg font-medium max-w-2xl px-4 py-2 bg-black/50 backdrop-blur-sm rounded-full border border-white/5 shadow-lg"></p>
+    </div>
+  </div>
+
   <!-- Fixed Toggle Button -->
   <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle dark mode">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="theme-icon">
@@ -604,6 +641,119 @@
       });
 
       document.querySelectorAll('.fade-in-scroll').forEach(el => observer.observe(el));
+    }
+
+    // === Image Preview Modal / Lightbox ===
+    {
+      const modal = document.getElementById('image-preview-modal');
+      const modalImg = document.getElementById('preview-modal-img');
+      const modalDesc = document.getElementById('preview-modal-desc');
+      const closeBtn = document.getElementById('close-preview-modal');
+      const prevBtn = document.getElementById('prev-preview-image');
+      const nextBtn = document.getElementById('next-preview-image');
+      
+      let currentIndex = -1;
+      let galleryImages = [];
+
+      function updateModalContent() {
+        if (currentIndex < 0 || currentIndex >= galleryImages.length) return;
+        const currentImg = galleryImages[currentIndex];
+        
+        // Start animation fade-out
+        modalImg.classList.remove('scale-100', 'opacity-100');
+        modalImg.classList.add('scale-95', 'opacity-0');
+        
+        setTimeout(() => {
+          modalImg.src = currentImg.src;
+          modalImg.alt = currentImg.alt || 'Gambar Kegiatan';
+          modalDesc.textContent = currentImg.getAttribute('data-desc') || currentImg.alt || '';
+          
+          // Animate fade-in
+          modalImg.classList.remove('scale-95', 'opacity-0');
+          modalImg.classList.add('scale-100', 'opacity-100');
+        }, 150);
+      }
+
+      function openModal(index, images) {
+        galleryImages = images;
+        currentIndex = index;
+        updateModalContent();
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        
+        // Trigger opacity transition
+        setTimeout(() => {
+          modal.classList.remove('opacity-0');
+          modal.classList.add('opacity-100');
+        }, 10);
+        
+        document.body.classList.add('overflow-hidden');
+      }
+
+      function closeModal() {
+        modal.classList.remove('opacity-100');
+        modal.classList.add('opacity-0');
+        
+        // Hide after transition
+        setTimeout(() => {
+          modal.classList.remove('flex');
+          modal.classList.add('hidden');
+        }, 300);
+        
+        document.body.classList.remove('overflow-hidden');
+      }
+
+      function showNext() {
+        if (galleryImages.length <= 1) return;
+        currentIndex = (currentIndex + 1) % galleryImages.length;
+        updateModalContent();
+      }
+
+      function showPrev() {
+        if (galleryImages.length <= 1) return;
+        currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
+        updateModalContent();
+      }
+
+      // Delegate click event to all previewable images
+      document.addEventListener('click', (e) => {
+        const target = e.target.closest('.activity-preview-img');
+        if (!target) return;
+        
+        // Collect all previewable images in the same section / gallery context or overall page
+        const images = Array.from(document.querySelectorAll('.activity-preview-img'));
+        const index = images.indexOf(target);
+        
+        if (index !== -1) {
+          openModal(index, images);
+        }
+      });
+
+      closeBtn?.addEventListener('click', closeModal);
+      modal?.addEventListener('click', (e) => {
+        if (e.target === modal || e.target.id === 'image-preview-modal') {
+          closeModal();
+        }
+      });
+
+      prevBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showPrev();
+      });
+
+      nextBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showNext();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (modal && !modal.classList.contains('hidden')) {
+          if (e.key === 'Escape') closeModal();
+          if (e.key === 'ArrowRight') showNext();
+          if (e.key === 'ArrowLeft') showPrev();
+        }
+      });
     }
   </script>
 

@@ -99,10 +99,10 @@
           @endif
         </div>
         <div class="grid grid-cols-2 gap-4">
-          <img src="https://picsum.photos/seed/tbsm1/300/200" alt="Praktikum TBSM 1" class="gallery-img w-full h-40 object-cover shadow-md">
-          <img src="https://picsum.photos/seed/tbsm2/300/200" alt="Praktikum TBSM 2" class="gallery-img w-full h-40 object-cover shadow-md">
-          <img src="https://picsum.photos/seed/tbsm3/300/200" alt="Praktikum TBSM 3" class="gallery-img w-full h-40 object-cover shadow-md">
-          <img src="https://picsum.photos/seed/tbsm4/300/200" alt="Praktikum TBSM 4" class="gallery-img w-full h-40 object-cover shadow-md">
+          <img src="https://picsum.photos/seed/tbsm1/300/200" alt="Praktikum TBSM 1" class="gallery-img w-full h-40 object-cover shadow-md activity-preview-img cursor-pointer">
+          <img src="https://picsum.photos/seed/tbsm2/300/200" alt="Praktikum TBSM 2" class="gallery-img w-full h-40 object-cover shadow-md activity-preview-img cursor-pointer">
+          <img src="https://picsum.photos/seed/tbsm3/300/200" alt="Praktikum TBSM 3" class="gallery-img w-full h-40 object-cover shadow-md activity-preview-img cursor-pointer">
+          <img src="https://picsum.photos/seed/tbsm4/300/200" alt="Praktikum TBSM 4" class="gallery-img w-full h-40 object-cover shadow-md activity-preview-img cursor-pointer">
         </div>
       </div>
     </div>
@@ -116,9 +116,9 @@
         @forelse($content->foto_kegiatan ?? [] as $foto)
           <div class="card-gradient rounded-xl overflow-hidden shadow-md">
             @if(!empty($foto['gambar']))
-              <img src="{{ Str::startsWith($foto['gambar'], 'http') ? $foto['gambar'] : asset('storage/' . $foto['gambar']) }}" alt="{{ $foto['deskripsi'] ?? '' }}" class="w-full h-48 object-cover">
+              <img src="{{ Str::startsWith($foto['gambar'], 'http') ? $foto['gambar'] : asset('storage/' . $foto['gambar']) }}" alt="{{ $foto['deskripsi'] ?? '' }}" data-desc="{{ $foto['deskripsi'] ?? '' }}" class="w-full h-48 object-cover cursor-pointer hover:scale-105 transition-transform duration-300 activity-preview-img">
             @else
-              <img src="https://picsum.photos/seed/kegiatan/400/300" alt="{{ $foto['deskripsi'] ?? '' }}" class="w-full h-48 object-cover">
+              <img src="https://picsum.photos/seed/kegiatan/400/300" alt="{{ $foto['deskripsi'] ?? '' }}" data-desc="{{ $foto['deskripsi'] ?? '' }}" class="w-full h-48 object-cover cursor-pointer hover:scale-105 transition-transform duration-300 activity-preview-img">
             @endif
             <p class="mt-2 text-center text-sm text-slate-700 dark:text-slate-300 px-2 pb-3">{{ $foto['deskripsi'] ?? '' }}</p>
           </div>

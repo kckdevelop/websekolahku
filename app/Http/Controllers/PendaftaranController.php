@@ -257,4 +257,184 @@ class PendaftaranController extends Controller
     {
         return view('admin.pendaftaran.cetak', compact('pendaftaran'));
     }
+
+    // ──────────────────────────────────────────────
+    // TES GAYA BELAJAR — Login via No. Daftar + Tgl Lahir
+    // ──────────────────────────────────────────────
+
+    public function showLoginTes()
+    {
+        // Jika sudah punya sesi tes aktif, langsung ke halaman tes
+        if (session('gaya_belajar_pendaftaran_id') || session('siswa_akun_id')) {
+            return redirect()->route('spmb.tes-gaya-belajar');
+        }
+        return view('pages.spmb.login_tes');
+    }
+
+    public function loginTes(\Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'no_daftar'     => 'required|string|max:30',
+            'tanggal_lahir' => 'required|date',
+        ], [
+            'no_daftar.required'     => 'Nomor pendaftaran wajib diisi.',
+            'tanggal_lahir.required' => 'Tanggal lahir wajib diisi.',
+            'tanggal_lahir.date'     => 'Format tanggal lahir tidak valid.',
+        ]);
+
+        $pendaftaran = Pendaftaran::whereRaw('UPPER(no_daftar) = ?', [strtoupper(trim($request->no_daftar))])->first();
+
+        if (!$pendaftaran) {
+            return back()->withInput()->withErrors([
+                'no_daftar' => 'Nomor pendaftaran tidak ditemukan. Periksa kembali nomor Anda.',
+            ]);
+        }
+
+        // Cocokkan tanggal lahir
+        $tglInput = \Carbon\Carbon::parse($request->tanggal_lahir)->format('Y-m-d');
+        $tglDb    = $pendaftaran->tanggal_lahir->format('Y-m-d');
+
+        if ($tglInput !== $tglDb) {
+            return back()->withInput()->withErrors([
+                'tanggal_lahir' => 'Tanggal lahir tidak sesuai dengan data pendaftaran.',
+            ]);
+        }
+
+        if (!$pendaftaran->verified_at) {
+            return back()->withInput()->withErrors([
+                'no_daftar' => 'Berkas pendaftaran Anda belum diverifikasi oleh petugas. Silakan datang ke sekolah terlebih dahulu.',
+            ]);
+        }
+
+        // Simpan ke session
+        session(['gaya_belajar_pendaftaran_id' => $pendaftaran->id]);
+
+        return redirect()->route('spmb.tes-gaya-belajar');
+    }
+
+    public function logoutTes()
+    {
+        session()->forget('gaya_belajar_pendaftaran_id');
+        return redirect()->route('spmb.tes-gaya-belajar.login')
+            ->with('success', 'Anda telah keluar dari sesi Tes Gaya Belajar.');
+    }
+
+    // ──────────────────────────────────────────────
+    // TES GAYA BELAJAR — Show & Simpan
+    // ──────────────────────────────────────────────
+
+    /**
+     * Ambil pendaftaran dari sesi aktif (siswa login atau tes login).
+     */
+    private function getTesPendaftaran(): ?Pendaftaran
+    {
+        // Cara 1: login via no_daftar + tgl_lahir
+        if ($id = session('gaya_belajar_pendaftaran_id')) {
+            return Pendaftaran::find($id);
+        }
+        // Cara 2: login via akun siswa
+        if ($siswaId = session('siswa_akun_id')) {
+            $siswa = SiswaAkun::find($siswaId);
+            return $siswa ? $siswa->pendaftaran : null;
+        }
+        return null;
+    }
+
+    public function showTesGayaBelajar()
+    {
+        $pendaftaran = $this->getTesPendaftaran();
+
+        if (!$pendaftaran) {
+            return redirect()->route('spmb.tes-gaya-belajar.login')
+                ->with('error', 'Silakan login terlebih dahulu untuk mengakses Tes Gaya Belajar.');
+        }
+
+        if (!$pendaftaran->verified_at) {
+            return redirect()->route('spmb.tes-gaya-belajar.login')
+                ->with('warning', 'Tes Gaya Belajar hanya dapat diakses setelah berkas pendaftaran Anda diverifikasi oleh petugas.');
+        }
+
+        return view('pages.spmb.tes_gaya_belajar', compact('pendaftaran'));
+    }
+
+    public function simpanTesGayaBelajar(\Illuminate\Http\Request $request)
+    {
+        $pendaftaran = $this->getTesPendaftaran();
+
+        if (!$pendaftaran || !$pendaftaran->verified_at) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Sesi telah berakhir atau pendaftaran belum terverifikasi. Silakan login kembali.'
+            ], 403);
+        }
+
+        // Validate the 24 questions and cita_cita
+        $rules = [
+            'cita_cita' => 'required|string|max:255',
+        ];
+        for ($i = 1; $i <= 24; $i++) {
+            $rules["q$i"] = 'required|integer|between:1,3';
+        }
+
+        $request->validate($rules);
+
+        // Calculate VARK scores
+        $visual = 0;
+        $auditori = 0;
+        $kinestetik = 0;
+
+        for ($i = 1; $i <= 8; $i++) {
+            $visual += (int) $request->input("q$i");
+        }
+        for ($i = 9; $i <= 16; $i++) {
+            $auditori += (int) $request->input("q$i");
+        }
+        for ($i = 17; $i <= 24; $i++) {
+            $kinestetik += (int) $request->input("q$i");
+        }
+
+        // Determine dominant style
+        $max = max($visual, $auditori, $kinestetik);
+        if ($max === $visual) {
+            $dominan = 'Visual';
+            $deskripsi = "Anda sangat kuat dalam memahami informasi secara visual. Gambar, diagram, peta konsep, warna-warni, serta video peragaan akan sangat membantu Anda dalam belajar dan mengingat sesuatu.";
+            $potensi = "Rekomendasi Karir/Studi: Desainer Grafis, Arsitek, Videografer, Programmer UI/UX, Editor Video, Ahli Pemetaan.";
+        } elseif ($max === $auditori) {
+            $dominan = 'Auditori';
+            $deskripsi = "Anda belajar paling efektif melalui pendengaran. Penjelasan lisan, diskusi kelompok, membaca dengan bersuara, podcast, atau mendengarkan rekaman penjelasan materi adalah metode belajar terbaik Anda.";
+            $potensi = "Rekomendasi Karir/Studi: Penyiar Radio/Podcast, Konselor, Guru/Dosen, Humas/PR, Penerjemah, Musisi.";
+        } else {
+            $dominan = 'Kinestetik';
+            $deskripsi = "Anda sangat menyukai pembelajaran praktis dan bergerak. Praktikum langsung, eksperimen di laboratorium, simulasi, merakit alat, dan aktivitas fisik membuat Anda belajar secara mendalam.";
+            $potensi = "Rekomendasi Karir/Studi: Operator Mesin, Montir/Mekanik Otomotif, Atlet, Praktisi Olahraga, Pekerja Lapangan, Wirausaha Manufaktur.";
+        }
+
+        // Update database
+        $pendaftaran->update([
+            'gaya_belajar_tipe'        => strtolower($dominan),
+            'gaya_belajar_minat_bakat' => 'Cita-cita: ' . $request->cita_cita,
+            'gaya_belajar_catatan'     => "Skor - Visual: $visual, Auditori: $auditori, Kinestetik: $kinestetik",
+            'gaya_belajar_petugas'     => 'Siswa (Mandiri)',
+            'gaya_belajar_verified_at' => now(),
+        ]);
+
+        // Clear public test session
+        session()->forget('gaya_belajar_pendaftaran_id');
+
+        return response()->json([
+            'status'     => 'success',
+            'nama'       => $pendaftaran->nama_lengkap,
+            'visual'     => $visual,
+            'auditori'   => $auditori,
+            'kinestetik' => $kinestetik,
+            'dominan'    => $dominan,
+            'deskripsi'  => $deskripsi,
+            'potensi'    => $potensi,
+        ]);
+    }
+
+    public function hasilTesGayaBelajar(Pendaftaran $pendaftaran)
+    {
+        return view('pages.spmb.hasil_tes', compact('pendaftaran'));
+    }
 }

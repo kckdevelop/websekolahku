@@ -22,11 +22,14 @@ class AdminSpmbGelombangController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_gelombang'  => 'required|string|max:100',
-            'tahun_ajaran'    => 'required|string|max:20',
-            'tanggal_mulai'   => 'nullable|date',
-            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
-            'keterangan'      => 'nullable|string|max:255',
+            'nama_gelombang'     => 'required|string|max:100',
+            'tahun_ajaran'       => 'required|string|max:20',
+            'tanggal_mulai'      => 'nullable|date',
+            'tanggal_selesai'    => 'nullable|date|after_or_equal:tanggal_mulai',
+            'keterangan'         => 'nullable|string|max:255',
+            'biaya_pendaftaran'  => 'nullable|numeric|min:0',
+            'biaya_zakat_default'=> 'nullable|numeric|min:0',
+            'potongan_subsidi'   => 'nullable|numeric|min:0',
         ], [
             'nama_gelombang.required'  => 'Nama gelombang wajib diisi.',
             'tahun_ajaran.required'    => 'Tahun ajaran wajib diisi.',
@@ -38,12 +41,15 @@ class AdminSpmbGelombangController extends Controller
         $shouldBeActive = $isFirst || $request->has('is_aktif');
 
         $gelombang = SpmbGelombang::create([
-            'nama_gelombang'  => $request->nama_gelombang,
-            'tahun_ajaran'    => $request->tahun_ajaran,
-            'tanggal_mulai'   => $request->tanggal_mulai,
-            'tanggal_selesai' => $request->tanggal_selesai,
-            'is_aktif'        => false, // di-update via helper
-            'keterangan'      => $request->keterangan,
+            'nama_gelombang'      => $request->nama_gelombang,
+            'tahun_ajaran'        => $request->tahun_ajaran,
+            'tanggal_mulai'       => $request->tanggal_mulai,
+            'tanggal_selesai'     => $request->tanggal_selesai,
+            'is_aktif'            => false,
+            'keterangan'          => $request->keterangan,
+            'biaya_pendaftaran'   => $request->biaya_pendaftaran ?? 0,
+            'biaya_zakat_default' => $request->biaya_zakat_default ?? 0,
+            'potongan_subsidi'    => $request->potongan_subsidi ?? 0,
         ]);
 
         if ($shouldBeActive) {
@@ -69,11 +75,14 @@ class AdminSpmbGelombangController extends Controller
     public function update(Request $request, SpmbGelombang $gelombang)
     {
         $request->validate([
-            'nama_gelombang'  => 'required|string|max:100',
-            'tahun_ajaran'    => 'required|string|max:20',
-            'tanggal_mulai'   => 'nullable|date',
-            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
-            'keterangan'      => 'nullable|string|max:255',
+            'nama_gelombang'     => 'required|string|max:100',
+            'tahun_ajaran'       => 'required|string|max:20',
+            'tanggal_mulai'      => 'nullable|date',
+            'tanggal_selesai'    => 'nullable|date|after_or_equal:tanggal_mulai',
+            'keterangan'         => 'nullable|string|max:255',
+            'biaya_pendaftaran'  => 'nullable|numeric|min:0',
+            'biaya_zakat_default'=> 'nullable|numeric|min:0',
+            'potongan_subsidi'   => 'nullable|numeric|min:0',
         ], [
             'nama_gelombang.required'  => 'Nama gelombang wajib diisi.',
             'tahun_ajaran.required'    => 'Tahun ajaran wajib diisi.',
@@ -81,11 +90,14 @@ class AdminSpmbGelombangController extends Controller
         ]);
 
         $gelombang->update([
-            'nama_gelombang'  => $request->nama_gelombang,
-            'tahun_ajaran'    => $request->tahun_ajaran,
-            'tanggal_mulai'   => $request->tanggal_mulai,
-            'tanggal_selesai' => $request->tanggal_selesai,
-            'keterangan'      => $request->keterangan,
+            'nama_gelombang'      => $request->nama_gelombang,
+            'tahun_ajaran'        => $request->tahun_ajaran,
+            'tanggal_mulai'       => $request->tanggal_mulai,
+            'tanggal_selesai'     => $request->tanggal_selesai,
+            'keterangan'          => $request->keterangan,
+            'biaya_pendaftaran'   => $request->biaya_pendaftaran ?? 0,
+            'biaya_zakat_default' => $request->biaya_zakat_default ?? 0,
+            'potongan_subsidi'    => $request->potongan_subsidi ?? 0,
         ]);
 
         if ($request->has('is_aktif')) {

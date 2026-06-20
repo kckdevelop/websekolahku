@@ -91,15 +91,15 @@
     overflow: hidden;
   ">
     {{-- Logo --}}
-    <div style="display:flex; align-items:center; gap:12px; padding:20px 24px; border-bottom:1px solid rgba(255,255,255,0.08);">
-      <div style="width:38px; height:38px; background:#f97316; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-        <i class="fas fa-graduation-cap" style="color:#fff; font-size:15px;"></i>
+    <a href="/" style="display:flex; align-items:center; gap:12px; padding:20px 24px; border-bottom:1px solid rgba(255,255,255,0.08); text-decoration:none;" class="group">
+      <div style="width:38px; height:38px; background:#fff; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden;">
+        <img src="{{ asset('storage/logomusaba.png') }}" alt="Logo" style="width:30px; height:30px; object-fit:contain;">
       </div>
       <div>
         <p style="color:#fff; font-weight:700; font-size:14px; line-height:1.2;">Admin Panel</p>
         <p style="color:#64748b; font-size:11px;">SMK Muh. 1 Bantul</p>
       </div>
-    </div>
+    </a>
 
     {{-- Navigation --}}
     <nav style="flex:1; padding:12px; overflow-y:auto; display:flex; flex-direction:column; gap:2px;">
@@ -183,35 +183,71 @@
 
       <p class="nav-section">SPMB</p>
 
-      <a href="{{ route('admin.pendaftaran.index') }}"
-         class="nav-link {{ (request()->routeIs('admin.pendaftaran.*') && !request()->routeIs('admin.pendaftaran.laporan')) ? 'active' : '' }}"
-         style="position:relative;">
-        <i class="fas fa-clipboard-list nav-icon"></i>
-        <span class="nav-label">Pendaftaran</span>
-        @php $pending = \App\Models\Pendaftaran::where('status','pending')->count(); @endphp
-        @if($pending > 0)
-          <span style="background:#ef4444; color:#fff; font-size:10px; border-radius:999px; padding:1px 7px; font-weight:700; flex-shrink:0;">{{ $pending }}</span>
-        @endif
-      </a>
-
-      <a href="{{ route('admin.pendaftaran.laporan') }}"
-         class="nav-link {{ request()->routeIs('admin.pendaftaran.laporan') ? 'active' : '' }}">
-        <i class="fas fa-chart-line nav-icon"></i>
-        <span class="nav-label">Laporan Pendaftaran</span>
-      </a>
-
       <a href="{{ route('admin.gelombang.index') }}"
          class="nav-link {{ request()->routeIs('admin.gelombang.*') ? 'active' : '' }}">
         <i class="fas fa-layer-group nav-icon"></i>
         <span class="nav-label">Atur Gelombang</span>
       </a>
 
+      {{-- Dropdown: Manajemen PPDB --}}
+      <div class="dropdown-container">
+        <button type="button"
+          class="nav-link w-full text-left dropdown-toggle {{ request()->routeIs('admin.pendaftaran.*', 'admin.petugas-wawancara.*', 'admin.download.*', 'admin.reset.*') ? 'active' : '' }}"
+          onclick="toggleDropdown(this)">
+          <i class="fas fa-school nav-icon"></i>
+          <span class="nav-label">Manajemen PPDB</span>
+          @php $pendingPpdb = \App\Models\Pendaftaran::where('status','pending')->count(); @endphp
+          @if($pendingPpdb > 0)
+            <span style="background:#ef4444; color:#fff; font-size:10px; border-radius:999px; padding:1px 7px; font-weight:700; flex-shrink:0;">{{ $pendingPpdb }}</span>
+          @endif
+          <i class="fas fa-chevron-right dropdown-chevron text-xs transition-transform duration-200 ml-auto {{ request()->routeIs('admin.pendaftaran.*', 'admin.petugas-wawancara.*', 'admin.download.*', 'admin.reset.*') ? 'rotate-90' : '' }}"></i>
+        </button>
+        <div class="dropdown-menu pl-4 space-y-1 mt-1 transition-all duration-300 {{ request()->routeIs('admin.pendaftaran.*', 'admin.petugas-wawancara.*', 'admin.download.*', 'admin.reset.*') ? '' : 'hidden' }}">
+
+          <a href="{{ route('admin.pendaftaran.index') }}"
+             class="nav-link py-2 {{ (request()->routeIs('admin.pendaftaran.*') && !request()->routeIs('admin.pendaftaran.laporan')) ? 'active' : '' }}"
+             style="position:relative;">
+            <i class="far fa-circle nav-icon text-xxs scale-75"></i>
+            <span class="nav-label text-xs">Pendaftaran</span>
+            @php $pending = \App\Models\Pendaftaran::where('status','pending')->count(); @endphp
+            @if($pending > 0)
+              <span style="background:#ef4444; color:#fff; font-size:10px; border-radius:999px; padding:1px 7px; font-weight:700; flex-shrink:0;">{{ $pending }}</span>
+            @endif
+          </a>
+
+          <a href="{{ route('admin.petugas-wawancara.index') }}"
+             class="nav-link py-2 {{ request()->routeIs('admin.petugas-wawancara.*') ? 'active' : '' }}">
+            <i class="far fa-circle nav-icon text-xxs scale-75"></i>
+            <span class="nav-label text-xs">Petugas Pewawancara</span>
+          </a>
+
+          <a href="{{ route('admin.pendaftaran.laporan') }}"
+             class="nav-link py-2 {{ request()->routeIs('admin.pendaftaran.laporan') ? 'active' : '' }}">
+            <i class="far fa-circle nav-icon text-xxs scale-75"></i>
+            <span class="nav-label text-xs">Laporan Pendaftaran</span>
+          </a>
+
+          <a href="{{ route('admin.download.pendaftaran') }}"
+             class="nav-link py-2 {{ request()->routeIs('admin.download.pendaftaran') ? 'active' : '' }}">
+            <i class="far fa-circle nav-icon text-xxs scale-75"></i>
+            <span class="nav-label text-xs">Download Excel</span>
+          </a>
+
+          <a href="{{ route('admin.reset.index') }}"
+             class="nav-link py-2 {{ request()->routeIs('admin.reset.*') ? 'active' : '' }}">
+            <i class="far fa-circle nav-icon text-xxs scale-75"></i>
+            <span class="nav-label text-xs">Reset Pendaftaran</span>
+          </a>
+
+        </div>
+      </div>
+
       <p class="nav-section">Sistem</p>
 
       <a href="{{ route('admin.nobox.edit') }}"
          class="nav-link {{ request()->routeIs('admin.nobox.*') ? 'active' : '' }}">
-        <i class="fas fa-cog nav-icon"></i>
-        <span class="nav-label">Pengaturan Nobox</span>
+        <i class="fab fa-whatsapp nav-icon"></i>
+        <span class="nav-label">Pengaturan WhatsApp</span>
       </a>
 
       <a href="{{ route('admin.users.index') }}"

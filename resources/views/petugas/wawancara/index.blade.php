@@ -3,7 +3,7 @@
 @section('subtitle', 'Uji keagamaan, kepribadian, gaya belajar (Visual, Auditori, Kinestetik), serta minat bakat calon siswa')
 
 @section('content')
-<div class="max-w-6xl mx-auto space-y-6">
+<div class="space-y-6">
 
   {{-- Stats Row --}}
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
@@ -36,110 +36,121 @@
     </div>
   </div>
 
-  {{-- Filter & Search --}}
-  <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-    <div class="flex items-center gap-2">
-      <a href="{{ route('petugas.wawancara.dashboard') }}" 
-         class="px-4 py-2 text-xs font-semibold rounded-xl transition {{ !request('filter') ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-50 hover:bg-slate-100 text-slate-600' }}">
-        Semua
-      </a>
-      <a href="{{ route('petugas.wawancara.dashboard') }}?filter=belum" 
-         class="px-4 py-2 text-xs font-semibold rounded-xl transition {{ request('filter') === 'belum' ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-50 hover:bg-slate-100 text-slate-600' }}">
-        Belum Uji
-      </a>
-      <a href="{{ route('petugas.wawancara.dashboard') }}?filter=sudah" 
-         class="px-4 py-2 text-xs font-semibold rounded-xl transition {{ request('filter') === 'sudah' ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-50 hover:bg-slate-100 text-slate-600' }}">
-        Sudah Uji
-      </a>
-    </div>
-
-    <form method="GET" action="{{ route('petugas.wawancara.dashboard') }}" class="flex items-center gap-2">
-      @if(request('filter'))
-        <input type="hidden" name="filter" value="{{ request('filter') }}">
-      @endif
-      <div class="relative">
-        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama / No Daftar..."
-               class="pl-9 pr-4 py-2 w-64 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none text-xs text-slate-700">
-        <i class="fas fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-      </div>
-      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">
-        Cari
-      </button>
-    </form>
-  </div>
-
-  {{-- Table --}}
+  {{-- Table Card --}}
   <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-    <div class="overflow-x-auto">
-      <table class="w-full text-left border-collapse text-slate-700">
-        <thead>
-          <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 text-xxs uppercase tracking-wider font-bold">
-            <th class="py-3 px-5">No Daftar</th>
-            <th class="py-3 px-5">Nama Calon Siswa</th>
-            <th class="py-3 px-5">Asal Sekolah</th>
-            <th class="py-3 px-5">Gaya Belajar</th>
-            <th class="py-3 px-5">Minat Bakat</th>
-            <th class="py-3 px-5">Status Uji</th>
-            <th class="py-3 px-5 text-center">Aksi</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-50 text-xs">
-          @forelse($pendaftarans as $p)
-          <tr class="hover:bg-slate-50/50 transition">
-            <td class="py-4 px-5 font-mono font-bold text-blue-600">{{ $p->no_daftar }}</td>
-            <td class="py-4 px-5">
-              <span class="font-bold text-slate-800 block">{{ $p->nama_lengkap }}</span>
-              <span class="text-slate-400 text-xxs block mt-0.5">{{ $p->jenis_kelamin == 'L' ? 'Laki-Laki' : 'Perempuan' }}</span>
-            </td>
-            <td class="py-4 px-5 text-slate-600">{{ $p->asal_sekolah }}</td>
-            <td class="py-4 px-5">
-              @if($p->gaya_belajar_verified_at)
-                <span class="font-bold text-purple-750 px-2 py-0.5 bg-purple-50 rounded-lg text-xxs border border-purple-100 uppercase">
-                  {{ $p->gaya_belajar_tipe }}
-                </span>
-              @else
-                <span class="text-slate-400 italic">Belum diuji</span>
-              @endif
-            </td>
-            <td class="py-4 px-5">
-              @if($p->gaya_belajar_verified_at)
-                <span class="font-semibold text-slate-800 truncate block max-w-xs">{{ $p->gaya_belajar_minat_bakat }}</span>
-              @else
-                <span class="text-slate-400 italic">Belum diuji</span>
-              @endif
-            </td>
-            <td class="py-4 px-5">
-              @if($p->gaya_belajar_verified_at && $p->wawancara_verified_at)
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xxs font-bold bg-emerald-100 text-emerald-700">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Selesai Wawancara
-                </span>
-              @else
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xxs font-bold bg-amber-100 text-amber-700">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span> Belum Wawancara
-                </span>
-              @endif
-            </td>
-            <td class="py-4 px-5 text-center">
-              <a href="{{ route('petugas.wawancara.show', $p->id) }}" 
-                 class="inline-flex items-center gap-1 px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-650 rounded-lg text-xs font-bold transition">
-                <i class="fas fa-comments"></i> Wawancara &amp; Tes
-              </a>
-            </td>
-          </tr>
-          @empty
-          <tr>
-            <td colspan="7" class="py-8 text-center text-slate-400">Tidak ada data pendaftar ditemukan.</td>
-          </tr>
-          @endforelse
-        </tbody>
-      </table>
+    {{-- Filter & Search Bar --}}
+    <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+          <i class="fas fa-comments text-purple-650"></i> Data Wawancara & Gaya Belajar
+        </h2>
+      </div>
+      <div class="flex gap-2 flex-wrap items-center">
+        {{-- Filter Status --}}
+        <select id="ajax-filter" class="text-sm border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white text-slate-600">
+          <option value="">Semua Status</option>
+          <option value="belum" {{ request('filter') === 'belum' ? 'selected' : '' }}>Belum Wawancara</option>
+          <option value="sudah" {{ request('filter') === 'sudah' ? 'selected' : '' }}>Sudah Wawancara</option>
+        </select>
+        {{-- Search --}}
+        <div class="relative">
+          <input type="text" id="ajax-search" value="{{ request('search') }}" placeholder="Cari Nama / No Daftar..."
+                 class="pl-8 pr-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 w-52">
+          <i class="fas fa-search absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
+        </div>
+        {{-- Per Page --}}
+        <select id="ajax-per-page" class="text-sm border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white text-slate-600">
+          <option value="10"  {{ request('per_page', 20) == 10  ? 'selected' : '' }}>10 data</option>
+          <option value="20"  {{ request('per_page', 20) == 20  ? 'selected' : '' }}>20 data</option>
+          <option value="50"  {{ request('per_page', 20) == 50  ? 'selected' : '' }}>50 data</option>
+          <option value="100" {{ request('per_page', 20) == 100 ? 'selected' : '' }}>100 data</option>
+        </select>
+        <button id="ajax-reset" class="px-4 py-2 bg-slate-100 text-slate-600 text-sm rounded-xl hover:bg-slate-200 transition font-medium hidden">
+          Reset
+        </button>
+      </div>
     </div>
-    @if($pendaftarans->hasPages())
-    <div class="px-5 py-4 border-t border-slate-100">
-      {{ $pendaftarans->links() }}
+
+    {{-- Table Wrapper (AJAX target) --}}
+    <div id="table-wrapper">
+      @include('petugas.wawancara.table')
     </div>
-    @endif
   </div>
 
 </div>
 @endsection
+
+@push('scripts')
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const searchInput  = document.getElementById('ajax-search');
+    const filterSelect = document.getElementById('ajax-filter');
+    const perPageSelect = document.getElementById('ajax-per-page');
+    const resetBtn     = document.getElementById('ajax-reset');
+    const tableWrapper = document.getElementById('table-wrapper');
+
+    let debounceTimer;
+
+    function checkResetBtn() {
+      if (searchInput.value || filterSelect.value || perPageSelect.value != 20) {
+        resetBtn.classList.remove('hidden');
+      } else {
+        resetBtn.classList.add('hidden');
+      }
+    }
+
+    function fetchTable(url = "{{ route('petugas.wawancara.dashboard') }}") {
+      const search  = searchInput.value;
+      const filter  = filterSelect.value;
+      const perPage = perPageSelect.value;
+
+      const requestUrl = new URL(url);
+      if (search)  requestUrl.searchParams.set('search', search);
+      if (filter)  requestUrl.searchParams.set('filter', filter);
+      if (perPage) requestUrl.searchParams.set('per_page', perPage);
+
+      tableWrapper.style.opacity = '0.5';
+
+      fetch(requestUrl, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+      .then(r => r.text())
+      .then(html => {
+        tableWrapper.innerHTML = html;
+        tableWrapper.style.opacity = '1';
+        checkResetBtn();
+        bindPagination();
+      })
+      .catch(() => { tableWrapper.style.opacity = '1'; });
+    }
+
+    function bindPagination() {
+      const links = tableWrapper.querySelectorAll('.pagination-container a, .pagination a');
+      links.forEach(link => {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          fetchTable(this.href);
+        });
+      });
+    }
+
+    // Events
+    searchInput.addEventListener('input', function () {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => fetchTable(), 300);
+    });
+    filterSelect.addEventListener('change',  () => fetchTable());
+    perPageSelect.addEventListener('change', () => fetchTable());
+    resetBtn.addEventListener('click', function () {
+      searchInput.value    = '';
+      filterSelect.value   = '';
+      perPageSelect.value  = '20';
+      fetchTable();
+    });
+
+    // Init
+    bindPagination();
+    checkResetBtn();
+  });
+</script>
+@endpush

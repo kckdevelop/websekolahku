@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>@yield('title', 'Panel Petugas') — PPDB SMK Muh 1 Bantul</title>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -56,10 +57,10 @@
     box-shadow: 4px 0 20px rgba(30,58,138,0.25);
   ">
     {{-- Logo --}}
-    <div style="padding:20px 16px 16px; border-bottom:1px solid rgba(255,255,255,0.1);">
+    <a href="/" style="padding:20px 16px 16px; border-bottom:1px solid rgba(255,255,255,0.1); text-decoration:none; display:block;" class="group">
       <div style="display:flex; align-items:center; gap:10px;">
-        <div style="width:38px; height:38px; background:rgba(255,255,255,0.15); border-radius:10px; display:flex; align-items:center; justify-content:center;">
-          <i class="fas fa-clipboard-check" style="color:#fff; font-size:16px;"></i>
+        <div style="width:38px; height:38px; background:#fff; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden;">
+          <img src="{{ asset('storage/logomusaba.png') }}" alt="Logo" style="width:30px; height:30px; object-fit:contain;">
         </div>
         <div>
           <p style="color:#fff; font-size:13px; font-weight:700; margin:0;">
@@ -72,7 +73,7 @@
           <p style="color:rgba(255,255,255,0.5); font-size:10px; margin:0;">PPDB SMK Muh 1 Bantul</p>
         </div>
       </div>
-    </div>
+    </a>
 
     {{-- Nav --}}
     <nav style="flex:1; padding:12px 8px; overflow-y:auto;">
@@ -96,16 +97,10 @@
       </a>
 
       @if(auth()->user()->role === 'admin' || auth()->user()->role === 'petugas')
-      <a href="{{ route('petugas.dashboard') }}?filter=no_foto"
-         class="nav-link {{ request()->is('petugas/dashboard') && request()->filter === 'no_foto' ? 'active' : '' }}">
-        <i class="fas fa-camera nav-icon"></i>
-        <span>Belum Difoto</span>
-      </a>
-
-      <a href="{{ route('petugas.dashboard') }}?filter=belum_verif"
-         class="nav-link {{ request()->is('petugas/dashboard') && request()->filter === 'belum_verif' ? 'active' : '' }}">
-        <i class="fas fa-file-alt nav-icon"></i>
-        <span>Belum Diverifikasi</span>
+      <a href="{{ route('petugas.pendaftar') }}"
+         class="nav-link {{ request()->routeIs('petugas.pendaftar') || request()->is('petugas/pendaftar*') ? 'active' : '' }}">
+        <i class="fas fa-users nav-icon"></i>
+        <span>Data Pendaftar</span>
       </a>
 
       <a href="{{ route('petugas.laporan') }}"
@@ -116,10 +111,6 @@
       @endif
 
       @if(auth()->user()->role === 'petugas_kesehatan')
-      <a href="{{ route('petugas.kesehatan.dashboard') }}?filter=belum" class="nav-link {{ request()->is('petugas/kesehatan/dashboard') && request()->filter === 'belum' ? 'active' : '' }}">
-        <i class="fas fa-heartbeat nav-icon"></i>
-        <span>Belum Cek Kesehatan</span>
-      </a>
       <a href="{{ route('petugas.kesehatan.laporan') }}" class="nav-link {{ request()->routeIs('petugas.kesehatan.laporan') ? 'active' : '' }}">
         <i class="fas fa-chart-line nav-icon"></i>
         <span>Laporan Kesehatan</span>
@@ -127,10 +118,6 @@
       @endif
 
       @if(auth()->user()->role === 'petugas_wawancara')
-      <a href="{{ route('petugas.wawancara.dashboard') }}?filter=belum" class="nav-link {{ request()->is('petugas/wawancara/dashboard') && request()->filter === 'belum' ? 'active' : '' }}">
-        <i class="fas fa-comments nav-icon"></i>
-        <span>Belum Tes / Wawancara</span>
-      </a>
       <a href="{{ route('petugas.wawancara.laporan') }}" class="nav-link {{ request()->routeIs('petugas.wawancara.laporan') ? 'active' : '' }}">
         <i class="fas fa-chart-line nav-icon"></i>
         <span>Laporan Wawancara</span>
@@ -138,10 +125,6 @@
       @endif
 
       @if(auth()->user()->role === 'petugas_pembayaran')
-      <a href="{{ route('petugas.pembayaran.dashboard') }}?filter=belum" class="nav-link {{ request()->is('petugas/pembayaran/dashboard') && request()->filter === 'belum' ? 'active' : '' }}">
-        <i class="fas fa-money-bill nav-icon"></i>
-        <span>Belum Lunas</span>
-      </a>
       <a href="{{ route('petugas.pembayaran.laporan') }}" class="nav-link {{ request()->routeIs('petugas.pembayaran.laporan') ? 'active' : '' }}">
         <i class="fas fa-chart-line nav-icon"></i>
         <span>Laporan Pembayaran</span>

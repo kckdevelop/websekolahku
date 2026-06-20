@@ -18,12 +18,20 @@ class SpmbGelombang extends Model
         'tanggal_selesai',
         'is_aktif',
         'keterangan',
+        'biaya_pendaftaran',
+        'biaya_spp_default',
+        'biaya_zakat_default',
+        'potongan_subsidi',
     ];
 
     protected $casts = [
-        'is_aktif'        => 'boolean',
-        'tanggal_mulai'   => 'date',
-        'tanggal_selesai' => 'date',
+        'is_aktif'           => 'boolean',
+        'tanggal_mulai'      => 'date',
+        'tanggal_selesai'    => 'date',
+        'biaya_pendaftaran'  => 'decimal:2',
+        'biaya_spp_default'  => 'decimal:2',
+        'biaya_zakat_default'=> 'decimal:2',
+        'potongan_subsidi'   => 'decimal:2',
     ];
 
     /**

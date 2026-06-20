@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SiswaAkun;
-use App\Services\NoboxService;
+use App\Services\FonnteService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -38,7 +38,7 @@ class SiswaAuthController extends Controller
         ]);
 
         // Format nomor WA ke 62xxx
-        $noWa = NoboxService::formatNomor($request->no_wa);
+        $noWa = FonnteService::formatNomor($request->no_wa);
 
         // Cek apakah nomor sudah terdaftar di tahun aktif
         $existing = SiswaAkun::where('no_wa', $noWa)
@@ -61,14 +61,14 @@ class SiswaAuthController extends Controller
         }
 
         // Kirim OTP
-        $otp = NoboxService::generateOTP();
+        $otp = FonnteService::generateOTP();
         $siswa->update([
             'otp_code'         => $otp,
             'otp_expires_at'   => now()->addMinutes(5),
             'last_otp_sent_at' => now(),
         ]);
 
-        $service = new NoboxService();
+        $service = new FonnteService();
         $sent = $service->sendOTP($noWa, $otp);
 
         // Simpan ID di session untuk lanjut ke verifikasi
@@ -160,14 +160,14 @@ class SiswaAuthController extends Controller
             ], 429);
         }
 
-        $otp = NoboxService::generateOTP();
+        $otp = FonnteService::generateOTP();
         $siswa->update([
             'otp_code'         => $otp,
             'otp_expires_at'   => now()->addMinutes(5),
             'last_otp_sent_at' => now(),
         ]);
 
-        $service = new NoboxService();
+        $service = new FonnteService();
         $sent = $service->sendOTP($siswa->no_wa, $otp);
 
         $setting = \App\Models\NoboxSetting::getSingle();
@@ -203,7 +203,7 @@ class SiswaAuthController extends Controller
             'password.required' => 'Password wajib diisi.',
         ]);
 
-        $noWa = NoboxService::formatNomor($request->no_wa);
+        $noWa = FonnteService::formatNomor($request->no_wa);
 
         $siswa = SiswaAkun::where('no_wa', $noWa)
             ->where('tahun_aktif', date('Y'))

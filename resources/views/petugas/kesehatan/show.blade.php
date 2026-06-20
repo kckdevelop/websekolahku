@@ -3,7 +3,7 @@
 @section('subtitle', 'Cek kondisi fisik calon siswa')
 
 @section('content')
-<div class="max-w-4xl mx-auto space-y-6">
+<div class="space-y-6">
   
   <div class="flex items-center gap-3 mb-4">
     <a href="{{ route('petugas.kesehatan.dashboard') }}" class="text-slate-500 hover:text-slate-700 flex items-center gap-1 text-sm font-semibold">

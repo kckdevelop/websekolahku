@@ -23,6 +23,10 @@ use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\PetugasKesehatanController;
 use App\Http\Controllers\PetugasWawancaraController;
 use App\Http\Controllers\PetugasPembayaranController;
+use App\Http\Controllers\AdminPetugasWawancaraController;
+use App\Http\Controllers\AdminResetController;
+use App\Http\Controllers\AdminDownloadPendaftaranController;
+use App\Models\RiwayatPembayaran;
 
 /*
 |--------------------------------------------------------------------------
@@ -283,6 +287,18 @@ Route::prefix('spmb')->name('spmb.')->group(function () {
             ->name('formulir.simpan');
     });
 
+    // Tes Gaya Belajar — login publik via No. Daftar + Tgl Lahir
+    Route::get('/tes-gaya-belajar/login',  [PendaftaranController::class, 'showLoginTes'])->name('tes-gaya-belajar.login');
+    Route::post('/tes-gaya-belajar/login', [PendaftaranController::class, 'loginTes'])->name('tes-gaya-belajar.login.post');
+    Route::post('/tes-gaya-belajar/logout',[PendaftaranController::class, 'logoutTes'])->name('tes-gaya-belajar.logout');
+
+    // Tes Gaya Belajar — halaman tes (diakses via sesi siswa ATAU sesi tes)
+    Route::get('/tes-gaya-belajar',  [PendaftaranController::class, 'showTesGayaBelajar'])->name('tes-gaya-belajar');
+    Route::post('/tes-gaya-belajar', [PendaftaranController::class, 'simpanTesGayaBelajar'])->name('tes-gaya-belajar.simpan');
+
+    // Halaman Hasil Tes (setelah submit tanpa siswa session)
+    Route::get('/tes-gaya-belajar/hasil/{pendaftaran}', [PendaftaranController::class, 'hasilTesGayaBelajar'])->name('tes-gaya-belajar.hasil');
+
     // Public (Sukses & Cetak — tanpa login)
     Route::get('/sukses/{id}', [PendaftaranController::class, 'sukses'])->name('sukses');
     Route::get('/cetak/{pendaftaran}', [PendaftaranController::class, 'cetak'])->name('cetak');
@@ -362,6 +378,20 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     // Pesan Masuk
     Route::resource('pesan', AdminPesanController::class)->only(['index', 'show', 'destroy']);
+
+    // Petugas Pewawancara
+    Route::get('/petugas-wawancara', [AdminPetugasWawancaraController::class, 'index'])->name('petugas-wawancara.index');
+    Route::post('/petugas-wawancara', [AdminPetugasWawancaraController::class, 'store'])->name('petugas-wawancara.store');
+    Route::put('/petugas-wawancara/{petugasWawancara}', [AdminPetugasWawancaraController::class, 'update'])->name('petugas-wawancara.update');
+    Route::delete('/petugas-wawancara/{petugasWawancara}', [AdminPetugasWawancaraController::class, 'destroy'])->name('petugas-wawancara.destroy');
+
+    // Reset Pendaftaran
+    Route::get('/reset-pendaftaran', [AdminResetController::class, 'index'])->name('reset.index');
+    Route::post('/reset-pendaftaran', [AdminResetController::class, 'reset'])->name('reset.post');
+
+    // Download Pendaftaran (Excel)
+    Route::get('/download-pendaftaran', [AdminDownloadPendaftaranController::class, 'index'])->name('download.pendaftaran');
+    Route::get('/download-pendaftaran/excel', [AdminDownloadPendaftaranController::class, 'download'])->name('download.pendaftaran.excel');
 });
 
 /*
@@ -373,8 +403,12 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 Route::middleware('petugas.auth')->prefix('petugas')->name('petugas.')->group(function () {
     Route::get('/dashboard', [PetugasController::class, 'index'])->name('dashboard');
     Route::get('/laporan', [PetugasController::class, 'laporan'])->name('laporan');
+    Route::get('/pendaftar', [PetugasController::class, 'pendaftar'])->name('pendaftar');
+    Route::get('/pendaftaran/create', [PetugasController::class, 'create'])->name('create');
+    Route::post('/pendaftaran', [PetugasController::class, 'store'])->name('store');
     Route::get('/pendaftaran/{pendaftaran}', [PetugasController::class, 'show'])->name('show');
     Route::put('/pendaftaran/{pendaftaran}', [PetugasController::class, 'update'])->name('update');
+    Route::delete('/pendaftaran/{pendaftaran}', [PetugasController::class, 'destroy'])->name('destroy');
     Route::post('/pendaftaran/{pendaftaran}/foto', [PetugasController::class, 'uploadFoto'])->name('upload.foto');
     Route::post('/pendaftaran/{pendaftaran}/berkas', [PetugasController::class, 'updateBerkas'])->name('update.berkas');
     Route::get('/pendaftaran/{pendaftaran}/kartu', [PetugasController::class, 'kartu'])->name('kartu');
@@ -400,6 +434,9 @@ Route::middleware('petugas.wawancara.auth')->prefix('petugas/wawancara')->name('
 Route::middleware('petugas.pembayaran.auth')->prefix('petugas/pembayaran')->name('petugas.pembayaran.')->group(function () {
     Route::get('/dashboard', [PetugasPembayaranController::class, 'index'])->name('dashboard');
     Route::get('/laporan', [PetugasPembayaranController::class, 'laporan'])->name('laporan');
+    Route::delete('/riwayat/{riwayat}', [PetugasPembayaranController::class, 'destroyRiwayat'])->name('riwayat.destroy');
     Route::get('/pendaftaran/{pendaftaran}', [PetugasPembayaranController::class, 'show'])->name('show');
     Route::put('/pendaftaran/{pendaftaran}', [PetugasPembayaranController::class, 'update'])->name('update');
+    Route::get('/pendaftaran/{pendaftaran}/kartu', [PetugasPembayaranController::class, 'kartu'])->name('kartu');
+    Route::get('/riwayat/{riwayat}/bukti', [PetugasPembayaranController::class, 'bukti'])->name('riwayat.bukti');
 });

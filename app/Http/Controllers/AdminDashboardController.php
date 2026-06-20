@@ -52,7 +52,7 @@ class AdminDashboardController extends Controller
         }
 
         // Fetch registration data for stats tables
-        $pendaftarans = Pendaftaran::select('no_daftar', 'pil1', 'status', 'verified_at')->get();
+        $pendaftarans = Pendaftaran::select('no_daftar', 'pil1', 'diterima_di_jurusan', 'status', 'verified_at')->get();
 
         $jurusans = ['TKR', 'TPM', 'TAV', 'TBSM', 'RPL'];
         $gelKeys  = array_keys($gelMap); // e.g. ['01','02','03']
@@ -85,36 +85,34 @@ class AdminDashboardController extends Controller
                 $gelKey = null;
             }
 
+            // 1. & 2. Statistik Pendaftar dan Calon Siswa (berdasarkan pil1)
             $jur = $p->pil1;
-            if (!in_array($jur, $jurusans)) {
-                continue;
-            }
-
-            // 1. Statistik Pendaftar
-            // Hanya tambahkan ke kolom gelombang DAN total jika gelKey dikenali
-            // Sehingga: sum(kolom gelombang) == kolom Total == baris Total footer
-            if ($gelKey) {
-                $dataPendaftar[$jur][$gelKey]++;
-                $dataPendaftar[$jur]['total']++;
-                $totalPendaftar[$gelKey]++;
-                $totalPendaftar['total']++;
-            }
-
-            // 2. Statistik Calon Siswa (sudah diverifikasi oleh petugas, verified_at tidak null)
-            if ($p->verified_at !== null) {
+            if (in_array($jur, $jurusans)) {
+                // Statistik Pendaftar
                 if ($gelKey) {
-                    $dataCalon[$jur][$gelKey]++;
-                    $dataCalon[$jur]['total']++;
-                    $totalCalon[$gelKey]++;
-                    $totalCalon['total']++;
+                    $dataPendaftar[$jur][$gelKey]++;
+                    $dataPendaftar[$jur]['total']++;
+                    $totalPendaftar[$gelKey]++;
+                    $totalPendaftar['total']++;
+                }
+
+                // Statistik Calon Siswa (sudah diverifikasi oleh petugas, verified_at tidak null)
+                if ($p->verified_at !== null) {
+                    if ($gelKey) {
+                        $dataCalon[$jur][$gelKey]++;
+                        $dataCalon[$jur]['total']++;
+                        $totalCalon[$gelKey]++;
+                        $totalCalon['total']++;
+                    }
                 }
             }
 
-            // 3. Statistik Siswa Diterima (status: diterima)
-            if ($p->status === 'diterima') {
+            // 3. Statistik Siswa Diterima (diambil dari hasil wawancara: diterima_di_jurusan tidak null)
+            $jurDiterima = $p->diterima_di_jurusan;
+            if ($jurDiterima && in_array($jurDiterima, $jurusans)) {
                 if ($gelKey) {
-                    $dataDiterima[$jur][$gelKey]++;
-                    $dataDiterima[$jur]['total']++;
+                    $dataDiterima[$jurDiterima][$gelKey]++;
+                    $dataDiterima[$jurDiterima]['total']++;
                     $totalDiterima[$gelKey]++;
                     $totalDiterima['total']++;
                 }

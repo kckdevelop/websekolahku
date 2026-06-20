@@ -5,7 +5,7 @@
 @section('content')
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-  {{-- Kolom Kiri: Daftar Gelombang (Mencakup 2/3 lebar jika layar besar) --}}
+  {{-- Kolom Kiri: Daftar Gelombang --}}
   <div class="lg:col-span-2 space-y-6">
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
       <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
@@ -22,6 +22,7 @@
               <th class="px-4 py-3">Nama Gelombang</th>
               <th class="px-4 py-3">Tahun Ajaran</th>
               <th class="px-4 py-3">Periode</th>
+              <th class="px-4 py-3 text-right">Biaya & Potongan</th>
               <th class="px-4 py-3 text-center">Status</th>
               <th class="px-4 py-3 text-right">Aksi</th>
             </tr>
@@ -43,39 +44,35 @@
                   <span class="text-slate-300 italic">Belum diatur</span>
                 @endif
               </td>
+              <td class="px-4 py-4 text-right text-xs space-y-0.5">
+                <div class="text-slate-600"><span class="text-slate-400">Dana Awal:</span> Rp {{ number_format($item->biaya_zakat_default, 0, ',', '.') }}</div>
+                @if($item->potongan_subsidi > 0)
+                  <div class="text-emerald-600 font-semibold"><span class="text-slate-400">Potongan:</span> Rp {{ number_format($item->potongan_subsidi, 0, ',', '.') }}</div>
+                @endif
+              </td>
               <td class="px-4 py-4 text-center">
                 @if($item->is_aktif)
                   <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 shadow-sm shadow-green-100/50">
-                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                    Aktif
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>Aktif
                   </span>
                 @else
-                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-650">
-                    Non-Aktif
-                  </span>
+                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-650">Non-Aktif</span>
                 @endif
               </td>
               <td class="px-4 py-4 text-right">
                 <div class="flex items-center justify-end gap-1.5">
-                  {{-- Tombol Aktivasi --}}
                   @if(!$item->is_aktif)
                     <form method="POST" action="{{ route('admin.gelombang.toggleActive', $item) }}">
                       @csrf
-                      <button type="submit" class="text-xs font-semibold bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white px-2.5 py-1.5 rounded-lg border border-emerald-250 transition-all" title="Jadikan Gelombang Aktif">
-                        Set Aktif
-                      </button>
+                      <button type="submit" class="text-xs font-semibold bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white px-2.5 py-1.5 rounded-lg border border-emerald-250 transition-all">Set Aktif</button>
                     </form>
                   @endif
-
-                  {{-- Tombol Edit --}}
-                  <a href="{{ route('admin.gelombang.edit', $item) }}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-650 hover:text-yellow-600 hover:bg-yellow-50 transition-colors" title="Ubah Data">
+                  <a href="{{ route('admin.gelombang.edit', $item) }}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-650 hover:text-yellow-600 hover:bg-yellow-50 transition-colors">
                     <i class="fas fa-edit"></i>
                   </a>
-
-                  {{-- Tombol Hapus --}}
                   <form method="POST" action="{{ route('admin.gelombang.destroy', $item) }}" onsubmit="return confirm('Hapus gelombang ini?')">
                     @csrf @method('DELETE')
-                    <button type="submit" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-650 hover:text-red-600 hover:bg-red-50 transition-colors" title="Hapus Data">
+                    <button type="submit" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-650 hover:text-red-600 hover:bg-red-50 transition-colors">
                       <i class="fas fa-trash"></i>
                     </button>
                   </form>
@@ -84,7 +81,7 @@
             </tr>
             @empty
             <tr>
-              <td colspan="5" class="px-4 py-12 text-center text-slate-400">
+              <td colspan="6" class="px-4 py-12 text-center text-slate-400">
                 <i class="fas fa-layer-group text-4xl mb-3 block"></i>
                 <p>Belum ada data gelombang pendaftaran.</p>
               </td>
@@ -108,21 +105,16 @@
           @endif
         </h3>
         <p class="text-xxs text-slate-400 mt-0.5">
-          @if(isset($gelombang))
-            Perbarui detail informasi gelombang pendaftaran terpilih
-          @else
-            Buat dan konfigurasikan gelombang pendaftaran baru
+          @if(isset($gelombang)) Perbarui detail gelombang terpilih
+          @else Buat dan konfigurasikan gelombang baru
           @endif
         </p>
       </div>
 
       <form method="POST" action="{{ isset($gelombang) ? route('admin.gelombang.update', $gelombang) : route('admin.gelombang.store') }}" class="p-6 space-y-4">
         @csrf
-        @if(isset($gelombang))
-          @method('PUT')
-        @endif
+        @if(isset($gelombang)) @method('PUT') @endif
 
-        {{-- Nama Gelombang --}}
         <div>
           <label for="nama_gelombang" class="block text-xs font-semibold text-slate-700 mb-1.5">Nama Gelombang <span class="text-red-500">*</span></label>
           <input type="text" id="nama_gelombang" name="nama_gelombang" value="{{ old('nama_gelombang', $gelombang->nama_gelombang ?? '') }}" required
@@ -131,60 +123,72 @@
           @error('nama_gelombang') <p class="text-red-500 text-xxs mt-1">{{ $message }}</p> @enderror
         </div>
 
-        {{-- Tahun Ajaran --}}
         <div>
           <label for="tahun_ajaran" class="block text-xs font-semibold text-slate-700 mb-1.5">Tahun Ajaran <span class="text-red-500">*</span></label>
           <input type="text" id="tahun_ajaran" name="tahun_ajaran" value="{{ old('tahun_ajaran', $gelombang->tahun_ajaran ?? date('Y').'/'.(date('Y')+1)) }}" required
-            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm @error('tahun_ajaran') border-red-400 @enderror"
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm"
             placeholder="Contoh: 2026/2027">
-          @error('tahun_ajaran') <p class="text-red-500 text-xxs mt-1">{{ $message }}</p> @enderror
         </div>
 
-        {{-- Tanggal Mulai --}}
-        <div>
-          <label for="tanggal_mulai" class="block text-xs font-semibold text-slate-700 mb-1.5">Tanggal Mulai</label>
-          <input type="date" id="tanggal_mulai" name="tanggal_mulai" value="{{ old('tanggal_mulai', isset($gelombang) && $gelombang->tanggal_mulai ? $gelombang->tanggal_mulai->format('Y-m-d') : '') }}"
-            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm @error('tanggal_mulai') border-red-400 @enderror">
-          @error('tanggal_mulai') <p class="text-red-500 text-xxs mt-1">{{ $message }}</p> @enderror
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="tanggal_mulai" class="block text-xs font-semibold text-slate-700 mb-1.5">Tanggal Mulai</label>
+            <input type="date" id="tanggal_mulai" name="tanggal_mulai" value="{{ old('tanggal_mulai', isset($gelombang) && $gelombang->tanggal_mulai ? $gelombang->tanggal_mulai->format('Y-m-d') : '') }}"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm">
+          </div>
+          <div>
+            <label for="tanggal_selesai" class="block text-xs font-semibold text-slate-700 mb-1.5">Tanggal Selesai</label>
+            <input type="date" id="tanggal_selesai" name="tanggal_selesai" value="{{ old('tanggal_selesai', isset($gelombang) && $gelombang->tanggal_selesai ? $gelombang->tanggal_selesai->format('Y-m-d') : '') }}"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm">
+          </div>
         </div>
 
-        {{-- Tanggal Selesai --}}
         <div>
-          <label for="tanggal_selesai" class="block text-xs font-semibold text-slate-700 mb-1.5">Tanggal Selesai</label>
-          <input type="date" id="tanggal_selesai" name="tanggal_selesai" value="{{ old('tanggal_selesai', isset($gelombang) && $gelombang->tanggal_selesai ? $gelombang->tanggal_selesai->format('Y-m-d') : '') }}"
-            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm @error('tanggal_selesai') border-red-400 @enderror">
-          @error('tanggal_selesai') <p class="text-red-500 text-xxs mt-1">{{ $message }}</p> @enderror
-        </div>
-
-        {{-- Keterangan --}}
-        <div>
-          <label for="keterangan" class="block text-xs font-semibold text-slate-700 mb-1.5">Keterangan / Deskripsi</label>
+          <label for="keterangan" class="block text-xs font-semibold text-slate-700 mb-1.5">Keterangan</label>
           <input type="text" id="keterangan" name="keterangan" value="{{ old('keterangan', $gelombang->keterangan ?? '') }}"
-            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm @error('keterangan') border-red-400 @enderror"
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm"
             placeholder="Contoh: Jalur Minat & Prestasi">
-          @error('keterangan') <p class="text-red-500 text-xxs mt-1">{{ $message }}</p> @enderror
         </div>
 
-        {{-- Checkbox Set Aktif (Hanya saat tambah baru, saat edit bisa dicentang juga) --}}
+        {{-- Separator biaya --}}
+        <div class="pt-2 border-t border-slate-100">
+          <p class="text-xxs font-bold text-slate-500 uppercase tracking-wider mb-3"><i class="fas fa-money-bill-wave mr-1 text-emerald-500"></i> Penetapan Biaya Gelombang</p>
+
+          <div class="space-y-3">
+            <div>
+              <label for="biaya_zakat_default" class="block text-xs font-semibold text-slate-700 mb-1">Nominal Biaya Pendidikan Default (Rp)</label>
+              <input type="text" inputmode="numeric" id="biaya_zakat_default" name="biaya_zakat_default"
+                value="{{ old('biaya_zakat_default', isset($gelombang) ? (int) $gelombang->biaya_zakat_default : 0) }}"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 outline-none transition text-sm font-mono format-rupiah"
+                placeholder="0">
+            </div>
+            <div>
+              <label for="potongan_subsidi" class="block text-xs font-semibold text-slate-700 mb-1">
+                Potongan Subsidi Sekolah (Rp) <span class="text-emerald-600 font-normal">— diskon untuk gelombang ini</span>
+              </label>
+              <input type="text" inputmode="numeric" id="potongan_subsidi" name="potongan_subsidi"
+                value="{{ old('potongan_subsidi', isset($gelombang) ? (int) $gelombang->potongan_subsidi : 0) }}"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 outline-none transition text-sm font-mono bg-emerald-50/50 format-rupiah"
+                placeholder="0">
+              <p class="text-xxs text-slate-400 mt-1"><i class="fas fa-info-circle"></i> Total Tagihan = Dana Awal Tahun + Infaq − Potongan Subsidi</p>
+            </div>
+          </div>
+        </div>
+
         @if(!isset($gelombang) || !$gelombang->is_aktif)
-        <div class="flex items-center gap-2 pt-2">
+        <div class="flex items-center gap-2 pt-1">
           <input type="checkbox" id="is_aktif" name="is_aktif" value="1"
             class="rounded border-slate-300 text-primary focus:ring-primary/30 w-4 h-4">
           <label for="is_aktif" class="text-xs font-semibold text-slate-650 cursor-pointer select-none">Jadikan Gelombang Aktif</label>
         </div>
         @endif
 
-        {{-- Buttons --}}
         <div class="flex items-center gap-2 pt-3 border-t border-slate-100">
-          <button type="submit"
-            class="flex-1 inline-flex items-center justify-center gap-2 bg-primary hover:bg-secondary text-white font-semibold py-2.5 rounded-xl transition-all shadow-sm">
+          <button type="submit" class="flex-1 inline-flex items-center justify-center gap-2 bg-primary hover:bg-secondary text-white font-semibold py-2.5 rounded-xl transition-all shadow-sm">
             <i class="fas fa-save text-sm"></i> Simpan
           </button>
           @if(isset($gelombang))
-            <a href="{{ route('admin.gelombang.index') }}"
-              class="inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-4 py-2.5 rounded-xl transition-all">
-              Batal
-            </a>
+            <a href="{{ route('admin.gelombang.index') }}" class="inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-4 py-2.5 rounded-xl transition-all">Batal</a>
           @endif
         </div>
       </form>
@@ -192,4 +196,58 @@
   </div>
 
 </div>
+@endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function formatRupiah(value) {
+        if (!value && value !== 0) return '';
+        let str = value.toString();
+        
+        if (str.endsWith('.00')) {
+            str = str.slice(0, -3);
+        }
+        
+        let clean = str.replace(/[^0-9]/g, '');
+        
+        if (clean.length > 1) {
+            clean = clean.replace(/^0+/, '');
+            if (clean === '') {
+                clean = '0';
+            }
+        }
+        
+        return clean.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    const inputs = document.querySelectorAll('.format-rupiah');
+    inputs.forEach(input => {
+        if (input.value) {
+            input.value = formatRupiah(input.value);
+        }
+
+        input.addEventListener('input', function() {
+            let cursorPosition = this.selectionStart;
+            let originalLength = this.value.length;
+            
+            let formatted = formatRupiah(this.value);
+            this.value = formatted;
+            
+            let newLength = formatted.length;
+            cursorPosition = cursorPosition + (newLength - originalLength);
+            this.setSelectionRange(cursorPosition, cursorPosition);
+        });
+    });
+
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function() {
+            form.querySelectorAll('.format-rupiah').forEach(input => {
+                input.value = input.value.replace(/\./g, '');
+            });
+        });
+    });
+});
+</script>
 @endsection

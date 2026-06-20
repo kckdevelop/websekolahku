@@ -18,11 +18,13 @@
   <div class="w-full max-w-md">
     {{-- Logo Card --}}
     <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl shadow-lg mb-4">
-        <i class="fas fa-graduation-cap text-white text-2xl"></i>
-      </div>
-      <h1 class="text-2xl font-bold text-white">Admin Panel</h1>
-      <p class="text-slate-400 text-sm mt-1">SMK Muhammadiyah 1 Bantul</p>
+      <a href="/" class="group inline-block">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-lg mb-4 overflow-hidden transition-transform group-hover:scale-105">
+          <img src="{{ asset('storage/logomusaba.png') }}" alt="Logo" class="w-12 h-12 object-contain">
+        </div>
+        <h1 class="text-2xl font-bold text-white group-hover:text-slate-200 transition-colors">Admin Panel</h1>
+        <p class="text-slate-400 text-sm mt-1">SMK Muhammadiyah 1 Bantul</p>
+      </a>
     </div>
 
     {{-- Login Card --}}

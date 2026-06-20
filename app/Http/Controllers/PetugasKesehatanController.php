@@ -9,7 +9,7 @@ class PetugasKesehatanController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Pendaftaran::query()->orderBy('created_at', 'desc');
+        $query = Pendaftaran::query()->whereNotNull('verified_at')->orderBy('created_at', 'desc');
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -25,11 +25,20 @@ class PetugasKesehatanController extends Controller
             $query->whereNotNull('kesehatan_verified_at');
         }
 
-        $pendaftarans = $query->paginate(20)->withQueryString();
+        $perPage = $request->input('per_page', 20);
+        if (!in_array($perPage, [10, 20, 50, 100])) {
+            $perPage = 20;
+        }
 
-        $totalAll = Pendaftaran::count();
-        $totalBelum = Pendaftaran::whereNull('kesehatan_verified_at')->count();
-        $totalSudah = Pendaftaran::whereNotNull('kesehatan_verified_at')->count();
+        $pendaftarans = $query->paginate($perPage)->withQueryString();
+
+        $totalAll = Pendaftaran::whereNotNull('verified_at')->count();
+        $totalBelum = Pendaftaran::whereNotNull('verified_at')->whereNull('kesehatan_verified_at')->count();
+        $totalSudah = Pendaftaran::whereNotNull('verified_at')->whereNotNull('kesehatan_verified_at')->count();
+
+        if ($request->ajax()) {
+            return view('petugas.kesehatan.table', compact('pendaftarans'))->render();
+        }
 
         return view('petugas.kesehatan.index', compact('pendaftarans', 'totalAll', 'totalBelum', 'totalSudah'));
     }
@@ -70,7 +79,7 @@ class PetugasKesehatanController extends Controller
 
     public function laporan(Request $request)
     {
-        $query = Pendaftaran::query()->orderBy('created_at', 'desc');
+        $query = Pendaftaran::query()->whereNotNull('verified_at')->orderBy('created_at', 'desc');
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -95,9 +104,9 @@ class PetugasKesehatanController extends Controller
         $pendaftarans = $query->get();
         $gelombangs = \App\Models\SpmbGelombang::orderBy('tanggal_mulai', 'asc')->get();
 
-        $totalAll = Pendaftaran::count();
-        $totalBelum = Pendaftaran::whereNull('kesehatan_verified_at')->count();
-        $totalSudah = Pendaftaran::whereNotNull('kesehatan_verified_at')->count();
+        $totalAll = Pendaftaran::whereNotNull('verified_at')->count();
+        $totalBelum = Pendaftaran::whereNotNull('verified_at')->whereNull('kesehatan_verified_at')->count();
+        $totalSudah = Pendaftaran::whereNotNull('verified_at')->whereNotNull('kesehatan_verified_at')->count();
 
         return view('petugas.kesehatan.laporan', compact(
             'pendaftarans', 'gelombangs', 'totalAll', 'totalBelum', 'totalSudah'

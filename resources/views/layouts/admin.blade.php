@@ -152,12 +152,12 @@
 
       {{-- Dropdown 3: Tampilan Beranda --}}
       <div class="dropdown-container">
-        <button type="button" class="nav-link w-full text-left dropdown-toggle {{ request()->routeIs('admin.hero.*', 'admin.sambutan.*', 'admin.testimoni.*', 'admin.jurusan.*', 'admin.mitra.*') ? 'active' : '' }}" onclick="toggleDropdown(this)">
+        <button type="button" class="nav-link w-full text-left dropdown-toggle {{ request()->routeIs('admin.hero.*', 'admin.sambutan.*', 'admin.testimoni.*', 'admin.jurusan.*', 'admin.mitra.*', 'admin.spmb-halaman.*') ? 'active' : '' }}" onclick="toggleDropdown(this)">
           <i class="fas fa-sliders-h nav-icon"></i>
           <span class="nav-label">Tampilan Beranda</span>
-          <i class="fas fa-chevron-right dropdown-chevron text-xs transition-transform duration-200 ml-auto {{ request()->routeIs('admin.hero.*', 'admin.sambutan.*', 'admin.testimoni.*', 'admin.jurusan.*', 'admin.mitra.*') ? 'rotate-90' : '' }}"></i>
+          <i class="fas fa-chevron-right dropdown-chevron text-xs transition-transform duration-200 ml-auto {{ request()->routeIs('admin.hero.*', 'admin.sambutan.*', 'admin.testimoni.*', 'admin.jurusan.*', 'admin.mitra.*', 'admin.spmb-halaman.*') ? 'rotate-90' : '' }}"></i>
         </button>
-        <div class="dropdown-menu pl-4 space-y-1 mt-1 transition-all duration-300 {{ request()->routeIs('admin.hero.*', 'admin.sambutan.*', 'admin.testimoni.*', 'admin.jurusan.*', 'admin.mitra.*') ? '' : 'hidden' }}">
+        <div class="dropdown-menu pl-4 space-y-1 mt-1 transition-all duration-300 {{ request()->routeIs('admin.hero.*', 'admin.sambutan.*', 'admin.testimoni.*', 'admin.jurusan.*', 'admin.mitra.*', 'admin.spmb-halaman.*') ? '' : 'hidden' }}">
           <a href="{{ route('admin.hero.index') }}" class="nav-link py-2 {{ request()->routeIs('admin.hero.*') ? 'active' : '' }}">
             <i class="far fa-circle nav-icon text-xxs scale-75"></i>
             <span class="nav-label text-xs">Hero Slideshow</span>
@@ -173,6 +173,10 @@
           <a href="{{ route('admin.jurusan.index') }}" class="nav-link py-2 {{ request()->routeIs('admin.jurusan.*') ? 'active' : '' }}">
             <i class="far fa-circle nav-icon text-xxs scale-75"></i>
             <span class="nav-label text-xs">Halaman Jurusan</span>
+          </a>
+          <a href="{{ route('admin.spmb-halaman.edit') }}" class="nav-link py-2 {{ request()->routeIs('admin.spmb-halaman.*') ? 'active' : '' }}">
+            <i class="far fa-circle nav-icon text-xxs scale-75"></i>
+            <span class="nav-label text-xs">Halaman SPMB</span>
           </a>
           <a href="{{ route('admin.mitra.index') }}" class="nav-link py-2 {{ request()->routeIs('admin.mitra.*') ? 'active' : '' }}">
             <i class="far fa-circle nav-icon text-xxs scale-75"></i>

@@ -43,11 +43,6 @@
         <a href="{{ route('admin.pendaftaran.index', request()->only('status')) }}" class="px-3 py-2 text-sm text-red-500 hover:text-red-700 transition-colors" title="Reset pencarian & limit"><i class="fas fa-times"></i></a>
       @endif
     </form>
-
-    {{-- Green Tambah Button --}}
-    <a href="{{ route('admin.pendaftaran.create') }}" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2.5 rounded-xl transition-all shadow-sm shadow-emerald-600/10 hover:shadow-lg">
-      <i class="fas fa-plus"></i> Tambah Pendaftar
-    </a>
   </div>
 </div>
 
@@ -368,6 +363,7 @@
                     <i class="fas fa-external-link-alt"></i> Lihat File
                   </a>
                 </div>
+              </div>
             </div>
             
             {{-- Hasil Pemeriksaan Kesehatan (UKS) --}}
@@ -482,7 +478,6 @@
                 </div>
               </div>
             </div>
-            
           </div>
         </div>
       </div>
@@ -1498,9 +1493,8 @@
         if (res.ok || res.status === 302) {
           // Remove the row from the table
           if (pendingDeleteRow) {
-            pendingDeleteRow.style.transition = 'opacity 0.3s, transform 0.3s';
+            pendingDeleteRow.style.transition = 'opacity 0.3s';
             pendingDeleteRow.style.opacity    = '0';
-            pendingDeleteRow.style.transform  = 'translateX(20px)';
             setTimeout(() => pendingDeleteRow.remove(), 300);
           }
           closeDeleteModal();
@@ -1560,6 +1554,9 @@
         populateEditView(originalData, originalGelombangs);
         setModalMode('detail');
       }
+      // Reset scroll to top when switching modes
+      const modalBody = document.querySelector('#pendaftaran-modal .overflow-y-auto');
+      if (modalBody) modalBody.scrollTop = 0;
     });
     
     // Copy address sync checkboxes

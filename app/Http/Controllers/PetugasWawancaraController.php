@@ -65,8 +65,8 @@ class PetugasWawancaraController extends Controller
 
     public function show(Pendaftaran $pendaftaran)
     {
-        // Ambil gelombang aktif untuk referensi biaya default
-        $gelombangAktif = SpmbGelombang::where('is_aktif', true)->first();
+        // Ambil gelombang sesuai kode di nomor pendaftaran (MSBxx-WW-xxx)
+        $gelombangAktif = $this->getGelombangFromNoDaftar($pendaftaran->no_daftar);
         // Ambil daftar petugas pewawancara aktif (atau yang sedang terhubung)
         $pewawancaras = \App\Models\PetugasWawancara::where('aktif', true)
             ->orWhere('id', $pendaftaran->petugas_wawancara_id)
@@ -101,6 +101,7 @@ class PetugasWawancaraController extends Controller
             'biaya_spp'             => 'required|numeric|min:0',
             'biaya_dana_awal_tahun' => 'required|numeric|min:0',
             'biaya_infaq'           => 'required|numeric|min:0',
+            'status_yatim_piatu'    => 'required|in:normal,yatim,piatu,yatim_piatu',
         ], [
             'petugas_wawancara_id.required'  => 'Petugas pewawancara wajib dipilih.',
             'petugas_wawancara_id.exists'    => 'Petugas pewawancara tidak valid.',
@@ -111,15 +112,17 @@ class PetugasWawancaraController extends Controller
             'ukuran_seragam.required'        => 'Ukuran seragam wajib diisi.',
             'status.required'                => 'Status kelulusan siswa wajib dipilih.',
             'status.in'                      => 'Status kelulusan siswa tidak valid.',
+            'status_yatim_piatu.required'    => 'Status yatim piatu wajib diisi.',
+            'status_yatim_piatu.in'          => 'Status yatim piatu tidak valid.',
         ]);
 
         $biayaSpp           = (float) $request->biaya_spp;
         $biayaDanaAwalTahun = (float) $request->biaya_dana_awal_tahun;
         $biayaInfaq         = (float) $request->biaya_infaq;
 
-        // Ambil potongan dari gelombang aktif
-        $gelombangAktif     = SpmbGelombang::where('is_aktif', true)->first();
-        $biayaPotongan      = $gelombangAktif ? (float) $gelombangAktif->potongan_subsidi : 0;
+        // Ambil potongan dari gelombang yang sesuai dengan nomor pendaftaran siswa
+        $gelombangSiswa     = $this->getGelombangFromNoDaftar($pendaftaran->no_daftar);
+        $biayaPotongan      = $gelombangSiswa ? (float) $gelombangSiswa->potongan_subsidi : 0;
 
         $totalTagihan       = max(0, $biayaDanaAwalTahun + $biayaInfaq - $biayaPotongan);
 
@@ -147,6 +150,7 @@ class PetugasWawancaraController extends Controller
             'diterima_di_jurusan'          => $request->diterima_di_jurusan,
             'ukuran_seragam'               => $request->ukuran_seragam,
             'status'                       => $request->status,
+            'status_yatim_piatu'           => $request->status_yatim_piatu,
 
             'biaya_spp'             => $biayaSpp,
             'biaya_dana_awal_tahun' => $biayaDanaAwalTahun,
@@ -159,6 +163,49 @@ class PetugasWawancaraController extends Controller
 
         return redirect()->route('petugas.wawancara.dashboard')
             ->with('success', 'Data Wawancara & Biaya Siswa ' . $pendaftaran->nama_lengkap . ' berhasil disimpan!');
+    }
+
+    /**
+     * Cari SpmbGelombang yang sesuai dengan kode gelombang di nomor pendaftaran.
+     * Format no_daftar: MSBxx-WW-NNN (contoh: MSB26-01-001)
+     * Prioritas: kolom kode_gelombang → fallback ke pencocokan nama → gelombang aktif.
+     */
+    private function getGelombangFromNoDaftar(string $noDaftar): ?SpmbGelombang
+    {
+        // Ekstrak kode gelombang (WW) dari format MSBxx-WW-NNN
+        if (preg_match('/^MSB\d{2}-(\d{2})-/', strtoupper($noDaftar), $matches)) {
+            $waveNumber = (int) $matches[1]; // mis. 1, 2, 3
+
+            // Cara 1: langsung cocokkan kolom kode_gelombang (akurat & efisien)
+            $gelombang = SpmbGelombang::where('kode_gelombang', $waveNumber)->first();
+            if ($gelombang) {
+                return $gelombang;
+            }
+
+            // Cara 2: fallback — cocokkan via nama_gelombang (untuk data lama sebelum ada kode_gelombang)
+            $gelombang = SpmbGelombang::get()->first(function ($g) use ($waveNumber) {
+                $nama = strtolower(trim($g->nama_gelombang));
+                // Coba ekstrak angka dari nama gelombang
+                if (preg_match('/\d+/', $nama, $m)) {
+                    return (int) $m[0] === $waveNumber;
+                }
+                // Coba deteksi angka romawi
+                $romanMap = ['i' => 1, 'ii' => 2, 'iii' => 3, 'iv' => 4, 'v' => 5];
+                foreach ($romanMap as $roman => $num) {
+                    if ($num === $waveNumber && preg_match('/\b' . $roman . '\b/', $nama)) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            if ($gelombang) {
+                return $gelombang;
+            }
+        }
+
+        // Fallback: ambil gelombang aktif
+        return SpmbGelombang::where('is_aktif', true)->first();
     }
 
     public function laporan(Request $request)

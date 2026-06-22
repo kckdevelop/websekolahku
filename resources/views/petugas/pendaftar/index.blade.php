@@ -10,9 +10,7 @@
       <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2">
         <i class="fas fa-list text-blue-500"></i> Daftar Pendaftar
       </h2>
-      <a href="{{ route('petugas.create') }}" class="px-3 py-1.5 bg-green-600 text-white text-xs rounded-lg hover:bg-green-700 transition font-semibold flex items-center gap-1">
-        <i class="fas fa-plus"></i> Tambah Pendaftar
-      </a>
+
     </div>
     <div class="flex gap-2 flex-wrap items-center">
       {{-- Search --}}

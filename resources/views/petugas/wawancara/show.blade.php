@@ -75,6 +75,14 @@
           <span class="text-slate-800 font-bold mt-0.5 block">{{ $pendaftaran->petugasWawancara->nama }}</span>
         </div>
         @endif
+        @if($pendaftaran->status_yatim_piatu && $pendaftaran->status_yatim_piatu !== 'normal')
+        <div>
+          <span class="text-slate-400 block font-semibold uppercase text-xxs">Status Yatim/Piatu</span>
+          <span class="inline-block mt-1 px-2.5 py-0.5 rounded-full text-xxs font-bold bg-amber-100 text-amber-700 uppercase">
+            {{ str_replace('_', ' ', $pendaftaran->status_yatim_piatu) }}
+          </span>
+        </div>
+        @endif
         @if($pendaftaran->total_tagihan)
         <div class="pt-2 border-t border-slate-50">
           <span class="text-slate-400 block font-semibold uppercase text-xxs">Total Tagihan</span>
@@ -265,6 +273,17 @@
                      value="{{ (isset($pendaftaran->biaya_potongan) && $pendaftaran->biaya_potongan > 0) ? (int) $pendaftaran->biaya_potongan : (isset($gelombangAktif) ? (int) $gelombangAktif->potongan_subsidi : 0) }}"
                      class="w-full px-4 py-2.5 rounded-xl border border-slate-250 bg-slate-50 cursor-not-allowed outline-none text-sm font-mono text-slate-500 format-rupiah">
             </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">Status Yatim/Piatu <span class="text-red-500">*</span></label>
+              <select name="status_yatim_piatu" id="status_yatim_piatu" required
+                      class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-100 focus:border-emerald-500 outline-none text-sm text-slate-800 bg-white"
+                      onchange="updateBiayaStatus()">
+                <option value="normal" {{ old('status_yatim_piatu', $pendaftaran->status_yatim_piatu ?? 'normal') === 'normal' ? 'selected' : '' }}>Bukan Yatim/Piatu (Normal)</option>
+                <option value="yatim" {{ old('status_yatim_piatu', $pendaftaran->status_yatim_piatu) === 'yatim' ? 'selected' : '' }}>Yatim (SPP Bulanan 0)</option>
+                <option value="piatu" {{ old('status_yatim_piatu', $pendaftaran->status_yatim_piatu) === 'piatu' ? 'selected' : '' }}>Piatu (SPP 50%)</option>
+                <option value="yatim_piatu" {{ old('status_yatim_piatu', $pendaftaran->status_yatim_piatu) === 'yatim_piatu' ? 'selected' : '' }}>Yatim Piatu (Sumbangan 0, SPP 50%, Biaya Pendidikan 50%)</option>
+              </select>
+            </div>
           </div>
 
           {{-- Preview Total Tagihan --}}
@@ -290,6 +309,53 @@
 </div>
 
 <script>
+const defaultSpp = {{ $gelombangAktif->biaya_spp_default ?? 0 }};
+const defaultBiayaPendidikan = {{ $gelombangAktif->biaya_zakat_default ?? 0 }};
+
+function formatRupiahGlobal(value) {
+    if (!value && value !== 0) return '';
+    let str = value.toString();
+    
+    if (str.endsWith('.00')) {
+        str = str.slice(0, -3);
+    }
+    
+    let clean = str.replace(/[^0-9]/g, '');
+    
+    if (clean.length > 1) {
+        clean = clean.replace(/^0+/, '');
+        if (clean === '') {
+            clean = '0';
+        }
+    }
+    
+    return clean.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+function updateBiayaStatus() {
+  const status = document.getElementById('status_yatim_piatu').value;
+  const sppInput = document.getElementById('biaya_spp');
+  const datInput = document.getElementById('biaya_dana_awal_tahun');
+  const infaqInput = document.getElementById('biaya_infaq');
+  
+  if (status === 'yatim') {
+    sppInput.value = '0';
+    datInput.value = formatRupiahGlobal(defaultBiayaPendidikan);
+  } else if (status === 'piatu') {
+    sppInput.value = formatRupiahGlobal(Math.round(defaultSpp * 0.5));
+    datInput.value = formatRupiahGlobal(defaultBiayaPendidikan);
+  } else if (status === 'yatim_piatu') {
+    sppInput.value = formatRupiahGlobal(Math.round(defaultSpp * 0.5));
+    datInput.value = formatRupiahGlobal(Math.round(defaultBiayaPendidikan * 0.5));
+    infaqInput.value = '0';
+  } else {
+    sppInput.value = formatRupiahGlobal(defaultSpp);
+    datInput.value = formatRupiahGlobal(defaultBiayaPendidikan);
+  }
+  
+  hitungTotal();
+}
+
 function hitungTotal() {
   const sppStr   = document.getElementById('biaya_spp').value || '';
   const datStr   = document.getElementById('biaya_dana_awal_tahun').value || '';

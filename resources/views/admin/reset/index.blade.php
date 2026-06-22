@@ -78,7 +78,7 @@
         </ul>
       </div>
 
-      <form method="POST" action="{{ route('admin.reset.post') }}" class="pt-4 border-t border-slate-100 space-y-4" onsubmit="return confirmReset()">
+      <form id="reset-form" method="POST" action="{{ route('admin.reset.post') }}" class="pt-4 border-t border-slate-100 space-y-4">
         @csrf
         <div>
           <label for="konfirmasi" class="block text-xs font-semibold text-slate-700 mb-2">
@@ -92,7 +92,7 @@
         </div>
 
         <div class="flex items-center gap-3 pt-2">
-          <button type="submit" id="btn-submit-reset" disabled
+          <button type="button" id="btn-submit-reset" disabled onclick="openConfirmationModal()"
             class="inline-flex items-center gap-2 bg-slate-300 text-slate-500 font-bold px-6 py-3 rounded-xl transition-all cursor-not-allowed">
             <i class="fas fa-trash-alt"></i> Bersihkan Semua Data Pendaftaran
           </button>
@@ -105,10 +105,50 @@
     </div>
   </div>
 
+  <!-- Confirmation Modal -->
+  <div id="confirmation-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300 opacity-0 pointer-events-none">
+    <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl transform scale-95 opacity-0 transition-all duration-300 relative overflow-hidden text-center">
+      <!-- Close button -->
+      <button type="button" onclick="closeConfirmationModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-xl font-bold transition">&times;</button>
+      
+      <!-- Warning Icon -->
+      <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-red-50 mb-6 relative">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-100 opacity-75"></span>
+        <div class="h-16 w-16 rounded-full bg-red-100 flex items-center justify-center relative z-10">
+          <i class="fas fa-exclamation-triangle text-2xl text-red-600"></i>
+        </div>
+      </div>
+      
+      <!-- Title & Content -->
+      <h3 class="text-xl font-bold text-slate-800 mb-2">Apakah Anda Sangat Yakin?</h3>
+      <p class="text-xs text-slate-500 mb-6 leading-relaxed">
+        Tindakan ini <strong>tidak dapat dibatalkan!</strong> Seluruh data pendaftaran, gelombang, akun siswa, berkas fisik, hasil tes, wawancara, dan riwayat pembayaran akan dihapus secara permanen dari database.
+      </p>
+      
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <button type="button" onclick="closeConfirmationModal()" 
+          class="w-full sm:w-1/2 px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm transition cursor-pointer text-center">
+          Batal
+        </button>
+        <button type="button" id="btn-confirm-delete" onclick="submitResetForm()" 
+          class="w-full sm:w-1/2 px-5 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm transition shadow-lg shadow-red-600/20 flex items-center justify-center gap-2 cursor-pointer">
+          <i class="fas fa-trash-alt"></i> Ya, Hapus Permanen
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if(session('success'))
+  <!-- Success alert handled via SweetAlert2 -->
+  @endif
+
 </div>
 @endsection
 
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script>
   function checkResetInput(input) {
     const btn = document.getElementById('btn-submit-reset');
@@ -121,13 +161,78 @@
     }
   }
 
-  function confirmReset() {
-    const val = document.getElementById('konfirmasi').value.trim().toUpperCase();
-    if (val !== 'RESET') {
-      alert('Tuliskan kata "RESET" terlebih dahulu.');
-      return false;
-    }
-    return confirm('APAKAH ANDA SANGAT YAKIN? Semua data pendaftar dan gelombang akan hilang selamanya dan tidak dapat dikembalikan.');
+  function openConfirmationModal() {
+    const modal = document.getElementById('confirmation-modal');
+    const card = modal.querySelector('.bg-white');
+    
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    modal.classList.add('opacity-100', 'pointer-events-auto');
+    
+    card.classList.remove('scale-95', 'opacity-0');
+    card.classList.add('scale-100', 'opacity-100');
   }
+
+  function closeConfirmationModal() {
+    const modal = document.getElementById('confirmation-modal');
+    const card = modal.querySelector('.bg-white');
+    
+    modal.classList.remove('opacity-100', 'pointer-events-auto');
+    modal.classList.add('opacity-0', 'pointer-events-none');
+    
+    card.classList.remove('scale-100', 'opacity-100');
+    card.classList.add('scale-95', 'opacity-0');
+  }
+
+  function submitResetForm() {
+    const btnConfirm = document.getElementById('btn-confirm-delete');
+    
+    // Disable button and show spinner
+    btnConfirm.disabled = true;
+    btnConfirm.classList.add('cursor-not-allowed', 'opacity-75');
+    btnConfirm.innerHTML = `<i class="fas fa-spinner animate-spin"></i> Sedang Mereset...`;
+    
+    // Submit the form
+    document.getElementById('reset-form').submit();
+  }
+
+  @if(session('success'))
+  document.addEventListener('DOMContentLoaded', function() {
+    Swal.fire({
+      title: 'Reset Berhasil!',
+      text: "{{ session('success') }}",
+      icon: 'success',
+      confirmButtonText: 'Selesai',
+      confirmButtonColor: '#10b981',
+      background: '#ffffff',
+      customClass: {
+        popup: 'rounded-[24px]',
+        confirmButton: 'px-6 py-3 rounded-xl font-bold text-sm transition shadow-lg shadow-emerald-500/20'
+      },
+      didOpen: () => {
+        if (typeof confetti === 'function') {
+          const duration = 2.5 * 1000;
+          const animationEnd = Date.now() + duration;
+          const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 110000 };
+
+          function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+          }
+
+          const interval = setInterval(function() {
+            const timeLeft = animationEnd - Date.now();
+
+            if (timeLeft <= 0) {
+              return clearInterval(interval);
+            }
+
+            const particleCount = 50 * (timeLeft / duration);
+            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+          }, 250);
+        }
+      }
+    });
+  });
+  @endif
 </script>
 @endsection

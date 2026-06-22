@@ -49,6 +49,14 @@
           @endif
           <div><span class="text-slate-400 block text-xxs uppercase font-semibold">Asal Sekolah</span><span class="font-semibold text-slate-700">{{ $pendaftaran->asal_sekolah }}</span></div>
           <div><span class="text-slate-400 block text-xxs uppercase font-semibold">Gelombang</span><span class="font-semibold text-slate-700">{{ $pendaftaran->gelombang ?? '-' }}</span></div>
+          @if($pendaftaran->status_yatim_piatu && $pendaftaran->status_yatim_piatu !== 'normal')
+          <div>
+            <span class="text-slate-400 block text-xxs uppercase font-semibold">Status Yatim/Piatu</span>
+            <span class="inline-block mt-0.5 px-2 py-0.5 rounded-lg text-xxs font-bold bg-amber-100 text-amber-700 uppercase">
+              {{ str_replace('_', ' ', $pendaftaran->status_yatim_piatu) }}
+            </span>
+          </div>
+          @endif
         </div>
       </div>
 

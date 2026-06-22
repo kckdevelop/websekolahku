@@ -60,7 +60,7 @@
               </select>
               <select name="tahun" required class="px-3 py-2.5 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none text-sm">
                 <option value="">Tahun</option>
-                @for($y = 2005; $y <= 2015; $y++)
+                @for($y = 2000; $y <= 2020; $y++)
                   <option value="{{ $y }}" {{ old('tahun') == $y ? 'selected' : '' }}>{{ $y }}</option>
                 @endfor
               </select>

@@ -417,10 +417,10 @@
           </svg>
         </button>
         <div id="mobile-galeri" class="mobile-submenu pl-4 mt-1 space-y-2">
-          <a href="/galerifoto" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+          <a href="/galeri/galerifoto" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-camera mr-2"></i> Foto
           </a>
-          <a href="/galerivideo" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+          <a href="/galeri/galerivideo" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-video mr-2"></i> Video
           </a>
         </div>
@@ -466,18 +466,19 @@
         <div>
           <h4 class="font-semibold mb-3">Menu</h4>
           <ul class="space-y-2 text-slate-300">
-            <li><a href="#profil" class="hover:text-primary">Profil</a></li>
-            <li><a href="#program" class="hover:text-primary">Program Keahlian</a></li>
-            <li><a href="#layanan" class="hover:text-primary">Layanan</a></li>
-            <li><a href="#galeri" class="hover:text-primary">Galeri</a></li>
+            <li><a href="/profil/identitas" class="hover:text-primary">Profil</a></li>
+            <li><a href="{{ route('jurusan.show', 'tkr') }}" class="hover:text-primary">Program Keahlian</a></li>
+            <li><a href="/informasi/kontak" class="hover:text-primary">Layanan</a></li>
+            <li><a href="/galeri/galerifoto" class="hover:text-primary">Galeri</a></li>
           </ul>
         </div>
         <div>
           <h4 class="font-semibold mb-3">Layanan</h4>
           <ul class="space-y-2 text-slate-300">
-            <li><a href="#" class="hover:text-primary">Perpustakaan Digital</a></li>
-            <li><a href="#" class="hover:text-primary">Sistem PKL Online</a></li>
-            <li><a href="#" class="hover:text-primary">LMS SMK</a></li>
+            <li><a href="/informasi/spmb" class="hover:text-primary">Info SPMB</a></li>
+            <li><a href="/informasi/berita" class="hover:text-primary">Berita Sekolah</a></li>
+            <li><a href="/informasi/prestasi" class="hover:text-primary">Prestasi</a></li>
+            <li><a href="/informasi/kontak" class="hover:text-primary">Hubungi Kami</a></li>
           </ul>
         </div>
         <div>

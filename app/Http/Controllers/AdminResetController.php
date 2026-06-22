@@ -24,9 +24,9 @@ class AdminResetController extends Controller
         ]);
 
         try {
-            DB::transaction(function () {
-                Schema::disableForeignKeyConstraints();
-                
+            Schema::disableForeignKeyConstraints();
+            
+            try {
                 // Hapus data riwayat pembayaran
                 DB::table('riwayat_pembayarans')->truncate();
                 
@@ -38,9 +38,9 @@ class AdminResetController extends Controller
                 
                 // Hapus data gelombang
                 DB::table('spmb_gelombangs')->truncate();
-                
+            } finally {
                 Schema::enableForeignKeyConstraints();
-            });
+            }
 
             // Hapus file berkas & foto pendaftar yang tersimpan di storage public
             if (Storage::disk('public')->exists('pendaftaran')) {

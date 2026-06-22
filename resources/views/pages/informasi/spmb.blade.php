@@ -64,11 +64,18 @@
 @section('content')
   <!-- Hero Section -->
   <section class="relative h-[40vh] overflow-hidden">
+    @auth
+      <div class="absolute top-6 right-6 z-[999]">
+        <a href="{{ route('admin.spmb-halaman.edit') }}" class="bg-primary hover:bg-secondary text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-md flex items-center gap-2 transition transform hover:scale-105">
+          <i class="fas fa-edit"></i> Edit Halaman SPMB
+        </a>
+      </div>
+    @endauth
     <div class="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent z-10"></div>
-    <img src="https://picsum.photos/seed/spmb-hero/1920/600" alt="SPMB SMK Muhammadiyah 1 Bantul" class="w-full h-full object-cover">
+    <img src="{{ $spmbContent->hero_gambar_src }}" alt="{{ $spmbContent->hero_title }}" class="w-full h-full object-cover">
     <div class="absolute top-1/2 left-8 md:left-16 transform -translate-y-1/2 text-white z-20">
-      <h1 class="text-3xl md:text-5xl font-bold mb-2">SPMB 2026/2027</h1>
-      <p class="text-lg md:text-xl">Seleksi Penerimaan Peserta Didik Baru</p>
+      <h1 class="text-3xl md:text-5xl font-bold mb-2">{{ $spmbContent->hero_title }}</h1>
+      <p class="text-lg md:text-xl">{{ $spmbContent->hero_subtitle }}</p>
     </div>
   </section>
 
@@ -161,35 +168,35 @@
       <div class="kuota-card rounded-xl p-5 text-center transition-all duration-300 hover:scale-105 hover:shadow-xl"
            style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
         <h3 class="font-bold text-primary">TKRO</h3>
-        <p class="text-2xl font-extrabold mt-2 text-slate-800">5 Kelas</p>
+        <p class="text-2xl font-extrabold mt-2 text-slate-800">{{ $spmbContent->kuota_tkro }}</p>
       </div>
 
       <!-- TBSM -->
       <div class="kuota-card rounded-xl p-5 text-center transition-all duration-300 hover:scale-105 hover:shadow-xl"
            style="background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);">
         <h3 class="font-bold text-primary">TBSM</h3>
-        <p class="text-2xl font-extrabold mt-2 text-slate-800">3 Kelas</p>
+        <p class="text-2xl font-extrabold mt-2 text-slate-800">{{ $spmbContent->kuota_tbsm }}</p>
       </div>
 
       <!-- TPM -->
       <div class="kuota-card rounded-xl p-5 text-center transition-all duration-300 hover:scale-105 hover:shadow-xl"
            style="background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);">
         <h3 class="font-bold text-primary">TPM</h3>
-        <p class="text-2xl font-extrabold mt-2 text-slate-800">3 Kelas</p>
+        <p class="text-2xl font-extrabold mt-2 text-slate-800">{{ $spmbContent->kuota_tpm }}</p>
       </div>
 
       <!-- TAV -->
       <div class="kuota-card rounded-xl p-5 text-center transition-all duration-300 hover:scale-105 hover:shadow-xl"
            style="background: linear-gradient(135deg, #d7bde2 0%, #f5b7b1 100%);">
         <h3 class="font-bold text-primary">TAV</h3>
-        <p class="text-2xl font-extrabold mt-2 text-slate-800">2 Kelas</p>
+        <p class="text-2xl font-extrabold mt-2 text-slate-800">{{ $spmbContent->kuota_tav }}</p>
       </div>
 
       <!-- RPL -->
       <div class="kuota-card rounded-xl p-5 text-center transition-all duration-300 hover:scale-105 hover:shadow-xl"
            style="background: linear-gradient(135deg, #c3cfe2 0%, #a29bfe 100%);">
         <h3 class="font-bold text-primary">RPL</h3>
-        <p class="text-2xl font-extrabold mt-2 text-slate-800">3 Kelas</p>
+        <p class="text-2xl font-extrabold mt-2 text-slate-800">{{ $spmbContent->kuota_rpl }}</p>
       </div>
     </div>
   </div>
@@ -200,41 +207,15 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-2xl font-bold text-primary mb-8 text-center">Alur Pendaftaran</h2>
       <div class="space-y-6">
-        <div class="step-card">
-          <div class="step-number">1</div>
-          <div>
-            <h3 class="font-bold text-lg">Daftar Online</h3>
-            <p class="text-slate-600 dark:text-slate-400">Kunjungi portal PPDB resmi dan lengkapi formulir pendaftaran.</p>
+        @foreach ($spmbContent->alur_pendaftaran as $index => $step)
+          <div class="step-card">
+            <div class="step-number">{{ $index + 1 }}</div>
+            <div>
+              <h3 class="font-bold text-lg">{{ $step['judul'] }}</h3>
+              <p class="text-slate-600 dark:text-slate-400">{{ $step['deskripsi'] }}</p>
+            </div>
           </div>
-        </div>
-        <div class="step-card">
-          <div class="step-number">2</div>
-          <div>
-            <h3 class="font-bold text-lg">Upload Berkas</h3>
-            <p class="text-slate-600 dark:text-slate-400">Unggah scan rapor kelas VII–IX, akta kelahiran, dan KK.</p>
-          </div>
-        </div>
-        <div class="step-card">
-          <div class="step-number">3</div>
-          <div>
-            <h3 class="font-bold text-lg">Verifikasi Berkas</h3>
-            <p class="text-slate-600 dark:text-slate-400">Tunggu proses verifikasi dan validasi berkas oleh petugas admin sekolah.</p>
-          </div>
-        </div>
-        <div class="step-card">
-          <div class="step-number">4</div>
-          <div>
-            <h3 class="font-bold text-lg">Seleksi & Pengumuman</h3>
-            <p class="text-slate-600 dark:text-slate-400">Hasil seleksi diumumkan melalui website dan SMS.</p>
-          </div>
-        </div>
-        <div class="step-card">
-          <div class="step-number">5</div>
-          <div>
-            <h3 class="font-bold text-lg">Daftar Ulang</h3>
-            <p class="text-slate-600 dark:text-slate-400">Lakukan daftar ulang dengan membawa berkas asli.</p>
-          </div>
-        </div>
+        @endforeach
       </div>
     </div>
   </section>
@@ -244,13 +225,9 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-2xl font-bold text-primary mb-6 text-center">Persyaratan Pendaftaran</h2>
       <ul class="list-disc pl-6 space-y-2 text-slate-700 dark:text-slate-300">
-        <li>Lulus SMP/MTs atau sederajat (tahun 2023–2025)</li>
-        <li>Usia maksimal 21 tahun pada 1 Juli 2025</li>
-        <li>Rapor kelas VII–IX (semester 1–5)</li>
-        <li>Akta kelahiran</li>
-        <li>Kartu Keluarga (KK)</li>
-        <li>Foto berwarna 3x4 (2 lembar)</li>
-        <li>Tidak buta warna (khusus TKRO, TBSM, TPM)</li>
+        @foreach ($spmbContent->persyaratan as $item)
+          <li>{{ $item }}</li>
+        @endforeach
       </ul>
     </div>
   </section>
@@ -337,10 +314,12 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-2xl font-bold text-primary mb-8 text-center">Dokumentasi SPMB Tahun Lalu</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <img src="https://picsum.photos/seed/spmb1/400/300" alt="Pendaftaran SPMB" class="gallery-img w-full h-48 object-cover shadow-md">
-        <img src="https://picsum.photos/seed/spmb2/400/300" alt="Verifikasi Berkas" class="gallery-img w-full h-48 object-cover shadow-md">
-        <img src="https://picsum.photos/seed/spmb3/400/300" alt="Sosialisasi Jurusan" class="gallery-img w-full h-48 object-cover shadow-md">
-        <img src="https://picsum.photos/seed/spmb4/400/300" alt="Pengumuman Kelulusan" class="gallery-img w-full h-48 object-cover shadow-md">
+        @foreach ($spmbContent->foto_galeri as $index => $photo)
+          @php
+            $imgSrc = !empty($photo['gambar']) ? (Str::startsWith($photo['gambar'], 'http') ? $photo['gambar'] : asset('storage/' . $photo['gambar'])) : 'https://picsum.photos/seed/spmb'.($index+1).'/400/300';
+          @endphp
+          <img src="{{ $imgSrc }}" alt="{{ $photo['deskripsi'] ?? 'Dokumentasi SPMB' }}" title="{{ $photo['deskripsi'] ?? '' }}" class="gallery-img w-full h-48 object-cover shadow-md">
+        @endforeach
       </div>
     </div>
   </section>
@@ -348,8 +327,8 @@
   <!-- CTA -->
   <section class="py-12 bg-gradient-to-r from-primary to-secondary text-white fade-in-scroll">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <h2 class="text-2xl md:text-3xl font-bold mb-4">Siap Bergabung?</h2>
-      <p class="mb-6 text-lg opacity-90">Daftar sekarang dan dapatkan bonus eksklusif untuk pendaftar awal!</p>
+      <h2 class="text-2xl md:text-3xl font-bold mb-4">{{ $spmbContent->cta_title }}</h2>
+      <p class="mb-6 text-lg opacity-90">{{ $spmbContent->cta_subtitle }}</p>
       <a 
         href="{{ route('spmb.daftar') }}" 
         class="inline-block bg-white text-primary font-bold py-3 px-8 rounded-full text-lg shadow-lg hover:bg-slate-100 transition-all duration-300"

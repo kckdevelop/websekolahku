@@ -239,6 +239,12 @@
               <p class="text-xxs font-bold text-slate-400 uppercase">Kepribadian / Sikap</p>
               <p class="text-sm font-semibold text-slate-800 mt-0.5">{{ $pendaftaran->wawancara_kepribadian ?? '-' }}</p>
             </div>
+            @if($pendaftaran->status_yatim_piatu)
+            <div>
+              <p class="text-xxs font-bold text-slate-400 uppercase">Status Yatim/Piatu</p>
+              <p class="text-sm font-semibold text-slate-800 mt-0.5 capitalize">{{ str_replace('_', ' ', $pendaftaran->status_yatim_piatu) }}</p>
+            </div>
+            @endif
             <div class="md:col-span-2">
               <p class="text-xxs font-bold text-slate-400 uppercase">Catatan Gaya Belajar</p>
               <p class="text-sm font-semibold text-slate-800 mt-0.5 italic">{{ $pendaftaran->gaya_belajar_catatan ?? '-' }}</p>

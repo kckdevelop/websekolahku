@@ -17,6 +17,7 @@ use App\Http\Controllers\AdminSambutanController;
 use App\Http\Controllers\AdminMitraController;
 use App\Http\Controllers\AdminNoboxController;
 use App\Http\Controllers\AdminSpmbGelombangController;
+use App\Http\Controllers\AdminSpmbHalamanController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminPesanController;
 use App\Http\Controllers\PetugasController;
@@ -213,7 +214,8 @@ Route::get('/jurusan/{slug}', function ($slug) {
 })->name('jurusan.show');
 Route::get('/informasi/spmb', function () {
     $gelombangs = \App\Models\SpmbGelombang::orderBy('tanggal_mulai', 'asc')->get();
-    return view('pages.informasi.spmb', compact('gelombangs'));
+    $spmbContent = \App\Models\SpmbPageContent::getSingle();
+    return view('pages.informasi.spmb', compact('gelombangs', 'spmbContent'));
 });
 Route::get('/informasi/berita', function (\Illuminate\Http\Request $request) {
     $search = $request->query('search');
@@ -257,6 +259,22 @@ Route::post('/informasi/kontak', function (\Illuminate\Http\Request $request) {
 
     return response()->json(['success' => true, 'message' => 'Pesan Anda berhasil dikirim!']);
 })->name('kontak.store');
+
+Route::get('/docs/api-pdf', function () {
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.api_documentation');
+    return $pdf->setPaper('a4', 'portrait')->stream('api-documentation.pdf');
+})->name('docs.api-pdf');
+
+Route::get('/docs/proposal-pdf', function () {
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.proposal');
+    return $pdf->setPaper('a4', 'portrait')->stream('proposal-penawaran-websekolah.pdf');
+})->name('docs.proposal-pdf');
+
+Route::get('/docs/panduan-pdf', function () {
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.panduan');
+    return $pdf->setPaper('a4', 'portrait')->stream('buku-panduan-aplikasi-websekolah.pdf');
+})->name('docs.panduan-pdf');
+
 /*
 |--------------------------------------------------------------------------
 | SPMB (Seleksi Penerimaan Murid Baru) Routes
@@ -369,6 +387,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     // Pengaturan Gelombang SPMB
     Route::post('/gelombang/{gelombang}/toggle-active', [AdminSpmbGelombangController::class, 'toggleActive'])->name('gelombang.toggleActive');
     Route::resource('gelombang', AdminSpmbGelombangController::class);
+
+    // Pengaturan Halaman SPMB
+    Route::get('/spmb-halaman', [AdminSpmbHalamanController::class, 'edit'])->name('spmb-halaman.edit');
+    Route::put('/spmb-halaman', [AdminSpmbHalamanController::class, 'update'])->name('spmb-halaman.update');
 
     // Kelola User (admin & petugas)
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');

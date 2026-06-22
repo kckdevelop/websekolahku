@@ -105,6 +105,7 @@ class Pendaftaran extends Model
         'diterima_di_jurusan',
         'ukuran_seragam',
         'petugas_wawancara_id',
+        'status_yatim_piatu',
 
         // Pembayaran (ringkasan)
         'pembayaran_nominal',

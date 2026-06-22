@@ -13,6 +13,7 @@ class SpmbGelombang extends Model
 
     protected $fillable = [
         'nama_gelombang',
+        'kode_gelombang',
         'tahun_ajaran',
         'tanggal_mulai',
         'tanggal_selesai',
@@ -26,6 +27,7 @@ class SpmbGelombang extends Model
 
     protected $casts = [
         'is_aktif'           => 'boolean',
+        'kode_gelombang'     => 'integer',
         'tanggal_mulai'      => 'date',
         'tanggal_selesai'    => 'date',
         'biaya_pendaftaran'  => 'decimal:2',

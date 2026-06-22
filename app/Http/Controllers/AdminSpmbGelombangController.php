@@ -23,6 +23,7 @@ class AdminSpmbGelombangController extends Controller
     {
         $request->validate([
             'nama_gelombang'     => 'required|string|max:100',
+            'kode_gelombang'     => 'required|integer|min:1|max:99',
             'tahun_ajaran'       => 'required|string|max:20',
             'tanggal_mulai'      => 'nullable|date',
             'tanggal_selesai'    => 'nullable|date|after_or_equal:tanggal_mulai',
@@ -32,6 +33,9 @@ class AdminSpmbGelombangController extends Controller
             'potongan_subsidi'   => 'nullable|numeric|min:0',
         ], [
             'nama_gelombang.required'  => 'Nama gelombang wajib diisi.',
+            'kode_gelombang.required'  => 'Kode gelombang wajib diisi.',
+            'kode_gelombang.integer'   => 'Kode gelombang harus berupa angka.',
+            'kode_gelombang.min'       => 'Kode gelombang minimal 1.',
             'tahun_ajaran.required'    => 'Tahun ajaran wajib diisi.',
             'tanggal_selesai.after_or_equal' => 'Tanggal selesai harus setelah atau sama dengan tanggal mulai.',
         ]);
@@ -42,6 +46,7 @@ class AdminSpmbGelombangController extends Controller
 
         $gelombang = SpmbGelombang::create([
             'nama_gelombang'      => $request->nama_gelombang,
+            'kode_gelombang'      => $request->kode_gelombang,
             'tahun_ajaran'        => $request->tahun_ajaran,
             'tanggal_mulai'       => $request->tanggal_mulai,
             'tanggal_selesai'     => $request->tanggal_selesai,
@@ -76,6 +81,7 @@ class AdminSpmbGelombangController extends Controller
     {
         $request->validate([
             'nama_gelombang'     => 'required|string|max:100',
+            'kode_gelombang'     => 'required|integer|min:1|max:99',
             'tahun_ajaran'       => 'required|string|max:20',
             'tanggal_mulai'      => 'nullable|date',
             'tanggal_selesai'    => 'nullable|date|after_or_equal:tanggal_mulai',
@@ -85,12 +91,16 @@ class AdminSpmbGelombangController extends Controller
             'potongan_subsidi'   => 'nullable|numeric|min:0',
         ], [
             'nama_gelombang.required'  => 'Nama gelombang wajib diisi.',
+            'kode_gelombang.required'  => 'Kode gelombang wajib diisi.',
+            'kode_gelombang.integer'   => 'Kode gelombang harus berupa angka.',
+            'kode_gelombang.min'       => 'Kode gelombang minimal 1.',
             'tahun_ajaran.required'    => 'Tahun ajaran wajib diisi.',
             'tanggal_selesai.after_or_equal' => 'Tanggal selesai harus setelah atau sama dengan tanggal mulai.',
         ]);
 
         $gelombang->update([
             'nama_gelombang'      => $request->nama_gelombang,
+            'kode_gelombang'      => $request->kode_gelombang,
             'tahun_ajaran'        => $request->tahun_ajaran,
             'tanggal_mulai'       => $request->tanggal_mulai,
             'tanggal_selesai'     => $request->tanggal_selesai,

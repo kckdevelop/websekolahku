@@ -27,6 +27,7 @@ use App\Http\Controllers\PetugasPembayaranController;
 use App\Http\Controllers\AdminPetugasWawancaraController;
 use App\Http\Controllers\AdminResetController;
 use App\Http\Controllers\AdminDownloadPendaftaranController;
+use App\Http\Controllers\AdminBkkController;
 use App\Models\RiwayatPembayaran;
 
 /*
@@ -75,6 +76,11 @@ Route::get('/galeri/galerivideo', function () {
     $kategoriList = \App\Models\GaleriVideo::distinct()->orderBy('kategori')->pluck('kategori');
     return view('pages.galeri.galerivideo', compact('galeriVideos', 'kategoriList'));
 });
+Route::get('/bkk', function () {
+    $bkk = \App\Models\BkkSetting::getSingle();
+    $lowongans = \App\Models\LowonganKerja::aktifTerbuka()->orderBy('urutan')->orderByDesc('created_at')->get();
+    return view('pages.bkk.index', compact('bkk', 'lowongans'));
+})->name('bkk');
 Route::get('/jurusan/{slug}', function ($slug) {
     $listJurusan = [
         'tkr' => [
@@ -414,6 +420,17 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     // Download Pendaftaran (Excel)
     Route::get('/download-pendaftaran', [AdminDownloadPendaftaranController::class, 'index'])->name('download.pendaftaran');
     Route::get('/download-pendaftaran/excel', [AdminDownloadPendaftaranController::class, 'download'])->name('download.pendaftaran.excel');
+
+    // Bursa Kerja Khusus (BKK)
+    Route::get('/bkk/setting', [AdminBkkController::class, 'editSetting'])->name('bkk.setting');
+    Route::put('/bkk/setting', [AdminBkkController::class, 'updateSetting'])->name('bkk.setting.update');
+    Route::get('/bkk/lowongan', [AdminBkkController::class, 'indexLowongan'])->name('bkk.lowongan.index');
+    Route::get('/bkk/lowongan/create', [AdminBkkController::class, 'createLowongan'])->name('bkk.lowongan.create');
+    Route::post('/bkk/lowongan', [AdminBkkController::class, 'storeLowongan'])->name('bkk.lowongan.store');
+    Route::get('/bkk/lowongan/{lowongan}/edit', [AdminBkkController::class, 'editLowongan'])->name('bkk.lowongan.edit');
+    Route::put('/bkk/lowongan/{lowongan}', [AdminBkkController::class, 'updateLowongan'])->name('bkk.lowongan.update');
+    Route::delete('/bkk/lowongan/{lowongan}', [AdminBkkController::class, 'destroyLowongan'])->name('bkk.lowongan.destroy');
+    Route::post('/bkk/lowongan/{lowongan}/toggle-aktif', [AdminBkkController::class, 'toggleAktifLowongan'])->name('bkk.lowongan.toggle-aktif');
 });
 
 /*

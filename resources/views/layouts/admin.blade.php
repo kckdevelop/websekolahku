@@ -185,6 +185,25 @@
         </div>
       </div>
 
+      {{-- Dropdown 4: Bursa Kerja (BKK) --}}
+      <div class="dropdown-container">
+        <button type="button" class="nav-link w-full text-left dropdown-toggle {{ request()->routeIs('admin.bkk.*') ? 'active' : '' }}" onclick="toggleDropdown(this)">
+          <i class="fas fa-briefcase nav-icon"></i>
+          <span class="nav-label">Bursa Kerja (BKK)</span>
+          <i class="fas fa-chevron-right dropdown-chevron text-xs transition-transform duration-200 ml-auto {{ request()->routeIs('admin.bkk.*') ? 'rotate-90' : '' }}"></i>
+        </button>
+        <div class="dropdown-menu pl-4 space-y-1 mt-1 transition-all duration-300 {{ request()->routeIs('admin.bkk.*') ? '' : 'hidden' }}">
+          <a href="{{ route('admin.bkk.setting') }}" class="nav-link py-2 {{ request()->routeIs('admin.bkk.setting') ? 'active' : '' }}">
+            <i class="far fa-circle nav-icon text-xxs scale-75"></i>
+            <span class="nav-label text-xs">Pengaturan BKK</span>
+          </a>
+          <a href="{{ route('admin.bkk.lowongan.index') }}" class="nav-link py-2 {{ request()->routeIs('admin.bkk.lowongan.*') ? 'active' : '' }}">
+            <i class="far fa-circle nav-icon text-xxs scale-75"></i>
+            <span class="nav-label text-xs">Lowongan Kerja</span>
+          </a>
+        </div>
+      </div>
+
       <p class="nav-section">SPMB</p>
 
       <a href="{{ route('admin.gelombang.index') }}"

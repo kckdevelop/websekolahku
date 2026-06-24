@@ -252,9 +252,7 @@
             <a href="#lms" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-chalkboard-teacher mr-2 text-primary"></i> LMS
             </a>
-            <a href="#bkk" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
-              <i class="fas fa-user-tie mr-2 text-primary"></i> BKK
-            </a>
+            
           </div>
         </div>
 
@@ -293,6 +291,9 @@
             </a>
             <a href="/informasi/prestasi" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-trophy mr-2 text-primary"></i> Prestasi
+            </a>
+            <a href="/bkk" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
+              <i class="fas fa-user-tie mr-2 text-primary"></i> BKK
             </a>
             <a href="/informasi/kontak" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-phone-alt mr-2 text-primary"></i> Hubungi Kami
@@ -402,9 +403,7 @@
           <a href="#lms" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-chalkboard-teacher mr-2"></i> LMS
           </a>
-          <a href="#bkk" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
-            <i class="fas fa-user-tie mr-2"></i> BKK
-          </a>
+          
         </div>
       </div>
 
@@ -443,6 +442,9 @@
           </a>
           <a href="/informasi/prestasi" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-trophy mr-2"></i> Prestasi
+          </a>
+          <a href="/bkk" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+            <i class="fas fa-user-tie mr-2"></i> BKK
           </a>
           <a href="/informasi/kontak" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-phone-alt mr-2"></i> Hubungi Kami

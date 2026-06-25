@@ -68,12 +68,12 @@
       <!-- Prestasi Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 fade-in-scroll">
         @forelse($prestasis as $prestasi)
-          <div class="card-gradient rounded-3xl p-6 text-center shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-full">
+          <a href="/informasi/prestasi/{{ $prestasi->id }}" class="card-gradient rounded-3xl p-6 text-center shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-full group">
             <div>
               <!-- Image Area -->
               <div class="flex justify-center mb-6">
-                <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-primary/20 shadow-md">
-                  <img src="{{ $prestasi->foto_src }}" alt="{{ $prestasi->peraih }}" class="w-full h-full object-cover">
+                <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-primary/20 shadow-md group-hover:border-primary/60 transition-all duration-300">
+                  <img src="{{ $prestasi->foto_src }}" alt="{{ $prestasi->peraih }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                 </div>
               </div>
               
@@ -88,7 +88,7 @@
               </div>
 
               <!-- Title & Recipient -->
-              <h3 class="font-bold text-lg text-slate-850 dark:text-white mb-2 leading-snug">
+              <h3 class="font-bold text-lg text-slate-850 dark:text-white mb-2 leading-snug group-hover:text-primary transition-colors duration-200">
                 {{ $prestasi->judul }}
               </h3>
               <p class="text-sm text-primary font-semibold mb-3">
@@ -96,16 +96,21 @@
               </p>
               
               <!-- Description -->
-              <p class="text-slate-600 dark:text-slate-350 text-sm leading-relaxed mb-4 text-justify">
+              <p class="text-slate-600 dark:text-slate-350 text-sm leading-relaxed mb-4 text-justify line-clamp-3">
                 {{ $prestasi->deskripsi }}
               </p>
             </div>
 
             <!-- Footer Details -->
-            <div class="pt-4 border-t border-orange-50 dark:border-slate-850 text-center text-xs text-slate-400 dark:text-slate-500">
-              <i class="far fa-calendar-alt"></i> Diraih pada {{ $prestasi->tanggal->translatedFormat('F Y') }}
+            <div class="pt-4 border-t border-orange-50 dark:border-slate-850 flex items-center justify-between text-xs">
+              <span class="text-slate-400 dark:text-slate-500">
+                <i class="far fa-calendar-alt"></i> {{ $prestasi->tanggal->translatedFormat('F Y') }}
+              </span>
+              <span class="text-primary font-semibold group-hover:underline flex items-center gap-1">
+                Selengkapnya <i class="fas fa-arrow-right text-[10px]"></i>
+              </span>
             </div>
-          </div>
+          </a>
         @empty
           <div class="col-span-3 text-center py-16">
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 mb-4 shadow-sm">

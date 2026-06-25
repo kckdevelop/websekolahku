@@ -76,7 +76,9 @@
         @forelse($beritas as $berita)
           <div class="card-gradient rounded-2xl overflow-hidden shadow-lg flex flex-col h-full">
             <div class="h-52 relative overflow-hidden bg-slate-100 dark:bg-slate-850">
-              <img src="{{ $berita->gambar_src }}" alt="{{ $berita->judul }}" class="w-full h-full object-cover">
+              <a href="/informasi/berita/{{ $berita->slug }}" class="block w-full h-full">
+                <img src="{{ $berita->gambar_src }}" alt="{{ $berita->judul }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+              </a>
             </div>
             <div class="p-6 flex-grow flex flex-col justify-between">
               <div>

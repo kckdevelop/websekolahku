@@ -30,14 +30,19 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1.5">Tingkat <span class="text-red-500">*</span></label>
-            <select name="tingkat" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm">
-              <option value="">-- Pilih Tingkat --</option>
-              <option value="Kecamatan" {{ old('tingkat') == 'Kecamatan' ? 'selected' : '' }}>Kecamatan</option>
-              <option value="Kabupaten" {{ old('tingkat') == 'Kabupaten' ? 'selected' : '' }}>Kabupaten</option>
-              <option value="Provinsi" {{ old('tingkat') == 'Provinsi' ? 'selected' : '' }}>Provinsi</option>
-              <option value="Nasional" {{ old('tingkat') == 'Nasional' ? 'selected' : '' }}>Nasional</option>
-              <option value="Internasional" {{ old('tingkat') == 'Internasional' ? 'selected' : '' }}>Internasional</option>
-            </select>
+            <div class="relative">
+              <select name="tingkat" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm appearance-none bg-white pr-10">
+                <option value="">-- Pilih Tingkat --</option>
+                <option value="Kecamatan" {{ old('tingkat') == 'Kecamatan' ? 'selected' : '' }}>Kecamatan</option>
+                <option value="Kabupaten" {{ old('tingkat') == 'Kabupaten' ? 'selected' : '' }}>Kabupaten</option>
+                <option value="Provinsi" {{ old('tingkat') == 'Provinsi' ? 'selected' : '' }}>Provinsi</option>
+                <option value="Nasional" {{ old('tingkat') == 'Nasional' ? 'selected' : '' }}>Nasional</option>
+                <option value="Internasional" {{ old('tingkat') == 'Internasional' ? 'selected' : '' }}>Internasional</option>
+              </select>
+              <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400">
+                <i class="fas fa-chevron-down text-xs"></i>
+              </div>
+            </div>
           </div>
         </div>
         <div class="grid grid-cols-2 gap-4">
@@ -57,8 +62,36 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1.5">Foto Dokumentasi</label>
-          <input type="file" name="foto" accept="image/*" data-aspect-ratio="4/3" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-orange-50 file:text-primary hover:file:bg-orange-100 transition">
-          @error('foto') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+          
+          <div id="drop-zone" class="border-2 border-dashed border-slate-200 hover:border-primary/50 rounded-2xl p-6 transition-all cursor-pointer text-center bg-slate-50/50 hover:bg-slate-50 relative">
+            <input type="file" id="foto-input" name="foto" accept="image/*" data-aspect-ratio="4/3" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+            
+            <div class="space-y-2 pointer-events-none">
+              <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-50 text-primary mb-1">
+                <i class="fas fa-cloud-upload-alt text-xl"></i>
+              </div>
+              
+              <p class="text-sm font-medium text-slate-700">
+                <span class="text-primary font-semibold">Klik untuk unggah</span> atau seret dan lepas gambar ke sini
+              </p>
+              
+              <p id="file-label" class="text-xs text-slate-400">
+                Format: JPG, PNG, WebP (Maks. 2MB)
+              </p>
+              
+              <!-- Recommended Image Size Description -->
+              <div class="inline-block mt-2 bg-orange-50 border border-orange-100 px-3 py-1 rounded-full text-[11.5px] text-orange-600 font-medium">
+                <i class="fas fa-info-circle mr-1"></i> Ukuran disarankan: 800x600 px (Rasio 4:3)
+              </div>
+              
+              <!-- Preview Container -->
+              <div id="preview-container" class="hidden mt-3">
+                <img id="image-preview" src="" class="mx-auto w-32 h-24 object-cover rounded-lg border border-slate-200 shadow-sm">
+              </div>
+            </div>
+          </div>
+          
+          @error('foto') <p class="text-red-500 text-xs mt-2">{{ $message }}</p> @enderror
         </div>
         <div class="flex gap-3 pt-2">
           <button type="submit" class="inline-flex items-center gap-2 bg-primary hover:bg-secondary text-white font-semibold px-6 py-3 rounded-xl transition-all hover:shadow-lg hover:shadow-primary/30"><i class="fas fa-save"></i> Simpan</button>
@@ -113,4 +146,78 @@
   </div>
 
 </div>
+@endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('foto-input');
+    const dropZone = document.getElementById('drop-zone');
+    const fileLabel = document.getElementById('file-label');
+    const previewContainer = document.getElementById('preview-container');
+    const imagePreview = document.getElementById('image-preview');
+    
+    // Prevent default drag behaviors
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    // Highlight drop zone on drag over/enter
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, highlight, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+    });
+    
+    function highlight() {
+        dropZone.classList.add('border-primary', 'bg-orange-50/10');
+        dropZone.classList.remove('border-slate-200', 'bg-slate-50/50');
+    }
+    
+    function unhighlight() {
+        dropZone.classList.remove('border-primary', 'bg-orange-50/10');
+        dropZone.classList.add('border-slate-200', 'bg-slate-50/50');
+    }
+    
+    // Handle dropped files
+    dropZone.addEventListener('drop', function(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files && files.length > 0) {
+            fileInput.files = files;
+            // Dispatch change event to trigger cropper or standard update
+            const event = new Event('change', { bubbles: true });
+            fileInput.dispatchEvent(event);
+        }
+    }, false);
+    
+    // Fallback display if cropper is bypassed or for displaying name before cropper opens
+    fileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const file = this.files[0];
+            if (!file.name.includes('(cropped)')) {
+                fileLabel.textContent = file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+                fileLabel.classList.remove('text-slate-400');
+                fileLabel.classList.add('text-primary', 'font-semibold');
+                
+                // Show a quick local preview before/if cropper is handled
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    previewContainer.classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    });
+});
+</script>
 @endsection

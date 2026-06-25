@@ -250,6 +250,11 @@ Route::get('/informasi/prestasi', function (\Illuminate\Http\Request $request) {
     $kategoriList = \App\Models\Prestasi::distinct()->orderBy('kategori')->pluck('kategori');
     return view('pages.informasi.prestasi.index', compact('prestasis', 'kategoriList', 'kategori'));
 });
+Route::get('/informasi/prestasi/{id}', function ($id) {
+    $prestasi = \App\Models\Prestasi::findOrFail($id);
+    $lainnya = \App\Models\Prestasi::where('id', '!=', $prestasi->id)->orderBy('tanggal', 'desc')->take(5)->get();
+    return view('pages.informasi.prestasi.show', compact('prestasi', 'lainnya'));
+});
 Route::get('/informasi/kontak', function () {
     return view('pages.informasi.kontak');
 });

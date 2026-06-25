@@ -318,11 +318,15 @@
                     @forelse($beritas as $berita)
                     <div class="swiper-slide">
                         <div class="card-gradient rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition h-full flex flex-col">
-                            <img src="{{ $berita->gambar_src }}" alt="{{ $berita->judul }}"
-                                class="w-full h-48 object-cover">
+                            <a href="/informasi/berita/{{ $berita->slug }}" class="block overflow-hidden">
+                                <img src="{{ $berita->gambar_src }}" alt="{{ $berita->judul }}"
+                                    class="w-full h-48 object-cover hover:scale-105 transition-transform duration-300">
+                            </a>
                             <div class="p-5 flex-grow">
                                 <span class="text-sm text-orange-600 font-medium">{{ $berita->tanggal->translatedFormat('d F Y') }}</span>
-                                <h3 class="font-bold mt-2 text-lg">{{ $berita->judul }}</h3>
+                                <h3 class="font-bold mt-2 text-lg hover:text-primary transition duration-200">
+                                    <a href="/informasi/berita/{{ $berita->slug }}">{{ $berita->judul }}</a>
+                                </h3>
                                 <p class="mt-2 text-slate-600 dark:text-slate-400 text-sm">{{ $berita->ringkasan }}</p>
                             </div>
                             <div class="px-5 pb-5">
@@ -375,22 +379,24 @@
             <div class="swiper-wrapper">
                 @forelse($prestasis as $prestasi)
                 <div class="swiper-slide">
-                    <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 text-center shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <a href="/informasi/prestasi/{{ $prestasi->id }}" class="bg-white dark:bg-slate-800 rounded-2xl p-6 text-center shadow-lg hover:shadow-xl transition-all duration-300 block group hover:-translate-y-1">
                         <div class="flex justify-center mb-5">
-                            <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-primary/20 shadow-md">
+                            <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-primary/20 shadow-md group-hover:border-primary/50 transition-all duration-300">
                                 <img
                                     src="{{ $prestasi->foto_src }}"
                                     alt="{{ $prestasi->peraih }}"
-                                    class="w-full h-full object-cover"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                 />
                             </div>
                         </div>
                         <div class="text-primary font-bold text-lg">{{ $prestasi->kategori }}</div>
-                        <p class="font-semibold mt-2">{{ $prestasi->judul }}</p>
+                        <p class="font-semibold mt-2 group-hover:text-primary transition-colors duration-200">{{ $prestasi->judul }}</p>
                         <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">{{ $prestasi->peraih }}</p>
                         <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">{{ $prestasi->tingkat }}</p>
-                    </div>
+                        <span class="inline-block mt-3 text-xs text-primary font-semibold group-hover:underline">Lihat Detail →</span>
+                    </a>
                 </div>
+
                 @empty
                 <div class="swiper-slide">
                     <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 text-center shadow-lg">

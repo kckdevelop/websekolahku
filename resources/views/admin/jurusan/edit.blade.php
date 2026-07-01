@@ -27,6 +27,15 @@
           @error('nama_jurusan') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
 
+        {{-- Slug (readonly) --}}
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">Slug URL <span class="text-xs text-slate-400 font-normal">(tidak bisa diubah)</span></label>
+          <div class="flex items-center gap-2 px-4 py-3 rounded-xl border border-slate-100 bg-slate-50 text-sm text-slate-500">
+            <span class="text-slate-400">/jurusan/</span>
+            <span class="font-mono font-semibold text-slate-700">{{ $jurusan->slug }}</span>
+          </div>
+        </div>
+
         {{-- Hero Judul --}}
         <div>
           <label for="hero_judul" class="block text-sm font-medium text-slate-700 mb-1.5">Judul Banner (Hero) <span class="text-red-500">*</span></label>
@@ -36,11 +45,39 @@
         </div>
 
         {{-- Hero Subjudul --}}
-        <div class="md:col-span-2">
+        <div>
           <label for="hero_subjudul" class="block text-sm font-medium text-slate-700 mb-1.5">Subjudul Banner (Hero)</label>
           <input type="text" id="hero_subjudul" name="hero_subjudul" value="{{ old('hero_subjudul', $jurusan->hero_subjudul) }}"
             class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm">
           @error('hero_subjudul') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+        </div>
+
+        {{-- Icon & Urutan & Aktif --}}
+        <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">Ikon Font Awesome</label>
+            <div class="flex items-center gap-2">
+              <div id="icon-preview" class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-primary flex-shrink-0">
+                <i class="{{ old('icon', $jurusan->icon ?? 'fas fa-graduation-cap') }}"></i>
+              </div>
+              <input type="text" name="icon" id="icon-input" value="{{ old('icon', $jurusan->icon ?? 'fas fa-graduation-cap') }}"
+                     placeholder="fas fa-graduation-cap"
+                     class="flex-1 px-3 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm font-mono">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">Urutan Tampil</label>
+            <input type="number" name="urutan" value="{{ old('urutan', $jurusan->urutan ?? 0) }}" min="0"
+                   class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">Status</label>
+            <label class="flex items-center gap-3 cursor-pointer bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 hover:border-primary/50 transition">
+              <input type="checkbox" name="aktif" value="1" {{ old('aktif', $jurusan->aktif) ? 'checked' : '' }}
+                     class="w-4 h-4 text-primary rounded focus:ring-primary/40">
+              <span class="text-sm text-slate-700">Aktif & tampil di website</span>
+            </label>
+          </div>
         </div>
 
         {{-- Hero Gambar --}}
@@ -285,6 +322,15 @@
       };
       reader.readAsDataURL(file);
     }
+  }
+
+  // Icon Preview Live
+  const iconInput = document.getElementById('icon-input');
+  if (iconInput) {
+    iconInput.addEventListener('input', function() {
+      const iconEl = document.querySelector('#icon-preview i');
+      if (iconEl) iconEl.className = this.value || 'fas fa-graduation-cap';
+    });
   }
 </script>
 @endsection

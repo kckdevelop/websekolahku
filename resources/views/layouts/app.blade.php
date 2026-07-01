@@ -215,22 +215,15 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
+          @php
+            $navbarJurusans = \App\Models\JurusanContent::aktif()->get();
+          @endphp
           <div class="dropdown-menu absolute left-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-md shadow-xl py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-            <a href="{{ route('jurusan.show', 'tkr') }}" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
-              <i class="fas fa-car mr-2 text-primary"></i> Teknik Kendaraan Ringan (TKR)
-            </a>
-            <a href="{{ route('jurusan.show', 'tbsm') }}" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
-              <i class="fas fa-motorcycle mr-2 text-primary"></i> Teknik Bisnis Sepeda Motor (TBSM)
-            </a>
-            <a href="{{ route('jurusan.show', 'tpm') }}" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
-              <i class="fas fa-cogs mr-2 text-primary"></i> Teknik Pemesinan (TPM)
-            </a>
-            <a href="{{ route('jurusan.show', 'tav') }}" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
-              <i class="fas fa-tv mr-2 text-primary"></i> Teknik Audio Video (TAV)
-            </a>
-            <a href="{{ route('jurusan.show', 'rpl') }}" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
-              <i class="fas fa-laptop-code mr-2 text-primary"></i> Rekayasa Perangkat Lunak (RPL)
-            </a>
+            @foreach($navbarJurusans as $j)
+              <a href="{{ route('jurusan.show', $j->slug) }}" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
+                <i class="{{ $j->icon ?? 'fas fa-graduation-cap' }} mr-2 text-primary"></i> {{ $j->nama_jurusan }}
+              </a>
+            @endforeach
           </div>
         </div>
 
@@ -243,13 +236,10 @@
             </svg>
           </button>
           <div class="dropdown-menu absolute left-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-md shadow-xl py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-            <a href="#perpustakaan" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
+            <a href="https://perpustakaan.smkmuh1bantul.sch.id/" target="_blank" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-book-open mr-2 text-primary"></i> Perpustakaan
             </a>
-            <a href="#pkl" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
-              <i class="fas fa-briefcase mr-2 text-primary"></i> PKL
-            </a>
-            <a href="#lms" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
+            <a href="https://lms.smkmuh1bantul.sch.id/" target="_blank" class="block px-4 py-2 text-slate-800 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <i class="fas fa-chalkboard-teacher mr-2 text-primary"></i> LMS
             </a>
             
@@ -367,21 +357,11 @@
           </svg>
         </button>
         <div id="mobile-program" class="mobile-submenu pl-4 mt-1 space-y-2">
-          <a href="{{ route('jurusan.show', 'tkr') }}" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
-            <i class="fas fa-car mr-2"></i> TKR
-          </a>
-          <a href="{{ route('jurusan.show', 'tbsm') }}" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
-            <i class="fas fa-motorcycle mr-2"></i> TBSM
-          </a>
-          <a href="{{ route('jurusan.show', 'tpm') }}" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
-            <i class="fas fa-cogs mr-2"></i> TPM
-          </a>
-          <a href="{{ route('jurusan.show', 'tav') }}" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
-            <i class="fas fa-tv mr-2"></i> TAV
-          </a>
-          <a href="{{ route('jurusan.show', 'rpl') }}" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
-            <i class="fas fa-laptop-code mr-2"></i> RPL
-          </a>
+          @foreach($navbarJurusans as $j)
+            <a href="{{ route('jurusan.show', $j->slug) }}" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+              <i class="{{ $j->icon ?? 'fas fa-graduation-cap' }} mr-2"></i> {{ $j->nama_jurusan }}
+            </a>
+          @endforeach
         </div>
       </div>
 
@@ -394,13 +374,10 @@
           </svg>
         </button>
         <div id="mobile-layanan" class="mobile-submenu pl-4 mt-1 space-y-2">
-          <a href="#perpustakaan" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+          <a href="https://perpustakaan.smkmuh1bantul.sch.id/" target="_blank" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-book-open mr-2"></i> Perpustakaan
           </a>
-          <a href="#pkl" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
-            <i class="fas fa-briefcase mr-2"></i> PKL
-          </a>
-          <a href="#lms" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
+          <a href="https://lms.smkmuh1bantul.sch.id/" target="_blank" class="block py-2 text-white/90 hover:text-white transition-colors duration-200">
             <i class="fas fa-chalkboard-teacher mr-2"></i> LMS
           </a>
           

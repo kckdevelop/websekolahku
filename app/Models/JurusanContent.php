@@ -11,7 +11,10 @@ class JurusanContent extends Model
 
     protected $fillable = [
         'slug',
+        'urutan',
+        'aktif',
         'nama_jurusan',
+        'icon',
         'hero_gambar',
         'hero_judul',
         'hero_subjudul',
@@ -24,7 +27,16 @@ class JurusanContent extends Model
     protected $casts = [
         'poin_unggulan' => 'array',
         'foto_kegiatan' => 'array',
+        'aktif'         => 'boolean',
     ];
+
+    /**
+     * Ambil jurusan yang aktif berurutan
+     */
+    public function scopeAktif($query)
+    {
+        return $query->where('aktif', true)->orderBy('urutan');
+    }
 
     /**
      * Ambil konten jurusan berdasarkan slug, atau buat default jika belum ada
@@ -40,7 +52,10 @@ class JurusanContent extends Model
                 'deskripsi_1'    => '',
                 'deskripsi_2'    => '',
                 'poin_unggulan'  => [],
+                'aktif'          => true,
+                'urutan'         => 0,
             ], $defaults)
         );
     }
 }
+

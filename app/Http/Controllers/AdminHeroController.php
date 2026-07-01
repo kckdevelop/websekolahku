@@ -24,7 +24,7 @@ class AdminHeroController extends Controller
         $request->validate([
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
-            'gambar' => 'nullable|image|max:2048',
+            'gambar' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
             'gambar_url' => 'nullable|url',
             'label_tombol' => 'nullable|string|max:100',
             'link_tombol' => 'nullable|string|max:255',
@@ -61,7 +61,7 @@ class AdminHeroController extends Controller
         $request->validate([
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
-            'gambar' => 'nullable|image|max:2048',
+            'gambar' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
             'gambar_url' => 'nullable|url',
             'label_tombol' => 'nullable|string|max:100',
             'link_tombol' => 'nullable|string|max:255',

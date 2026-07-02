@@ -25,6 +25,18 @@ class AdminUserSeeder extends Seeder
                 'role'     => 'admin',
             ],
             [
+                'name'     => 'Administrator Admin.com',
+                'email'    => 'admin@admin.com',
+                'password' => Hash::make('admin123'),
+                'role'     => 'admin',
+            ],
+            [
+                'name'     => 'Admin Pendaftaran',
+                'email'    => 'pendaftaran@admin.com',
+                'password' => Hash::make('pendaftar123'),
+                'role'     => 'admin_pendaftaran',
+            ],
+            [
                 'name'     => 'Petugas Pendaftaran',
                 'email'    => 'petugas@smkmuh1bantul.sch.id',
                 'password' => Hash::make('petugas123'),

@@ -12,20 +12,22 @@ class PendaftaranController extends Controller
     // LANDING PAGE SPMB
     // ──────────────────────────────────────────────
 
-    public function showDaftar()
+    public function showSpmb()
     {
         $siswaId = session('siswa_akun_id');
-
+        $siswa = null;
         if ($siswaId) {
             $siswa = SiswaAkun::find($siswaId);
-            if ($siswa && $siswa->pendaftaran) {
-                return redirect()->route('spmb.sukses', $siswa->pendaftaran->id)
-                    ->with('info', 'Anda sudah melakukan pendaftaran.');
-            }
-            return redirect()->route('spmb.formulir');
         }
 
-        return view('pages.informasi.daftar');
+        $gelombangs = \App\Models\SpmbGelombang::orderBy('tanggal_mulai', 'asc')->get();
+        $spmbContent = \App\Models\SpmbPageContent::getSingle();
+        return view('pages.informasi.spmb', compact('gelombangs', 'spmbContent', 'siswa'));
+    }
+
+    public function showDaftar()
+    {
+        return redirect()->route('spmb.daftar', [], 301);
     }
 
     // ──────────────────────────────────────────────
@@ -82,41 +84,17 @@ class PendaftaranController extends Controller
         // Format tanggal lahir
         $tanggalLahir = $formData['tahun'] . '-' . $formData['bulan'] . '-' . str_pad($formData['tgl'], 2, '0', STR_PAD_LEFT);
 
-        // Generate No Daftar: MSB[YY]-[WW]-[NNN]
-        $selectedGelombangId = $formData['gelombang_id'] ?? null;
-        $activeWave = \App\Models\SpmbGelombang::find($selectedGelombangId);
+        // Generate No Daftar: gunakan gelombang aktif saat ini
+        $activeWave = \App\Models\SpmbGelombang::getActive();
         if (!$activeWave) {
-            $activeWave = \App\Models\SpmbGelombang::where('is_aktif', true)->first();
+            return redirect()->back()->withErrors(['gelombang' => 'Tidak ada gelombang pendaftaran yang aktif. Hubungi administrator.']);
         }
-        $gelombangName = $activeWave ? $activeWave->nama_gelombang : 'Gelombang I';
-        $tahunAjaran = $activeWave ? $activeWave->tahun_ajaran : '2026/2027';
-
-        // 1. Get 2-digit year (YY) from tahun_ajaran
+        $gelombangName = $activeWave->nama_gelombang;
         $startYear = date('Y');
-        if (preg_match('/^\d{4}/', $tahunAjaran, $matches)) {
-            $startYear = $matches[0];
+        if (preg_match('/^\d{4}/', $activeWave->tahun_ajaran ?? '', $m)) {
+            $startYear = $m[0];
         }
-        $year2Digit = substr($startYear, -2); // e.g. '26'
-
-        // 2. Get 2-digit wave (WW) from nama_gelombang
-        $waveNumber = '01';
-        $cleanWave = strtolower(trim($gelombangName));
-        if (preg_match('/\d+/', $cleanWave, $matches)) {
-            $waveNumber = str_pad($matches[0], 2, '0', STR_PAD_LEFT);
-        } else {
-            if (str_contains($cleanWave, 'iii')) {
-                $waveNumber = '03';
-            } elseif (str_contains($cleanWave, 'ii')) {
-                $waveNumber = '02';
-            } elseif (str_contains($cleanWave, 'i')) {
-                $waveNumber = '01';
-            }
-        }
-
-        $prefix = 'MSB' . $year2Digit . '-' . $waveNumber . '-';
-        $last   = Pendaftaran::where('no_daftar', 'like', $prefix . '%')->orderBy('no_daftar', 'desc')->first();
-        $nextNum   = $last ? (int) substr($last->no_daftar, -3) + 1 : 1;
-        $noDaftar  = $prefix . str_pad($nextNum, 3, '0', STR_PAD_LEFT);
+        $noDaftar = $activeWave->generateNoDaftar();
 
         // Upload files
         $fotoAkta = null;

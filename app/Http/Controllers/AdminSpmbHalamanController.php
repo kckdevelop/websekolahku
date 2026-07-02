@@ -100,4 +100,35 @@ class AdminSpmbHalamanController extends Controller
 
         return redirect()->route('admin.spmb-halaman.edit')->with('success', 'Konten halaman SPMB berhasil diperbarui.');
     }
+
+    public function editStatus()
+    {
+        $spmbContent = SpmbPageContent::getSingle();
+        return view('admin.spmb_halaman.status', compact('spmbContent'));
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $spmbContent = SpmbPageContent::getSingle();
+
+        $request->validate([
+            'is_pendaftaran_open' => 'nullable|boolean',
+        ]);
+
+        $isOpen = $request->boolean('is_pendaftaran_open');
+
+        $spmbContent->update([
+            'is_pendaftaran_open' => $isOpen,
+        ]);
+
+        // Jika pendaftaran DITUTUP, nonaktifkan semua gelombang
+        if (!$isOpen) {
+            \App\Models\SpmbGelombang::query()->update(['is_aktif' => false]);
+            return redirect()->route('admin.spmb-status.edit')
+                ->with('success', 'Pendaftaran DITUTUP. Semua gelombang telah dinonaktifkan secara otomatis.');
+        }
+
+        return redirect()->route('admin.spmb-status.edit')
+            ->with('success', 'Pendaftaran DIBUKA. Silakan aktifkan gelombang yang sesuai melalui menu Atur Gelombang.');
+    }
 }

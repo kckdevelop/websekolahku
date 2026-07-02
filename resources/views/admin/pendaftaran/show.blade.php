@@ -2,8 +2,27 @@
 @section('title', 'Detail Pendaftaran')
 @section('subtitle', 'Informasi lengkap pendaftar siswa baru')
 
+@push('styles')
+<style>
+  #webcam-feed { width: 100%; max-width: 400px; border-radius: 12px; background: #0f172a; }
+  #foto-preview { width: 100%; max-width: 400px; border-radius: 12px; display: none; border: 3px solid #22c55e; }
+  .berkas-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; border-radius: 10px;
+    border: 1px solid #e2e8f0; margin-bottom: 8px;
+    transition: all 0.15s; cursor: pointer;
+  }
+  .berkas-item:has(input:checked) {
+    background: #f0fdf4; border-color: #86efac;
+  }
+  .berkas-item input[type="checkbox"] {
+    width: 18px; height: 18px; accent-color: #16a34a; flex-shrink: 0;
+  }
+</style>
+@endpush
+
 @section('content')
-<div class="max-w-4xl space-y-6">
+<div class="max-w-6xl space-y-6">
   <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
     
     {{-- Header --}}
@@ -30,14 +49,75 @@
       </form>
     </div>
 
+
     {{-- Details Grid --}}
-    <div class="p-6 sm:p-8 space-y-8">
-      
-      {{-- Section 1: Data Calon Siswa --}}
-      <div>
-        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
-          <i class="fas fa-user text-primary text-xs"></i> Data Diri Calon Siswa
-        </h3>
+    <div class="p-6 sm:p-8">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {{-- LEFT COLUMN: Foto & Webcam --}}
+        <div class="lg:col-span-1 space-y-6">
+          {{-- Preview Foto Siswa --}}
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Foto Calon Siswa</h4>
+            <div class="text-center mb-5">
+              @if($pendaftaran->foto_siswa)
+                <img id="current-siswa-foto" src="{{ asset('storage/' . $pendaftaran->foto_siswa) }}" alt="Foto {{ $pendaftaran->nama_lengkap }}" class="w-28 h-36 object-cover mx-auto rounded-xl border-4 border-orange-100 shadow-sm">
+                <p class="text-xs text-green-600 mt-2 font-medium"><i class="fas fa-check-circle text-xs"></i> Foto tersedia</p>
+              @else
+                <div class="w-28 h-36 bg-slate-50 mx-auto rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center">
+                  <i class="fas fa-user text-slate-300 text-3xl mb-1"></i>
+                  <span class="text-xs text-slate-400">Belum difoto</span>
+                </div>
+              @endif
+            </div>
+          </div>
+
+          {{-- Webcam Box --}}
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="border-b border-slate-100 px-5 py-4 bg-slate-50 flex items-center gap-2">
+              <i class="fas fa-camera text-primary"></i>
+              <h3 class="font-bold text-slate-800 text-sm">Ambil Foto Siswa (Webcam)</h3>
+            </div>
+            <div class="p-5 space-y-4">
+              <div id="webcam-alert" class="hidden p-3 rounded-xl text-xs"></div>
+              
+              <div class="flex flex-col items-center gap-3">
+                <video id="webcam-feed" autoplay playsinline class="w-full aspect-[4/3] rounded-xl object-cover hidden"></video>
+                <img id="foto-preview" alt="Foto Siswa" class="w-full aspect-[4/3] rounded-xl object-cover hidden">
+                
+                <canvas id="canvas-capture" class="hidden"></canvas>
+                
+                <div class="w-full flex gap-2">
+                  <button id="btn-start-cam" onclick="startCamera()" class="w-full py-2 bg-primary hover:bg-secondary text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm">
+                    <i class="fas fa-video"></i> Aktifkan Kamera
+                  </button>
+                  <button id="btn-capture" onclick="capturePhoto()" class="w-full py-2 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm hidden">
+                    <i class="fas fa-camera"></i> Ambil Foto
+                  </button>
+                  <button id="btn-retake" onclick="retakePhoto()" class="w-full py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm hidden">
+                    <i class="fas fa-redo"></i> Ulangi
+                  </button>
+                </div>
+
+                <div id="save-section" class="w-full hidden">
+                  <button onclick="savePhoto()" id="btn-save" class="w-full py-2.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm">
+                    <i class="fas fa-save"></i> Simpan Foto Siswa
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{-- RIGHT COLUMN: Data detail --}}
+        <div class="lg:col-span-2 space-y-8">
+          
+          {{-- Section 1: Data Calon Siswa --}}
+          <div>
+            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
+              <i class="fas fa-user text-primary text-xs"></i> Data Diri Calon Siswa
+            </h3>
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
             <p class="text-xxs font-bold text-slate-400 uppercase">Nama Lengkap</p>
@@ -346,7 +426,57 @@
         </div>
       </div>
 
-    </div>
+      {{-- Section 9: Verifikasi Kelengkapan Berkas Fisik --}}
+      <div>
+        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
+          <i class="fas fa-check-double text-primary text-xs"></i> Verifikasi & Kelengkapan Berkas Fisik
+        </h3>
+        @php
+          $berkasItems = [
+              'ijazah_asli'   => 'Ijazah / SKHUN Asli',
+              'ijazah_copy'   => 'Fotocopy Ijazah / SKHUN',
+              'formulir'      => 'Formulir Pendataan',
+              'foto_3x4'      => 'Foto 3x4 (3 lembar)',
+              'akta_copy'     => 'Fotocopy Akta Kelahiran',
+              'kk_copy'       => 'Fotocopy Kartu Keluarga (KK)',
+              'rapor_copy'    => 'Fotocopy Rapor SMP/MTs Semester V',
+          ];
+          $berkasLengkap = $pendaftaran->berkas_lengkap ?? [];
+        @endphp
+        <form method="POST" action="{{ route('admin.pendaftaran.updateStatus', $pendaftaran) }}" class="bg-slate-50/50 p-6 rounded-2xl border border-slate-100 space-y-4">
+          @csrf @method('PATCH')
+          <input type="hidden" name="action_type" value="verifikasi_berkas">
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            @foreach($berkasItems as $key => $label)
+              <label class="flex items-center gap-3 p-3 bg-white border border-slate-150 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer">
+                <input type="checkbox" name="berkas[]" value="{{ $key }}" {{ in_array($key, $berkasLengkap) ? 'checked' : '' }} class="h-4 w-4 text-primary border-slate-350 rounded focus:ring-primary">
+                <span class="text-xs font-semibold text-slate-700">{{ $label }}</span>
+              </label>
+            @endforeach
+          </div>
+
+          <div class="space-y-1.5 mt-4">
+            <label class="block text-xs font-bold text-slate-550 uppercase">Catatan Petugas</label>
+            <textarea name="catatan_petugas" rows="2" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition text-xs resize-none" placeholder="Masukkan catatan kelengkapan berkas...">{{ $pendaftaran->catatan_petugas }}</textarea>
+          </div>
+
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-3 border-t border-slate-100">
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" name="tandai_verifikasi" value="1" {{ $pendaftaran->verified_at ? 'checked' : '' }} class="h-4 w-4 text-emerald-500 border-slate-350 rounded focus:ring-emerald-500">
+              <span class="text-xs font-bold text-emerald-600">Tandai data pendaftar ini sebagai "Terverifikasi" (verified)</span>
+            </label>
+            
+            <button type="submit" class="bg-primary hover:bg-secondary text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-colors shadow-sm flex items-center gap-1.5">
+              <i class="fas fa-save"></i> Simpan Verifikasi Berkas
+            </button>
+          </div>
+        </form>
+      </div>
+
+        </div> {{-- End of RIGHT COLUMN --}}
+      </div> {{-- End of Grid --}}
+    </div> {{-- End of Details Grid --}}
 
     {{-- Footer Actions --}}
     <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex flex-wrap items-center justify-between gap-4">
@@ -378,6 +508,7 @@
 
 @section('scripts')
 <script>
+  // Script Hapus Data
   document.getElementById('btn-delete-detail')?.addEventListener('click', function(e) {
     e.preventDefault();
     const nama = this.getAttribute('data-nama');
@@ -390,5 +521,105 @@
       form.submit();
     }
   });
+
+  // Script Webcam Kamera
+  let stream = null;
+  let capturedBlob = null;
+
+  function showAlert(msg, type = 'success') {
+    const el = document.getElementById('webcam-alert');
+    el.className = 'p-3 rounded-xl text-xs ' +
+      (type === 'success' ? 'bg-green-50 border border-green-200 text-green-700' : 'bg-red-50 border border-red-200 text-red-700');
+    el.textContent = msg;
+    el.classList.remove('hidden');
+    setTimeout(() => el.classList.add('hidden'), 5000);
+  }
+
+  async function startCamera() {
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' }
+      });
+      const video = document.getElementById('webcam-feed');
+      video.srcObject = stream;
+      video.classList.remove('hidden');
+      document.getElementById('foto-preview').classList.add('hidden');
+      document.getElementById('btn-start-cam').classList.add('hidden');
+      document.getElementById('btn-capture').classList.remove('hidden');
+      document.getElementById('save-section').classList.add('hidden');
+    } catch (err) {
+      showAlert('Tidak bisa mengakses kamera: ' + err.message, 'error');
+    }
+  }
+
+  function capturePhoto() {
+    const video = document.getElementById('webcam-feed');
+    const canvas = document.getElementById('canvas-capture');
+    const preview = document.getElementById('foto-preview');
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+    preview.src = dataUrl;
+    preview.classList.remove('hidden');
+    video.classList.add('hidden');
+
+    capturedBlob = dataUrl;
+
+    document.getElementById('btn-capture').classList.add('hidden');
+    document.getElementById('btn-retake').classList.remove('hidden');
+    document.getElementById('save-section').classList.remove('hidden');
+
+    // Stop stream
+    if (stream) stream.getTracks().forEach(t => t.stop());
+  }
+
+  function retakePhoto() {
+    document.getElementById('foto-preview').classList.add('hidden');
+    document.getElementById('webcam-feed').classList.remove('hidden');
+    document.getElementById('btn-retake').classList.add('hidden');
+    document.getElementById('btn-capture').classList.remove('hidden');
+    document.getElementById('save-section').classList.add('hidden');
+    capturedBlob = null;
+    startCamera();
+  }
+
+  async function savePhoto() {
+    if (!capturedBlob) return;
+
+    const btn = document.getElementById('btn-save');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...';
+
+    try {
+      // Kita panggil route upload foto dari PetugasController (petugas.upload.foto) karena endpoint-nya sudah fungsional menerima base64.
+      const response = await fetch("{{ route('petugas.upload.foto', $pendaftaran) }}", {
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': '{{ csrf_token() }}',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({ foto_data: capturedBlob }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        showAlert('✅ ' + data.message);
+        setTimeout(() => location.reload(), 1500);
+      } else {
+        showAlert('❌ ' + data.message, 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-save mr-1"></i> Simpan Foto';
+      }
+    } catch (err) {
+      showAlert('❌ Terjadi kesalahan jaringan.', 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-save mr-1"></i> Simpan Foto';
+    }
+  }
 </script>
 @endsection

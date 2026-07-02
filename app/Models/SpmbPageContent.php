@@ -25,12 +25,14 @@ class SpmbPageContent extends Model
         'foto_galeri',
         'cta_title',
         'cta_subtitle',
+        'is_pendaftaran_open',
     ];
 
     protected $casts = [
         'alur_pendaftaran' => 'array',
         'persyaratan' => 'array',
         'foto_galeri' => 'array',
+        'is_pendaftaran_open' => 'boolean',
     ];
 
     /**
@@ -90,6 +92,7 @@ class SpmbPageContent extends Model
                 'foto_galeri' => $defaultGaleri,
                 'cta_title' => 'Siap Bergabung?',
                 'cta_subtitle' => 'Daftar sekarang dan dapatkan bonus eksklusif untuk pendaftar awal!',
+                'is_pendaftaran_open' => true,
             ]
         );
     }

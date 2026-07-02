@@ -18,7 +18,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'petugas.kesehatan.auth'  => \App\Http\Middleware\PetugasKesehatanAuth::class,
             'petugas.wawancara.auth'  => \App\Http\Middleware\PetugasWawancaraAuth::class,
             'petugas.pembayaran.auth' => \App\Http\Middleware\PetugasPembayaranAuth::class,
+            'admin.role'   => \App\Http\Middleware\AdminRole::class,
         ]);
+
+        $middleware->redirectTo(
+            guests: '/login',
+            users: '/admin/dashboard'
+        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

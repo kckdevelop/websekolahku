@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="{{ asset('storage/logomusaba.png') }}" type="image/png">
   <title>@yield('title') - SMK Muhammadiyah 1 Bantul</title>
   <!-- Google Fonts: Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -292,7 +293,7 @@
         </div>
 
         <!-- Tombol Daftar Sekarang -->
-        <a href="{{ route('spmb.daftar') }}" class="bg-white text-primary dark:bg-slate-800 dark:text-white px-4 py-2 rounded-full font-bold hover:bg-orange-50 dark:hover:bg-slate-700 transition-all duration-300 shadow-md hover:shadow-lg flex items-center space-x-1 hover:scale-105 transform">
+        <a href="{{ route('spmb.daftar') }}#pendaftaran" class="bg-white text-primary dark:bg-slate-800 dark:text-white px-4 py-2 rounded-full font-bold hover:bg-orange-50 dark:hover:bg-slate-700 transition-all duration-300 shadow-md hover:shadow-lg flex items-center space-x-1 hover:scale-105 transform">
           <i class="fas fa-user-plus mr-1"></i>
           <span>Daftar</span>
         </a>
@@ -312,7 +313,7 @@
     <div class="px-4 pt-2 space-y-2">
       <!-- Tombol Daftar Sekarang (Mobile) -->
       <div class="pb-3 border-b border-white/20">
-        <a href="{{ route('spmb.daftar') }}" class="block text-center bg-white text-primary py-2.5 rounded-full font-bold hover:bg-orange-50 transition-colors shadow-md">
+        <a href="{{ route('spmb.daftar') }}#pendaftaran" class="block text-center bg-white text-primary py-2.5 rounded-full font-bold hover:bg-orange-50 transition-colors shadow-md">
           <i class="fas fa-user-plus mr-2"></i> Daftar
         </a>
       </div>

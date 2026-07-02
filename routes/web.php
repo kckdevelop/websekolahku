@@ -99,9 +99,7 @@ Route::get('/jurusan/{slug}', function ($slug) {
 })->name('jurusan.show');
 
 Route::get('/informasi/spmb', function () {
-    $gelombangs = \App\Models\SpmbGelombang::orderBy('tanggal_mulai', 'asc')->get();
-    $spmbContent = \App\Models\SpmbPageContent::getSingle();
-    return view('pages.informasi.spmb', compact('gelombangs', 'spmbContent'));
+    return redirect('/spmb', 301);
 });
 Route::get('/informasi/berita', function (\Illuminate\Http\Request $request) {
     $search = $request->query('search');
@@ -173,8 +171,12 @@ Route::get('/docs/panduan-pdf', function () {
 */
 Route::prefix('spmb')->name('spmb.')->group(function () {
 
-    // Landing Page
-    Route::get('/daftar', [PendaftaranController::class, 'showDaftar'])->name('daftar');
+    // Combined Landing Page
+    Route::get('/', [PendaftaranController::class, 'showSpmb'])->name('daftar');
+
+    Route::get('/daftar', function () {
+        return redirect()->route('spmb.daftar', [], 301);
+    });
 
     // Auth Siswa (Register, Verifikasi, Login)
     Route::get('/register', [SiswaAuthController::class, 'showRegister'])->name('register');
@@ -223,99 +225,86 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AdminAuthController::class, 'login'])->name('login.post');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Admin Protected Routes
-|--------------------------------------------------------------------------
-*/
+Route::redirect('/admin', '/admin/dashboard');
+
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
-    // Dashboard
-    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    // Common routes (accessible by both admin & admin_pendaftaran)
+    Route::middleware('admin.role:admin,admin_pendaftaran')->group(function() {
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+        Route::get('/logout', [AdminAuthController::class, 'logout'])->name('logout.get');
+    });
 
-    // Logout
-    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+    // SPMB / PPDB routes (accessible ONLY by admin_pendaftaran)
+    Route::middleware('admin.role:admin_pendaftaran')->group(function() {
+        // Pengaturan Gelombang SPMB
+        Route::post('/gelombang/{gelombang}/toggle-active', [AdminSpmbGelombangController::class, 'toggleActive'])->name('gelombang.toggleActive');
+        Route::resource('gelombang', AdminSpmbGelombangController::class);
 
-    // Berita
-    Route::resource('berita', AdminBeritaController::class)->parameters(['berita' => 'berita']);
+        // Pengaturan Halaman SPMB
+        Route::get('/spmb-halaman', [AdminSpmbHalamanController::class, 'edit'])->name('spmb-halaman.edit');
+        Route::put('/spmb-halaman', [AdminSpmbHalamanController::class, 'update'])->name('spmb-halaman.update');
+        Route::get('/spmb-status', [AdminSpmbHalamanController::class, 'editStatus'])->name('spmb-status.edit');
+        Route::put('/spmb-status', [AdminSpmbHalamanController::class, 'updateStatus'])->name('spmb-status.update');
 
-    // Prestasi
-    Route::resource('prestasi', AdminPrestasiController::class);
+        // Pendaftaran (Full CRUD + print)
+        Route::get('/pendaftaran/laporan', [AdminPendaftaranController::class, 'laporan'])->name('pendaftaran.laporan');
+        Route::get('/pendaftaran/{pendaftaran}/cetak', [AdminPendaftaranController::class, 'cetak'])->name('pendaftaran.cetak');
+        Route::patch('/pendaftaran/{pendaftaran}/status', [AdminPendaftaranController::class, 'updateStatus'])->name('pendaftaran.updateStatus');
+        Route::resource('pendaftaran', AdminPendaftaranController::class);
 
-    // Galeri Foto
-    Route::resource('galeri_foto', AdminGaleriFotoController::class);
+        // Petugas Pewawancara
+        Route::get('/petugas-wawancara', [AdminPetugasWawancaraController::class, 'index'])->name('petugas-wawancara.index');
+        Route::post('/petugas-wawancara', [AdminPetugasWawancaraController::class, 'store'])->name('petugas-wawancara.store');
+        Route::put('/petugas-wawancara/{petugasWawancara}', [AdminPetugasWawancaraController::class, 'update'])->name('petugas-wawancara.update');
+        Route::delete('/petugas-wawancara/{petugasWawancara}', [AdminPetugasWawancaraController::class, 'destroy'])->name('petugas-wawancara.destroy');
 
-    // Galeri Video
-    Route::resource('galeri_video', AdminGaleriVideoController::class);
+        // Reset Pendaftaran
+        Route::get('/reset-pendaftaran', [AdminResetController::class, 'index'])->name('reset.index');
+        Route::post('/reset-pendaftaran', [AdminResetController::class, 'reset'])->name('reset.post');
 
-    // Testimoni
-    Route::resource('testimoni', AdminTestimoniController::class);
+        // Download Pendaftaran (Excel)
+        Route::get('/download-pendaftaran', [AdminDownloadPendaftaranController::class, 'index'])->name('download.pendaftaran');
+        Route::get('/download-pendaftaran/excel', [AdminDownloadPendaftaranController::class, 'download'])->name('download.pendaftaran.excel');
+    });
 
-    // Pendaftaran (Full CRUD + print)
-    Route::get('/pendaftaran/laporan', [AdminPendaftaranController::class, 'laporan'])->name('pendaftaran.laporan');
-    Route::get('/pendaftaran/{pendaftaran}/cetak', [AdminPendaftaranController::class, 'cetak'])->name('pendaftaran.cetak');
-    Route::patch('/pendaftaran/{pendaftaran}/status', [AdminPendaftaranController::class, 'updateStatus'])->name('pendaftaran.updateStatus');
-    Route::resource('pendaftaran', AdminPendaftaranController::class);
+    // Content / System routes (accessible ONLY by admin)
+    Route::middleware('admin.role:admin')->group(function() {
+        Route::resource('berita', AdminBeritaController::class)->parameters(['berita' => 'berita']);
+        Route::resource('prestasi', AdminPrestasiController::class);
+        Route::resource('galeri_foto', AdminGaleriFotoController::class);
+        Route::resource('galeri_video', AdminGaleriVideoController::class);
+        Route::resource('testimoni', AdminTestimoniController::class);
+        Route::resource('hero', AdminHeroController::class);
+        Route::resource('jurusan', AdminJurusanController::class);
+        Route::resource('mitra', AdminMitraController::class);
 
-    // Hero Slideshow
-    Route::resource('hero', AdminHeroController::class);
+        Route::get('/sambutan', [AdminSambutanController::class, 'edit'])->name('sambutan.edit');
+        Route::put('/sambutan', [AdminSambutanController::class, 'update'])->name('sambutan.update');
 
-    // Jurusan / Program Keahlian
-    Route::resource('jurusan', AdminJurusanController::class);
+        Route::get('/nobox', [AdminNoboxController::class, 'edit'])->name('nobox.edit');
+        Route::put('/nobox', [AdminNoboxController::class, 'update'])->name('nobox.update');
+        Route::post('/nobox/test', [AdminNoboxController::class, 'testSend'])->name('nobox.test');
 
-    // Mitra Industri
-    Route::resource('mitra', AdminMitraController::class);
+        Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+        Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
+        Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
 
-    // Sambutan Kepala Sekolah
-    Route::get('/sambutan', [AdminSambutanController::class, 'edit'])->name('sambutan.edit');
-    Route::put('/sambutan', [AdminSambutanController::class, 'update'])->name('sambutan.update');
+        Route::resource('pesan', AdminPesanController::class)->only(['index', 'show', 'destroy']);
 
-    // Pengaturan Nobox
-    Route::get('/nobox', [AdminNoboxController::class, 'edit'])->name('nobox.edit');
-    Route::put('/nobox', [AdminNoboxController::class, 'update'])->name('nobox.update');
-    Route::post('/nobox/test', [AdminNoboxController::class, 'testSend'])->name('nobox.test');
-
-    // Pengaturan Gelombang SPMB
-    Route::post('/gelombang/{gelombang}/toggle-active', [AdminSpmbGelombangController::class, 'toggleActive'])->name('gelombang.toggleActive');
-    Route::resource('gelombang', AdminSpmbGelombangController::class);
-
-    // Pengaturan Halaman SPMB
-    Route::get('/spmb-halaman', [AdminSpmbHalamanController::class, 'edit'])->name('spmb-halaman.edit');
-    Route::put('/spmb-halaman', [AdminSpmbHalamanController::class, 'update'])->name('spmb-halaman.update');
-
-    // Kelola User (admin & petugas)
-    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
-    Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
-    Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
-
-    // Pesan Masuk
-    Route::resource('pesan', AdminPesanController::class)->only(['index', 'show', 'destroy']);
-
-    // Petugas Pewawancara
-    Route::get('/petugas-wawancara', [AdminPetugasWawancaraController::class, 'index'])->name('petugas-wawancara.index');
-    Route::post('/petugas-wawancara', [AdminPetugasWawancaraController::class, 'store'])->name('petugas-wawancara.store');
-    Route::put('/petugas-wawancara/{petugasWawancara}', [AdminPetugasWawancaraController::class, 'update'])->name('petugas-wawancara.update');
-    Route::delete('/petugas-wawancara/{petugasWawancara}', [AdminPetugasWawancaraController::class, 'destroy'])->name('petugas-wawancara.destroy');
-
-    // Reset Pendaftaran
-    Route::get('/reset-pendaftaran', [AdminResetController::class, 'index'])->name('reset.index');
-    Route::post('/reset-pendaftaran', [AdminResetController::class, 'reset'])->name('reset.post');
-
-    // Download Pendaftaran (Excel)
-    Route::get('/download-pendaftaran', [AdminDownloadPendaftaranController::class, 'index'])->name('download.pendaftaran');
-    Route::get('/download-pendaftaran/excel', [AdminDownloadPendaftaranController::class, 'download'])->name('download.pendaftaran.excel');
-
-    // Bursa Kerja Khusus (BKK)
-    Route::get('/bkk/setting', [AdminBkkController::class, 'editSetting'])->name('bkk.setting');
-    Route::put('/bkk/setting', [AdminBkkController::class, 'updateSetting'])->name('bkk.setting.update');
-    Route::get('/bkk/lowongan', [AdminBkkController::class, 'indexLowongan'])->name('bkk.lowongan.index');
-    Route::get('/bkk/lowongan/create', [AdminBkkController::class, 'createLowongan'])->name('bkk.lowongan.create');
-    Route::post('/bkk/lowongan', [AdminBkkController::class, 'storeLowongan'])->name('bkk.lowongan.store');
-    Route::get('/bkk/lowongan/{lowongan}/edit', [AdminBkkController::class, 'editLowongan'])->name('bkk.lowongan.edit');
-    Route::put('/bkk/lowongan/{lowongan}', [AdminBkkController::class, 'updateLowongan'])->name('bkk.lowongan.update');
-    Route::delete('/bkk/lowongan/{lowongan}', [AdminBkkController::class, 'destroyLowongan'])->name('bkk.lowongan.destroy');
-    Route::post('/bkk/lowongan/{lowongan}/toggle-aktif', [AdminBkkController::class, 'toggleAktifLowongan'])->name('bkk.lowongan.toggle-aktif');
+        // Bursa Kerja Khusus (BKK)
+        Route::get('/bkk/setting', [AdminBkkController::class, 'editSetting'])->name('bkk.setting');
+        Route::put('/bkk/setting', [AdminBkkController::class, 'updateSetting'])->name('bkk.setting.update');
+        Route::get('/bkk/lowongan', [AdminBkkController::class, 'indexLowongan'])->name('bkk.lowongan.index');
+        Route::get('/bkk/lowongan/create', [AdminBkkController::class, 'createLowongan'])->name('bkk.lowongan.create');
+        Route::post('/bkk/lowongan', [AdminBkkController::class, 'storeLowongan'])->name('bkk.lowongan.store');
+        Route::get('/bkk/lowongan/{lowongan}/edit', [AdminBkkController::class, 'editLowongan'])->name('bkk.lowongan.edit');
+        Route::put('/bkk/lowongan/{lowongan}', [AdminBkkController::class, 'updateLowongan'])->name('bkk.lowongan.update');
+        Route::delete('/bkk/lowongan/{lowongan}', [AdminBkkController::class, 'destroyLowongan'])->name('bkk.lowongan.destroy');
+        Route::post('/bkk/lowongan/{lowongan}/toggle-aktif', [AdminBkkController::class, 'toggleAktifLowongan'])->name('bkk.lowongan.toggle-aktif');
+    });
 });
 
 /*

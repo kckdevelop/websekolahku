@@ -15,6 +15,12 @@ class SiswaAuthController extends Controller
 
     public function showRegister()
     {
+        $spmbContent = \App\Models\SpmbPageContent::getSingle();
+        if (!$spmbContent->is_pendaftaran_open) {
+            return redirect()->route('spmb.daftar')
+                ->with('warning', 'Pendaftaran akun baru saat ini sedang ditutup.');
+        }
+
         // Jika sudah login, redirect ke formulir
         if (session('siswa_akun_id')) {
             return redirect()->route('spmb.formulir');
@@ -24,6 +30,12 @@ class SiswaAuthController extends Controller
 
     public function register(Request $request)
     {
+        $spmbContent = \App\Models\SpmbPageContent::getSingle();
+        if (!$spmbContent->is_pendaftaran_open) {
+            return redirect()->route('spmb.daftar')
+                ->with('warning', 'Pendaftaran akun baru saat ini sedang ditutup.');
+        }
+
         $request->validate([
             'no_wa'                 => 'required|string|min:10|max:15',
             'password'              => 'required|string|min:8|confirmed',

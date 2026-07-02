@@ -11,7 +11,7 @@ class AdminAuthController extends Controller
     {
         if (Auth::check()) {
             $user = Auth::user();
-            if ($user->role === 'admin') {
+            if (in_array($user->role, ['admin', 'admin_pendaftaran'])) {
                 return redirect()->route('admin.dashboard');
             } elseif ($user->role === 'petugas_kesehatan') {
                 return redirect()->route('petugas.kesehatan.dashboard');
@@ -39,10 +39,11 @@ class AdminAuthController extends Controller
 
         // Map usernames to their respective emails
         $usernameMap = [
-            'kesehatan'  => 'kesehatan@admin.com',
-            'wawancara'  => 'wawancara@admin.com',
-            'pembayaran' => 'pembayaran@admin.com',
-            'admin'      => 'admin@admin.com'
+            'kesehatan'   => 'kesehatan@admin.com',
+            'wawancara'   => 'wawancara@admin.com',
+            'pembayaran'  => 'pembayaran@admin.com',
+            'pendaftaran' => 'pendaftaran@admin.com',
+            'admin'       => 'admin@admin.com'
         ];
 
         if (array_key_exists(strtolower($loginInput), $usernameMap)) {
@@ -55,7 +56,7 @@ class AdminAuthController extends Controller
             $request->session()->regenerate();
 
             $user = Auth::user();
-            if ($user->role !== 'admin') {
+            if (!in_array($user->role, ['admin', 'admin_pendaftaran'])) {
                 // All other roles redirect to their respective routes
                 if ($user->role === 'petugas_kesehatan') {
                     return redirect()->route('petugas.kesehatan.dashboard');

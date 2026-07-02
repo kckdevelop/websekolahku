@@ -52,7 +52,7 @@ class AdminDashboardController extends Controller
         }
 
         // Fetch registration data for stats tables
-        $pendaftarans = Pendaftaran::select('no_daftar', 'pil1', 'diterima_di_jurusan', 'status', 'verified_at')->get();
+        $pendaftarans = Pendaftaran::select('no_daftar', 'pil1', 'diterima_di_jurusan', 'status', 'verified_at', 'jenis_kelamin')->get();
 
         $jurusans = ['TKR', 'TPM', 'TAV', 'TBSM', 'RPL'];
         $gelKeys  = array_keys($gelMap); // e.g. ['01','02','03']
@@ -119,6 +119,65 @@ class AdminDashboardController extends Controller
             }
         }
 
+        // Statistik Siswa Diterima berdasarkan Jenis Kelamin
+        $diTerimaGender = Pendaftaran::whereNotNull('diterima_di_jurusan')
+            ->select('diterima_di_jurusan', 'jenis_kelamin')
+            ->get();
+
+        // Per jurusan breakdown
+        $genderByJurusan = [];
+        foreach ($jurusans as $j) {
+            $genderByJurusan[$j] = ['L' => 0, 'P' => 0];
+        }
+        $totalGenderL = 0;
+        $totalGenderP = 0;
+
+        foreach ($diTerimaGender as $row) {
+            $jur = $row->diterima_di_jurusan;
+            $gender = strtoupper($row->jenis_kelamin);
+            if (in_array($jur, $jurusans) && in_array($gender, ['L', 'P'])) {
+                $genderByJurusan[$jur][$gender]++;
+                if ($gender === 'L') $totalGenderL++;
+                else $totalGenderP++;
+            }
+        }
+
+        // Statistik Titip Bayar: pendaftar diterima yang sudah/belum melakukan pembayaran
+        $pembayaranBase = Pendaftaran::whereNotNull('diterima_di_jurusan')
+            ->select('diterima_di_jurusan', 'pembayaran_status', 'pembayaran_nominal', 'total_tagihan');
+
+        // Per jurusan: belum_bayar, cicilan, lunas
+        $pembayaranRows = (clone $pembayaranBase)->get();
+
+        $pembayaranByJurusan = [];
+        foreach ($jurusans as $j) {
+            $pembayaranByJurusan[$j] = ['belum_bayar' => 0, 'cicilan' => 0, 'lunas' => 0, 'total' => 0];
+        }
+
+        $totalPembayaranBelum   = 0;
+        $totalPembayaranCicilan = 0;
+        $totalPembayaranLunas   = 0;
+        $totalNominalTerkumpul  = 0;
+        $totalNominalTagihan    = 0;
+
+        foreach ($pembayaranRows as $row) {
+            $jur    = $row->diterima_di_jurusan;
+            $status = $row->pembayaran_status ?? 'belum_bayar';
+            if (!in_array($status, ['belum_bayar', 'cicilan', 'lunas'])) {
+                $status = 'belum_bayar';
+            }
+            if (in_array($jur, $jurusans)) {
+                $pembayaranByJurusan[$jur][$status]++;
+                $pembayaranByJurusan[$jur]['total']++;
+            }
+            if ($status === 'belum_bayar') $totalPembayaranBelum++;
+            elseif ($status === 'cicilan')  $totalPembayaranCicilan++;
+            elseif ($status === 'lunas')    $totalPembayaranLunas++;
+
+            $totalNominalTerkumpul += (float) ($row->pembayaran_nominal ?? 0);
+            $totalNominalTagihan   += (float) ($row->total_tagihan ?? 0);
+        }
+
         // Pastikan stats['pendaftaran_total'] konsisten dengan tabel statistik
         $stats['pendaftaran_total'] = $totalPendaftar['total'];
 
@@ -131,7 +190,16 @@ class AdminDashboardController extends Controller
             'totalCalon',
             'totalDiterima',
             'jurusans',
-            'gelMap'
+            'gelMap',
+            'genderByJurusan',
+            'totalGenderL',
+            'totalGenderP',
+            'pembayaranByJurusan',
+            'totalPembayaranBelum',
+            'totalPembayaranCicilan',
+            'totalPembayaranLunas',
+            'totalNominalTerkumpul',
+            'totalNominalTagihan'
         ));
     }
 }

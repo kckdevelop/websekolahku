@@ -48,7 +48,12 @@
 
 <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
   <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-    <h2 class="font-semibold text-slate-800">Daftar Pendaftar</h2>
+    <div class="flex items-center gap-4">
+      <h2 class="font-semibold text-slate-800">Daftar Pendaftar</h2>
+      <a href="{{ route('admin.pendaftaran.create') }}" class="bg-primary hover:bg-secondary text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors inline-flex items-center gap-1">
+        <i class="fas fa-plus"></i> Tambah Pendaftar Baru
+      </a>
+    </div>
     <span class="text-sm text-slate-500">Total: {{ $pendaftaran->total() }} pendaftar</span>
   </div>
   <div class="overflow-x-auto">
@@ -113,6 +118,10 @@
               <button type="button" class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors btn-detail" data-id="{{ $item->id }}" title="Detail Info" style="font-size:12px;">
                 <i class="fas fa-eye"></i>
               </button>
+              {{-- Verifikasi Berkas --}}
+              <a href="{{ route('admin.pendaftaran.show', $item) }}" class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors" title="Verifikasi Berkas" style="font-size:12px;">
+                <i class="fas fa-check-double"></i>
+              </a>
               {{-- Edit --}}
               <button type="button" class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-amber-500 hover:bg-amber-50 transition-colors btn-edit" data-id="{{ $item->id }}" title="Edit Data" style="font-size:12px;">
                 <i class="fas fa-edit"></i>

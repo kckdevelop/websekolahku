@@ -7,6 +7,23 @@
 
   {{-- Kolom Kiri: Daftar Gelombang --}}
   <div class="lg:col-span-2 space-y-6">
+
+    {{-- Banner: Pendaftaran Ditutup --}}
+    @if(!$isPendaftaranOpen)
+    <div class="flex items-start gap-4 bg-red-50 border border-red-200 rounded-2xl px-5 py-4">
+      <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
+        <i class="fas fa-ban text-red-500"></i>
+      </div>
+      <div class="flex-1">
+        <p class="font-bold text-red-700 text-sm">Pendaftaran Sedang Ditutup</p>
+        <p class="text-xs text-red-500 mt-0.5">Semua gelombang telah dinonaktifkan. Tombol aktivasi gelombang tidak dapat digunakan. Buka kembali pendaftaran melalui menu <a href="{{ route('admin.spmb-status.edit') }}" class="font-semibold underline hover:text-red-700">Status Pendaftaran</a> terlebih dahulu.</p>
+      </div>
+      <a href="{{ route('admin.spmb-status.edit') }}" class="inline-flex items-center gap-1.5 text-xs font-semibold bg-red-100 hover:bg-red-200 text-red-700 px-3 py-2 rounded-lg transition-colors flex-shrink-0">
+        <i class="fas fa-toggle-on"></i> Buka
+      </a>
+    </div>
+    @endif
+
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
       <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
         <h3 class="font-bold text-slate-800 flex items-center gap-2">
@@ -61,31 +78,65 @@
                 @endif
               </td>
               <td class="px-4 py-4 text-center">
-                @if($item->is_aktif)
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 shadow-sm shadow-green-100/50">
-                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>Aktif
+                @if(!$isPendaftaranOpen)
+                  {{-- Pendaftaran ditutup: semua tampil Non-Aktif (tertutup) --}}
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500">
+                    <i class="fas fa-ban text-xs"></i> Ditutup
                   </span>
+                @elseif($item->is_aktif)
+                  <div class="flex flex-col items-center gap-1">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 shadow-sm shadow-green-100/50">
+                      <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>Aktif
+                    </span>
+                    @php
+                      $yr = '26';
+                      if (preg_match('/^(\d{4})/', $item->tahun_ajaran ?? '', $ym)) { $yr = substr($ym[1], -2); }
+                      $kd = str_pad((int)$item->kode_gelombang, 2, '0', STR_PAD_LEFT);
+                      $pfx = 'MSB'.$yr.'-'.$kd.'-';
+                      $lastP = \App\Models\Pendaftaran::where('no_daftar','like',$pfx.'%')->orderBy('no_daftar','desc')->first();
+                      $nxt = $lastP ? ((int)substr($lastP->no_daftar,-3)+1) : 1;
+                      $previewNo = $pfx . str_pad($nxt, 3, '0', STR_PAD_LEFT);
+                    @endphp
+                    <span class="font-mono text-xxs text-slate-400" title="No pendaftaran berikutnya">{{ $previewNo }}</span>
+                  </div>
                 @else
                   <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-650">Non-Aktif</span>
                 @endif
               </td>
               <td class="px-4 py-4 text-right">
                 <div class="flex items-center justify-end gap-1.5">
-                  @if(!$item->is_aktif)
-                    <form method="POST" action="{{ route('admin.gelombang.toggleActive', $item) }}">
+                  @if(!$isPendaftaranOpen)
+                    {{-- Pendaftaran ditutup: tombol play dinonaktifkan --}}
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-300 border border-slate-200 cursor-not-allowed" title="Buka pendaftaran terlebih dahulu untuk mengaktifkan gelombang">
+                      <i class="fas fa-play text-xs"></i>
+                    </span>
+                  @elseif(!$item->is_aktif)
+                    <form id="form-aktif-{{ $item->id }}" method="POST" action="{{ route('admin.gelombang.toggleActive', $item) }}">
                       @csrf
-                      <button type="submit" class="text-xs font-semibold bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white px-2.5 py-1.5 rounded-lg border border-emerald-250 transition-all">Set Aktif</button>
+                      <button type="button"
+                        onclick="showAktifModal({{ $item->id }}, '{{ addslashes($item->nama_gelombang) }}', '{{ $item->tahun_ajaran }}', '{{ str_pad($item->kode_gelombang,2,'0',STR_PAD_LEFT) }}')"
+                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-red-500 hover:text-white hover:bg-red-500 border border-red-200 hover:border-red-500 transition-all" title="Set sebagai gelombang aktif">
+                        <i class="fas fa-play text-xs"></i>
+                      </button>
                     </form>
+                  @else
+                    <span class="text-xs text-green-600 font-semibold px-2.5 py-1.5"><i class="fas fa-lock mr-1"></i>Aktif</span>
                   @endif
                   <a href="{{ route('admin.gelombang.edit', $item) }}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-650 hover:text-yellow-600 hover:bg-yellow-50 transition-colors">
                     <i class="fas fa-edit"></i>
                   </a>
-                  <form method="POST" action="{{ route('admin.gelombang.destroy', $item) }}" onsubmit="return confirm('Hapus gelombang ini?')">
-                    @csrf @method('DELETE')
-                    <button type="submit" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-650 hover:text-red-600 hover:bg-red-50 transition-colors">
+                  @if(!$item->is_aktif)
+                    <form method="POST" action="{{ route('admin.gelombang.destroy', $item) }}" onsubmit="return confirm('Hapus gelombang \'{{ $item->nama_gelombang }}\'? Tindakan ini tidak dapat dibatalkan.')">
+                      @csrf @method('DELETE')
+                      <button type="submit" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-650 hover:text-red-600 hover:bg-red-50 transition-colors">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </form>
+                  @else
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-300 cursor-not-allowed" title="Gelombang aktif tidak dapat dihapus">
                       <i class="fas fa-trash"></i>
-                    </button>
-                  </form>
+                    </span>
+                  @endif
                 </div>
               </td>
             </tr>
@@ -225,6 +276,67 @@
   </div>
 
 </div>
+
+{{-- Modal Konfirmasi Set Aktif --}}
+<div id="modal-aktif" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+  {{-- Backdrop --}}
+  <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeAktifModal()"></div>
+
+  {{-- Card --}}
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all scale-95 opacity-0" id="modal-aktif-card">
+    {{-- Header --}}
+    <div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-t-2xl px-6 pt-6 pb-8">
+      <div class="flex items-center justify-between mb-4">
+        <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+          <i class="fas fa-layer-group text-white text-xl"></i>
+        </div>
+        <button onclick="closeAktifModal()" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors">
+          <i class="fas fa-times text-sm"></i>
+        </button>
+      </div>
+      <h3 class="text-lg font-bold text-white">Aktifkan Gelombang?</h3>
+      <p class="text-emerald-100 text-sm mt-1">Konfirmasi pengalihan gelombang aktif</p>
+    </div>
+
+    {{-- Body --}}
+    <div class="px-6 py-5 -mt-4">
+      <div class="bg-white rounded-xl border border-slate-100 shadow-sm p-4 mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center flex-shrink-0">
+            <span id="modal-kode" class="text-emerald-600 font-bold text-sm font-mono">01</span>
+          </div>
+          <div>
+            <p id="modal-nama" class="font-bold text-slate-800 text-sm">Gelombang I</p>
+            <p id="modal-tahun" class="text-xs text-slate-400">2026/2027</p>
+          </div>
+          <span class="ml-auto inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Akan Aktif
+          </span>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+        <i class="fas fa-exclamation-triangle text-amber-500 mt-0.5 flex-shrink-0"></i>
+        <p class="text-xs text-amber-700 leading-relaxed">
+          <strong>Perhatian:</strong> Gelombang yang sedang aktif akan <strong>dinonaktifkan</strong> secara otomatis. Hanya 1 gelombang yang dapat aktif pada satu waktu.
+        </p>
+      </div>
+    </div>
+
+    {{-- Footer --}}
+    <div class="px-6 pb-6 flex gap-3">
+      <button onclick="closeAktifModal()"
+        class="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors">
+        Batal
+      </button>
+      <button id="modal-aktif-confirm" onclick="submitAktifForm()"
+        class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold text-sm hover:from-emerald-600 hover:to-teal-700 transition-all shadow-sm shadow-emerald-200 flex items-center justify-center gap-2">
+        <i class="fas fa-play text-xs"></i> Ya, Aktifkan
+      </button>
+    </div>
+  </div>
+</div>
+
 @endsection
 
 @section('scripts')
@@ -278,5 +390,42 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// ── Modal Set Aktif ──────────────────────────────
+let _aktifFormId = null;
+
+function showAktifModal(id, nama, tahun, kode) {
+  _aktifFormId = id;
+  document.getElementById('modal-nama').textContent   = nama;
+  document.getElementById('modal-tahun').textContent  = tahun;
+  document.getElementById('modal-kode').textContent   = kode;
+
+  const modal = document.getElementById('modal-aktif');
+  const card  = document.getElementById('modal-aktif-card');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  requestAnimationFrame(() => {
+    card.classList.remove('scale-95', 'opacity-0');
+    card.classList.add('scale-100', 'opacity-100');
+  });
+}
+
+function closeAktifModal() {
+  const modal = document.getElementById('modal-aktif');
+  const card  = document.getElementById('modal-aktif-card');
+  card.classList.remove('scale-100', 'opacity-100');
+  card.classList.add('scale-95', 'opacity-0');
+  setTimeout(() => {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    _aktifFormId = null;
+  }, 200);
+}
+
+function submitAktifForm() {
+  if (_aktifFormId) {
+    document.getElementById('form-aktif-' + _aktifFormId).submit();
+  }
+}
 </script>
 @endsection

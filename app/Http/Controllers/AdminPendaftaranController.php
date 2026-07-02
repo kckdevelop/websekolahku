@@ -102,46 +102,18 @@ class AdminPendaftaranController extends Controller
 
         $tanggal_lahir = $request->tahun . '-' . $request->bulan . '-' . str_pad($request->tgl, 2, '0', STR_PAD_LEFT);
 
-        // Generate No Daftar: MSB[YY]-[WW]-[NNN]
-        $selectedGelombangId = $request->input('gelombang_id');
-        $wave = \App\Models\SpmbGelombang::find($selectedGelombangId);
-        $activeWave = $wave ?: \App\Models\SpmbGelombang::where('is_aktif', true)->first();
-        $gelombangName = $activeWave ? $activeWave->nama_gelombang : 'Gelombang I';
-        $tahunAjaran = $activeWave ? $activeWave->tahun_ajaran : '2026/2027';
-
-        // 1. Get 2-digit year (YY) from tahun_ajaran
+        // Generate No Daftar: ambil dari gelombang yang dipilih (atau aktif jika tidak ada)
+        $wave = \App\Models\SpmbGelombang::find($request->input('gelombang_id'));
+        $activeWave = $wave ?: \App\Models\SpmbGelombang::getActive();
+        if (!$activeWave) {
+            return redirect()->back()->withErrors(['gelombang_id' => 'Tidak ada gelombang aktif.'])->withInput();
+        }
+        $gelombangName = $activeWave->nama_gelombang;
         $startYear = date('Y');
-        if (preg_match('/^\d{4}/', $tahunAjaran, $matches)) {
-            $startYear = $matches[0];
+        if (preg_match('/^\d{4}/', $activeWave->tahun_ajaran ?? '', $m)) {
+            $startYear = $m[0];
         }
-        $year2Digit = substr($startYear, -2); // e.g. '26'
-
-        // 2. Get 2-digit wave (WW) from nama_gelombang
-        $waveNumber = '01';
-        $cleanWave = strtolower(trim($gelombangName));
-        if (preg_match('/\d+/', $cleanWave, $matches)) {
-            $waveNumber = str_pad($matches[0], 2, '0', STR_PAD_LEFT);
-        } else {
-            if (str_contains($cleanWave, 'iii')) {
-                $waveNumber = '03';
-            } elseif (str_contains($cleanWave, 'ii')) {
-                $waveNumber = '02';
-            } elseif (str_contains($cleanWave, 'i')) {
-                $waveNumber = '01';
-            }
-        }
-
-        $prefix = 'MSB' . $year2Digit . '-' . $waveNumber . '-';
-        $lastPendaftaran = Pendaftaran::where('no_daftar', 'like', $prefix . '%')
-            ->orderBy('no_daftar', 'desc')
-            ->first();
-        if ($lastPendaftaran) {
-            $lastNum = (int) substr($lastPendaftaran->no_daftar, -3);
-            $nextNum = $lastNum + 1;
-        } else {
-            $nextNum = 1;
-        }
-        $no_daftar = $prefix . str_pad($nextNum, 3, '0', STR_PAD_LEFT);
+        $no_daftar = $activeWave->generateNoDaftar();
 
         // Upload files
         $foto_akta = null;
@@ -376,12 +348,37 @@ class AdminPendaftaranController extends Controller
 
     public function updateStatus(Request $request, Pendaftaran $pendaftaran)
     {
+        if ($request->input('action_type') === 'verifikasi_berkas') {
+            $berkasLengkap = $request->input('berkas', []);
+            $catatanPetugas = $request->input('catatan_petugas', '');
+            $tandaiVerif = $request->boolean('tandai_verifikasi');
+
+            if ($tandaiVerif) {
+                $statusBaru = 'verifikasi';
+            } elseif (in_array($pendaftaran->status, ['diterima', 'ditolak'])) {
+                $statusBaru = $pendaftaran->status;
+            } else {
+                $statusBaru = 'pending';
+            }
+
+            $pendaftaran->update([
+                'berkas_lengkap' => $berkasLengkap,
+                'catatan_petugas' => $catatanPetugas,
+                'verified_at' => $tandaiVerif ? now() : null,
+                'status' => $statusBaru,
+            ]);
+
+            return redirect()->route('admin.pendaftaran.show', $pendaftaran->id)
+                ->with('success', 'Verifikasi & kelengkapan berkas fisik berhasil diperbarui.');
+        }
+
         $request->validate([
             'status' => 'required|in:pending,verifikasi,diterima,ditolak',
         ]);
 
         $pendaftaran->update([
             'status' => $request->status,
+            'verified_at' => $request->status === 'verifikasi' ? now() : $pendaftaran->verified_at,
         ]);
 
         return redirect()->route('admin.pendaftaran.show', $pendaftaran->id)

@@ -37,6 +37,12 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    /** Apakah user adalah admin pendaftaran? */
+    public function isAdminPendaftaran(): bool
+    {
+        return $this->role === 'admin_pendaftaran';
+    }
+
     /** Apakah user adalah petugas pendaftaran? */
     public function isPetugas(): bool
     {
@@ -46,6 +52,6 @@ class User extends Authenticatable
     /** Apakah user bisa akses panel admin? */
     public function canAccessAdmin(): bool
     {
-        return $this->role === 'admin';
+        return in_array($this->role, ['admin', 'admin_pendaftaran']);
     }
 }

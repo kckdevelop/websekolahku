@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
+  <link rel="icon" href="{{ asset('storage/logomusaba.png') }}" type="image/png">
   <title>{{ trim(strip_tags(View::yieldContent('title', 'Admin'))) }} - Admin SMK Muhammadiyah 1 Bantul</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -110,13 +111,14 @@
         <span class="nav-label">Dashboard</span>
       </a>
 
+      @if(auth()->user()->role === 'admin')
       <p class="nav-section">Konten</p>
 
-      {{-- Dropdown 1: Kabar & Informasi --}}
+      {{-- Dropdown 1: Informasi --}}
       <div class="dropdown-container">
         <button type="button" class="nav-link w-full text-left dropdown-toggle {{ request()->routeIs('admin.berita.*', 'admin.prestasi.*') ? 'active' : '' }}" onclick="toggleDropdown(this)">
           <i class="fas fa-newspaper nav-icon"></i>
-          <span class="nav-label">Kabar & Informasi</span>
+          <span class="nav-label">Informasi Sekolah</span>
           <i class="fas fa-chevron-right dropdown-chevron text-xs transition-transform duration-200 ml-auto {{ request()->routeIs('admin.berita.*', 'admin.prestasi.*') ? 'rotate-90' : '' }}"></i>
         </button>
         <div class="dropdown-menu pl-4 space-y-1 mt-1 transition-all duration-300 {{ request()->routeIs('admin.berita.*', 'admin.prestasi.*') ? '' : 'hidden' }}">
@@ -152,12 +154,12 @@
 
       {{-- Dropdown 3: Tampilan Beranda --}}
       <div class="dropdown-container">
-        <button type="button" class="nav-link w-full text-left dropdown-toggle {{ request()->routeIs('admin.hero.*', 'admin.sambutan.*', 'admin.testimoni.*', 'admin.jurusan.*', 'admin.mitra.*', 'admin.spmb-halaman.*') ? 'active' : '' }}" onclick="toggleDropdown(this)">
+        <button type="button" class="nav-link w-full text-left dropdown-toggle {{ request()->routeIs('admin.hero.*', 'admin.sambutan.*', 'admin.testimoni.*', 'admin.jurusan.*', 'admin.mitra.*') ? 'active' : '' }}" onclick="toggleDropdown(this)">
           <i class="fas fa-sliders-h nav-icon"></i>
           <span class="nav-label">Tampilan Beranda</span>
-          <i class="fas fa-chevron-right dropdown-chevron text-xs transition-transform duration-200 ml-auto {{ request()->routeIs('admin.hero.*', 'admin.sambutan.*', 'admin.testimoni.*', 'admin.jurusan.*', 'admin.mitra.*', 'admin.spmb-halaman.*') ? 'rotate-90' : '' }}"></i>
+          <i class="fas fa-chevron-right dropdown-chevron text-xs transition-transform duration-200 ml-auto {{ request()->routeIs('admin.hero.*', 'admin.sambutan.*', 'admin.testimoni.*', 'admin.jurusan.*', 'admin.mitra.*') ? 'rotate-90' : '' }}"></i>
         </button>
-        <div class="dropdown-menu pl-4 space-y-1 mt-1 transition-all duration-300 {{ request()->routeIs('admin.hero.*', 'admin.sambutan.*', 'admin.testimoni.*', 'admin.jurusan.*', 'admin.mitra.*', 'admin.spmb-halaman.*') ? '' : 'hidden' }}">
+        <div class="dropdown-menu pl-4 space-y-1 mt-1 transition-all duration-300 {{ request()->routeIs('admin.hero.*', 'admin.sambutan.*', 'admin.testimoni.*', 'admin.jurusan.*', 'admin.mitra.*') ? '' : 'hidden' }}">
           <a href="{{ route('admin.hero.index') }}" class="nav-link py-2 {{ request()->routeIs('admin.hero.*') ? 'active' : '' }}">
             <i class="far fa-circle nav-icon text-xxs scale-75"></i>
             <span class="nav-label text-xs">Hero Slideshow</span>
@@ -173,10 +175,6 @@
           <a href="{{ route('admin.jurusan.index') }}" class="nav-link py-2 {{ request()->routeIs('admin.jurusan.*') ? 'active' : '' }}">
             <i class="far fa-circle nav-icon text-xxs scale-75"></i>
             <span class="nav-label text-xs">Halaman Jurusan</span>
-          </a>
-          <a href="{{ route('admin.spmb-halaman.edit') }}" class="nav-link py-2 {{ request()->routeIs('admin.spmb-halaman.*') ? 'active' : '' }}">
-            <i class="far fa-circle nav-icon text-xxs scale-75"></i>
-            <span class="nav-label text-xs">Halaman SPMB</span>
           </a>
           <a href="{{ route('admin.mitra.index') }}" class="nav-link py-2 {{ request()->routeIs('admin.mitra.*') ? 'active' : '' }}">
             <i class="far fa-circle nav-icon text-xxs scale-75"></i>
@@ -204,7 +202,52 @@
         </div>
       </div>
 
+      <p class="nav-section">Sistem</p>
+
+      <a href="{{ route('admin.nobox.edit') }}"
+         class="nav-link {{ request()->routeIs('admin.nobox.*') ? 'active' : '' }}">
+        <i class="fab fa-whatsapp nav-icon"></i>
+        <span class="nav-label">Pengaturan WhatsApp</span>
+      </a>
+
+      <a href="{{ route('admin.users.index') }}"
+         class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+        <i class="fas fa-users-cog nav-icon"></i>
+        <span class="nav-label">Kelola User</span>
+      </a>
+
+      <a href="{{ route('admin.pesan.index') }}"
+         class="nav-link {{ request()->routeIs('admin.pesan.*') ? 'active' : '' }}"
+         style="position:relative;">
+        <i class="fas fa-envelope nav-icon"></i>
+        <span class="nav-label">Pesan Masuk</span>
+        @php $totalPesan = \App\Models\Pesan::count(); @endphp
+        @if($totalPesan > 0)
+          <span style="background:#f97316; color:#fff; font-size:10px; border-radius:999px; padding:1px 7px; font-weight:700; flex-shrink:0;">{{ $totalPesan }}</span>
+        @endif
+      </a>
+      @endif
+
+      @if(auth()->user()->role === 'admin_pendaftaran')
       <p class="nav-section">SPMB</p>
+
+      @php $spmbStatusContent = \App\Models\SpmbPageContent::getSingle(); @endphp
+      <a href="{{ route('admin.spmb-status.edit') }}"
+         class="nav-link {{ request()->routeIs('admin.spmb-status.*') ? 'active' : '' }}">
+        <i class="fas fa-toggle-on nav-icon"></i>
+        <span class="nav-label">Status Pendaftaran</span>
+        @if ($spmbStatusContent->is_pendaftaran_open)
+          <span style="background:#22c55e; color:#fff; font-size:10px; border-radius:999px; padding:1px 8px; font-weight:700; flex-shrink:0; margin-left:auto;">Buka</span>
+        @else
+          <span style="background:#ef4444; color:#fff; font-size:10px; border-radius:999px; padding:1px 8px; font-weight:700; flex-shrink:0; margin-left:auto;">Tutup</span>
+        @endif
+      </a>
+
+      <a href="{{ route('admin.spmb-halaman.edit') }}"
+         class="nav-link {{ request()->routeIs('admin.spmb-halaman.*') ? 'active' : '' }}">
+        <i class="fas fa-sliders-h nav-icon"></i>
+        <span class="nav-label">Konten Halaman SPMB</span>
+      </a>
 
       <a href="{{ route('admin.gelombang.index') }}"
          class="nav-link {{ request()->routeIs('admin.gelombang.*') ? 'active' : '' }}">
@@ -264,31 +307,7 @@
 
         </div>
       </div>
-
-      <p class="nav-section">Sistem</p>
-
-      <a href="{{ route('admin.nobox.edit') }}"
-         class="nav-link {{ request()->routeIs('admin.nobox.*') ? 'active' : '' }}">
-        <i class="fab fa-whatsapp nav-icon"></i>
-        <span class="nav-label">Pengaturan WhatsApp</span>
-      </a>
-
-      <a href="{{ route('admin.users.index') }}"
-         class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-        <i class="fas fa-users-cog nav-icon"></i>
-        <span class="nav-label">Kelola User</span>
-      </a>
-
-      <a href="{{ route('admin.pesan.index') }}"
-         class="nav-link {{ request()->routeIs('admin.pesan.*') ? 'active' : '' }}"
-         style="position:relative;">
-        <i class="fas fa-envelope nav-icon"></i>
-        <span class="nav-label">Pesan Masuk</span>
-        @php $totalPesan = \App\Models\Pesan::count(); @endphp
-        @if($totalPesan > 0)
-          <span style="background:#f97316; color:#fff; font-size:10px; border-radius:999px; padding:1px 7px; font-weight:700; flex-shrink:0;">{{ $totalPesan }}</span>
-        @endif
-      </a>
+      @endif
 
       <p class="nav-section">Website</p>
 

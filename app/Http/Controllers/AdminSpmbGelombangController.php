@@ -13,7 +13,8 @@ class AdminSpmbGelombangController extends Controller
     public function index()
     {
         $gelombangs = SpmbGelombang::orderBy('tanggal_mulai', 'asc')->get();
-        return view('admin.gelombang.index', compact('gelombangs'));
+        $isPendaftaranOpen = \App\Models\SpmbPageContent::getSingle()->is_pendaftaran_open;
+        return view('admin.gelombang.index', compact('gelombangs', 'isPendaftaranOpen'));
     }
 
     /**
@@ -71,7 +72,8 @@ class AdminSpmbGelombangController extends Controller
     public function edit(SpmbGelombang $gelombang)
     {
         $gelombangs = SpmbGelombang::orderBy('tanggal_mulai', 'asc')->get();
-        return view('admin.gelombang.index', compact('gelombangs', 'gelombang'));
+        $isPendaftaranOpen = \App\Models\SpmbPageContent::getSingle()->is_pendaftaran_open;
+        return view('admin.gelombang.index', compact('gelombangs', 'gelombang', 'isPendaftaranOpen'));
     }
 
     /**

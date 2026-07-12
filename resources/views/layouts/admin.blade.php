@@ -70,6 +70,41 @@
       letter-spacing: 0.08em;
       padding: 16px 14px 6px;
     }
+
+    /* ===== MOBILE RESPONSIVE ===== */
+    #sidebar {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 35;
+      backdrop-filter: blur(2px);
+    }
+    #sidebar-overlay.active { display: block; }
+    #hamburger-btn {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      #sidebar {
+        transform: translateX(-100%);
+      }
+      #sidebar.open {
+        transform: translateX(0);
+      }
+      #main-content {
+        margin-left: 0 !important;
+      }
+      #hamburger-btn {
+        display: flex;
+      }
+      #topbar-date {
+        display: none;
+      }
+    }
   </style>
   <!-- Cropper CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
@@ -80,7 +115,10 @@
 <div style="display:flex; min-height:100vh;">
 
   {{-- ===================== SIDEBAR ===================== --}}
-  <aside style="
+  <!-- Mobile overlay backdrop -->
+  <div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <aside id="sidebar" style="
     position: fixed;
     top: 0; left: 0;
     height: 100%;
@@ -202,6 +240,25 @@
         </div>
       </div>
 
+      {{-- Dropdown 5: Teaching Factory (Tefa) --}}
+      <div class="dropdown-container">
+        <button type="button" class="nav-link w-full text-left dropdown-toggle {{ request()->routeIs('admin.tefa.*') ? 'active' : '' }}" onclick="toggleDropdown(this)">
+          <i class="fas fa-industry nav-icon"></i>
+          <span class="nav-label">Teaching Factory (Tefa)</span>
+          <i class="fas fa-chevron-right dropdown-chevron text-xs transition-transform duration-200 ml-auto {{ request()->routeIs('admin.tefa.*') ? 'rotate-90' : '' }}"></i>
+        </button>
+        <div class="dropdown-menu pl-4 space-y-1 mt-1 transition-all duration-300 {{ request()->routeIs('admin.tefa.*') ? '' : 'hidden' }}">
+          <a href="{{ route('admin.tefa.setting') }}" class="nav-link py-2 {{ request()->routeIs('admin.tefa.setting') ? 'active' : '' }}">
+            <i class="far fa-circle nav-icon text-xxs scale-75"></i>
+            <span class="nav-label text-xs">Pengaturan Halaman</span>
+          </a>
+          <a href="{{ route('admin.tefa.products.index') }}" class="nav-link py-2 {{ request()->routeIs('admin.tefa.products.*') ? 'active' : '' }}">
+            <i class="far fa-circle nav-icon text-xxs scale-75"></i>
+            <span class="nav-label text-xs">Produk Tefa</span>
+          </a>
+        </div>
+      </div>
+
       <p class="nav-section">Sistem</p>
 
       <a href="{{ route('admin.nobox.edit') }}"
@@ -271,7 +328,7 @@
         <div class="dropdown-menu pl-4 space-y-1 mt-1 transition-all duration-300 {{ request()->routeIs('admin.pendaftaran.*', 'admin.petugas-wawancara.*', 'admin.download.*', 'admin.reset.*') ? '' : 'hidden' }}">
 
           <a href="{{ route('admin.pendaftaran.index') }}"
-             class="nav-link py-2 {{ (request()->routeIs('admin.pendaftaran.*') && !request()->routeIs('admin.pendaftaran.laporan')) ? 'active' : '' }}"
+             class="nav-link py-2 {{ (request()->routeIs('admin.pendaftaran.*') && !request()->routeIs('admin.pendaftaran.laporan') && !request()->routeIs('admin.pendaftaran.statistik')) ? 'active' : '' }}"
              style="position:relative;">
             <i class="far fa-circle nav-icon text-xxs scale-75"></i>
             <span class="nav-label text-xs">Pendaftaran</span>
@@ -291,6 +348,12 @@
              class="nav-link py-2 {{ request()->routeIs('admin.pendaftaran.laporan') ? 'active' : '' }}">
             <i class="far fa-circle nav-icon text-xxs scale-75"></i>
             <span class="nav-label text-xs">Laporan Pendaftaran</span>
+          </a>
+
+          <a href="{{ route('admin.pendaftaran.statistik') }}"
+             class="nav-link py-2 {{ request()->routeIs('admin.pendaftaran.statistik') ? 'active' : '' }}">
+            <i class="far fa-circle nav-icon text-xxs scale-75"></i>
+            <span class="nav-label text-xs">Laporan &amp; Statistik</span>
           </a>
 
           <a href="{{ route('admin.download.pendaftaran') }}"
@@ -356,7 +419,7 @@
   </aside>
 
   {{-- ===================== MAIN CONTENT ===================== --}}
-  <div style="flex:1; margin-left:256px; display:flex; flex-direction:column; min-height:100vh;">
+  <div id="main-content" style="flex:1; margin-left:256px; display:flex; flex-direction:column; min-height:100vh;">
 
     {{-- Topbar --}}
     <header style="
@@ -366,16 +429,25 @@
       background:#fff;
       border-bottom:1px solid #e2e8f0;
       box-shadow:0 1px 3px rgba(0,0,0,0.06);
-      padding:16px 24px;
+      padding:14px 20px;
       display:flex;
       align-items:center;
       justify-content:space-between;
+      gap:12px;
     ">
-      <div>
-        <h1 style="font-size:17px; font-weight:700; color:#1e293b; margin:0;">@yield('title', 'Dashboard')</h1>
-        <p style="font-size:12px; color:#94a3b8; margin:2px 0 0;">@yield('subtitle', 'Panel Manajemen SMK Muhammadiyah 1 Bantul')</p>
+      <div style="display:flex; align-items:center; gap:12px; min-width:0;">
+        <!-- Hamburger button (mobile only) -->
+        <button id="hamburger-btn" onclick="toggleSidebar()"
+          style="width:38px; height:38px; border:none; background:#f1f5f9; border-radius:8px; cursor:pointer; align-items:center; justify-content:center; flex-shrink:0; color:#1e293b;"
+          aria-label="Buka menu">
+          <i class="fas fa-bars" style="font-size:16px;"></i>
+        </button>
+        <div style="min-width:0;">
+          <h1 style="font-size:17px; font-weight:700; color:#1e293b; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">@yield('title', 'Dashboard')</h1>
+          <p style="font-size:12px; color:#94a3b8; margin:2px 0 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">@yield('subtitle', 'Panel Manajemen SMK Muhammadiyah 1 Bantul')</p>
+        </div>
       </div>
-      <div style="display:flex; align-items:center; gap:12px;">
+      <div id="topbar-date" style="display:flex; align-items:center; gap:12px; flex-shrink:0;">
         <span style="font-size:13px; color:#94a3b8;">{{ now()->translatedFormat('d F Y') }}</span>
         <div style="width:8px; height:8px; background:#22c55e; border-radius:50%;"></div>
         <span style="font-size:12px; color:#64748b;">Online</span>
@@ -419,6 +491,31 @@
       chevron.classList.remove('rotate-90');
     }
   }
+
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('active');
+  }
+
+  function closeSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+  }
+
+  // Auto-close sidebar on nav link click (mobile)
+  document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById('sidebar');
+    if (!sidebar) return;
+    sidebar.querySelectorAll('a.nav-link').forEach(function(link) {
+      link.addEventListener('click', function() {
+        if (window.innerWidth <= 768) closeSidebar();
+      });
+    });
+  });
 </script>
 
   <!-- Global Cropper Modal -->

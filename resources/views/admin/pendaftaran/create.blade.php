@@ -131,22 +131,34 @@
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">Nama Orang Tua <span class="text-red-500">*</span></label>
-            <input type="text" name="nama_ortu" value="{{ old('nama_ortu') }}" required
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">Nama Ayah <span class="text-red-500">*</span></label>
+            <input type="text" name="nama_ayah" value="{{ old('nama_ayah') }}" required
               class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm"
-              placeholder="Nama orang tua/wali...">
+              placeholder="Nama ayah...">
           </div>
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">Pekerjaan Orang Tua <span class="text-red-500">*</span></label>
-            <input type="text" name="pekerjaan_ortu" value="{{ old('pekerjaan_ortu') }}" required
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">Pekerjaan Ayah <span class="text-red-500">*</span></label>
+            <input type="text" name="pekerjaan_ayah" value="{{ old('pekerjaan_ayah') }}" required
               class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm"
-              placeholder="Pekerjaan orang tua...">
+              placeholder="Pekerjaan ayah...">
           </div>
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1.5">No. HP Orang Tua <span class="text-red-500">*</span></label>
             <input type="text" name="no_hp_ortu" value="{{ old('no_hp_ortu') }}" required
               class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm"
               placeholder="No. Telp aktif orang tua...">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">Nama Ibu</label>
+            <input type="text" name="nama_ibu" value="{{ old('nama_ibu') }}"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm"
+              placeholder="Nama ibu...">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">Pekerjaan Ibu</label>
+            <input type="text" name="pekerjaan_ibu" value="{{ old('pekerjaan_ibu') }}"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm"
+              placeholder="Pekerjaan ibu...">
           </div>
         </div>
       </div>
@@ -318,6 +330,7 @@
               <option value="verifikasi">Verifikasi</option>
               <option value="diterima">Diterima</option>
               <option value="ditolak">Ditolak</option>
+              <option value="mundur">Mundur</option>
             </select>
           </div>
 

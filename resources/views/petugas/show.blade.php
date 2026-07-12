@@ -77,7 +77,8 @@
             ['Agama', ucfirst($pendaftaran->agama)],
             ['Asal Sekolah', $pendaftaran->asal_sekolah],
             ['No. HP Siswa', $pendaftaran->no_hp_siswa],
-            ['Nama Ortu', $pendaftaran->nama_ortu],
+            ['Nama Ayah', $pendaftaran->nama_ayah],
+            ['Nama Ibu', $pendaftaran->nama_ibu ?? '-'],
             ['No. HP Ortu', $pendaftaran->no_hp_ortu],
             ['Alamat', ($pendaftaran->jalan_tinggal ? $pendaftaran->jalan_tinggal . ', ' : '') .
                        ($pendaftaran->dusun_tinggal ? 'Dsn. ' . $pendaftaran->dusun_tinggal . ', ' : '') .
@@ -336,12 +337,20 @@
               </h4>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
                 <div>
-                  <span class="text-xxs font-bold text-slate-400 uppercase block">Nama Orang Tua</span>
-                  <span id="d-nama-ortu" class="text-sm font-semibold text-slate-800 block mt-1"></span>
+                  <span class="text-xxs font-bold text-slate-400 uppercase block">Nama Ayah</span>
+                  <span id="d-nama-ayah" class="text-sm font-semibold text-slate-800 block mt-1"></span>
                 </div>
                 <div>
-                  <span class="text-xxs font-bold text-slate-400 uppercase block">Pekerjaan Orang Tua</span>
-                  <span id="d-pekerjaan-ortu" class="text-sm font-semibold text-slate-800 block mt-1"></span>
+                  <span class="text-xxs font-bold text-slate-400 uppercase block">Pekerjaan Ayah</span>
+                  <span id="d-pekerjaan-ayah" class="text-sm font-semibold text-slate-800 block mt-1"></span>
+                </div>
+                <div>
+                  <span class="text-xxs font-bold text-slate-400 uppercase block">Nama Ibu</span>
+                  <span id="d-nama-ibu" class="text-sm font-semibold text-slate-800 block mt-1"></span>
+                </div>
+                <div>
+                  <span class="text-xxs font-bold text-slate-400 uppercase block">Pekerjaan Ibu</span>
+                  <span id="d-pekerjaan-ibu" class="text-sm font-semibold text-slate-800 block mt-1"></span>
                 </div>
                 <div>
                   <span class="text-xxs font-bold text-slate-400 uppercase block">No. HP Orang Tua</span>
@@ -514,13 +523,23 @@
             </h4>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
               <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nama Orang Tua <span class="text-red-500">*</span></label>
-                <input type="text" name="nama_ortu" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition text-sm">
+                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nama Ayah <span class="text-red-500">*</span></label>
+                <input type="text" name="nama_ayah" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition text-sm">
                 <span class="error-msg text-red-500 text-xs mt-1 block hidden"></span>
               </div>
               <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Pekerjaan Orang Tua <span class="text-red-500">*</span></label>
-                <input type="text" name="pekerjaan_ortu" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition text-sm">
+                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Pekerjaan Ayah <span class="text-red-500">*</span></label>
+                <input type="text" name="pekerjaan_ayah" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition text-sm">
+                <span class="error-msg text-red-500 text-xs mt-1 block hidden"></span>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nama Ibu</label>
+                <input type="text" name="nama_ibu" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition text-sm">
+                <span class="error-msg text-red-500 text-xs mt-1 block hidden"></span>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Pekerjaan Ibu</label>
+                <input type="text" name="pekerjaan_ibu" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition text-sm">
                 <span class="error-msg text-red-500 text-xs mt-1 block hidden"></span>
               </div>
               <div>
@@ -933,8 +952,10 @@
     document.getElementById('d-prestasi').textContent = data.prestasi || '-';
     
     // Ortu
-    document.getElementById('d-nama-ortu').textContent = data.nama_ortu || '-';
-    document.getElementById('d-pekerjaan-ortu').textContent = data.pekerjaan_ortu || '-';
+    document.getElementById('d-nama-ayah').textContent = data.nama_ayah || '-';
+    document.getElementById('d-pekerjaan-ayah').textContent = data.pekerjaan_ayah || '-';
+    document.getElementById('d-nama-ibu').textContent = data.nama_ibu || '-';
+    document.getElementById('d-pekerjaan-ibu').textContent = data.pekerjaan_ibu || '-';
     document.getElementById('d-hp-ortu').textContent = data.no_hp_ortu || '-';
     
     // Alamat
@@ -1021,8 +1042,10 @@
     form.alamat_sekolah.value = data.alamat_sekolah || '';
     form.prestasi.value = data.prestasi || '';
     
-    form.nama_ortu.value = data.nama_ortu || '';
-    form.pekerjaan_ortu.value = data.pekerjaan_ortu || '';
+    form.nama_ayah.value = data.nama_ayah || '';
+    form.pekerjaan_ayah.value = data.pekerjaan_ayah || '';
+    form.nama_ibu.value = data.nama_ibu || '';
+    form.pekerjaan_ibu.value = data.pekerjaan_ibu || '';
     form.no_hp_ortu.value = data.no_hp_ortu || '';
     
     // Alamat

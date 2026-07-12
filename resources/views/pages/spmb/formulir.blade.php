@@ -178,20 +178,30 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div>
+            <label class="form-label">Nama Ayah <span class="text-red-500">*</span></label>
+            <input type="text" name="nama_ayah" value="{{ $fd['nama_ayah'] ?? old('nama_ayah') }}" required
+              class="form-input" placeholder="Nama lengkap ayah...">
+          </div>
+          <div>
+            <label class="form-label">Pekerjaan Ayah <span class="text-red-500">*</span></label>
+            <input type="text" name="pekerjaan_ayah" value="{{ $fd['pekerjaan_ayah'] ?? old('pekerjaan_ayah') }}" required
+              class="form-input" placeholder="Pekerjaan ayah...">
+          </div>
+          <div>
+            <label class="form-label">Nama Ibu</label>
+            <input type="text" name="nama_ibu" value="{{ $fd['nama_ibu'] ?? old('nama_ibu') }}"
+              class="form-input" placeholder="Nama lengkap ibu...">
+          </div>
+          <div>
+            <label class="form-label">Pekerjaan Ibu</label>
+            <input type="text" name="pekerjaan_ibu" value="{{ $fd['pekerjaan_ibu'] ?? old('pekerjaan_ibu') }}"
+              class="form-input" placeholder="Pekerjaan ibu...">
+          </div>
           <div class="md:col-span-2">
-            <label class="form-label">Nama Orang Tua / Wali <span class="text-red-500">*</span></label>
-            <input type="text" name="nama_ortu" value="{{ $fd['nama_ortu'] ?? old('nama_ortu') }}" required
-              class="form-input" placeholder="Nama Ayah / Ibu / Wali...">
-          </div>
-          <div>
-            <label class="form-label">Pekerjaan Orang Tua <span class="text-red-500">*</span></label>
-            <input type="text" name="pekerjaan_ortu" value="{{ $fd['pekerjaan_ortu'] ?? old('pekerjaan_ortu') }}" required
-              class="form-input" placeholder="Pekerjaan...">
-          </div>
-          <div>
             <label class="form-label">No. HP / WhatsApp Orang Tua <span class="text-red-500">*</span></label>
             <input type="text" name="no_hp_ortu" value="{{ $fd['no_hp_ortu'] ?? old('no_hp_ortu') }}" required
-              class="form-input" placeholder="No. Telepon aktif...">
+              class="form-input" placeholder="No. Telepon aktif orang tua...">
           </div>
         </div>
       </div>
@@ -398,9 +408,11 @@
           <div class="mb-4">
             <h3 class="text-xs font-bold text-primary uppercase mb-2">2. Data Orang Tua</h3>
             <div class="grid grid-cols-2 gap-2 text-sm">
-              <div><span class="text-slate-400">Nama:</span> <span class="font-semibold text-slate-800 dark:text-white">{{ strtoupper($fd['nama_ortu'] ?? '-') }}</span></div>
-              <div><span class="text-slate-400">Pekerjaan:</span> <span class="font-semibold text-slate-800 dark:text-white">{{ $fd['pekerjaan_ortu'] ?? '-' }}</span></div>
-              <div><span class="text-slate-400">No. HP:</span> <span class="font-semibold text-slate-800 dark:text-white">{{ $fd['no_hp_ortu'] ?? '-' }}</span></div>
+              <div><span class="text-slate-400">Nama Ayah:</span> <span class="font-semibold text-slate-800 dark:text-white">{{ strtoupper($fd['nama_ayah'] ?? '-') }}</span></div>
+              <div><span class="text-slate-400">Pekerjaan Ayah:</span> <span class="font-semibold text-slate-800 dark:text-white">{{ $fd['pekerjaan_ayah'] ?? '-' }}</span></div>
+              <div><span class="text-slate-400">Nama Ibu:</span> <span class="font-semibold text-slate-800 dark:text-white">{{ strtoupper($fd['nama_ibu'] ?? '-') }}</span></div>
+              <div><span class="text-slate-400">Pekerjaan Ibu:</span> <span class="font-semibold text-slate-800 dark:text-white">{{ $fd['pekerjaan_ibu'] ?? '-' }}</span></div>
+              <div class="col-span-2"><span class="text-slate-400">No. HP Orang Tua:</span> <span class="font-semibold text-slate-800 dark:text-white">{{ $fd['no_hp_ortu'] ?? '-' }}</span></div>
             </div>
           </div>
 

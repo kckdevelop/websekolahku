@@ -83,7 +83,7 @@ class JurusanContentSeeder extends Seeder
 
         foreach ($jurusans as $kode => $data) {
             JurusanContent::firstOrCreate(
-                ['kode_jurusan' => $kode],
+                ['slug' => $kode],
                 array_merge($data, ['hero_gambar' => null, 'foto_kegiatan' => null])
             );
         }

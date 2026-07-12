@@ -276,6 +276,7 @@
     .status-diterima { background: var(--green-light); color: var(--green); }
     .status-ditolak  { background: #fee2e2; color: #dc2626; }
     .status-verifikasi { background: var(--primary-light); color: var(--primary); }
+    .status-mundur   { background: #f1f5f9; color: #475569; }
 
     .status-dot {
       width: 7px; height: 7px;
@@ -618,6 +619,7 @@
           'verifikasi' => ['label' => 'Sudah Diverifikasi',  'class' => 'status-verifikasi'],
           'diterima'   => ['label' => 'Diterima',            'class' => 'status-diterima'],
           'ditolak'    => ['label' => 'Tidak Diterima',      'class' => 'status-ditolak'],
+          'mundur'     => ['label' => 'Mengundurkan Diri',   'class' => 'status-mundur'],
         ];
         $st = $statusMap[$pendaftaran->status] ?? ['label' => ucfirst($pendaftaran->status), 'class' => 'status-pending'];
       @endphp
@@ -689,17 +691,27 @@
           </div>
           <table class="data-table">
             <tr>
-              <td class="lbl">Nama Orang Tua</td>
+              <td class="lbl">Nama Ayah</td>
               <td class="sep">:</td>
-              <td class="val">{{ $pendaftaran->nama_ortu }}</td>
+              <td class="val">{{ $pendaftaran->nama_ayah }}</td>
             </tr>
             <tr>
-              <td class="lbl">Pekerjaan</td>
+              <td class="lbl">Pekerjaan Ayah</td>
               <td class="sep">:</td>
-              <td class="val" style="font-weight: 500;">{{ $pendaftaran->pekerjaan_ortu }}</td>
+              <td class="val" style="font-weight: 500;">{{ $pendaftaran->pekerjaan_ayah }}</td>
             </tr>
             <tr>
-              <td class="lbl">No. HP Ortu</td>
+              <td class="lbl">Nama Ibu</td>
+              <td class="sep">:</td>
+              <td class="val">{{ $pendaftaran->nama_ibu ?? '-' }}</td>
+            </tr>
+            <tr>
+              <td class="lbl">Pekerjaan Ibu</td>
+              <td class="sep">:</td>
+              <td class="val" style="font-weight: 500;">{{ $pendaftaran->pekerjaan_ibu ?? '-' }}</td>
+            </tr>
+            <tr>
+              <td class="lbl">No. HP Orang Tua</td>
               <td class="sep">:</td>
               <td class="val">{{ $pendaftaran->no_hp_ortu }}</td>
             </tr>

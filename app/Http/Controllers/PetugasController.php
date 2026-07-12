@@ -205,9 +205,11 @@ class PetugasController extends Controller
             'prestasi' => 'nullable|string',
             
             // Orang Tua
-            'nama_ortu' => 'required|string|max:255',
-            'pekerjaan_ortu' => 'required|string|max:255',
-            'no_hp_ortu' => 'required|string|max:20',
+            'nama_ayah'      => 'required|string|max:255',
+            'pekerjaan_ayah' => 'required|string|max:255',
+            'nama_ibu'       => 'nullable|string|max:255',
+            'pekerjaan_ibu'  => 'nullable|string|max:255',
+            'no_hp_ortu'     => 'required|string|max:20',
             
             // Alamat Asal
             'rt_asal' => 'required|string|max:10',
@@ -292,9 +294,11 @@ class PetugasController extends Controller
             'prestasi' => $request->prestasi,
             
             // Orang Tua
-            'nama_ortu' => strtoupper($request->nama_ortu),
-            'pekerjaan_ortu' => $request->pekerjaan_ortu,
-            'no_hp_ortu' => $request->no_hp_ortu,
+            'nama_ayah'      => strtoupper($request->nama_ayah),
+            'pekerjaan_ayah' => $request->pekerjaan_ayah,
+            'nama_ibu'       => strtoupper($request->nama_ibu ?? ''),
+            'pekerjaan_ibu'  => $request->pekerjaan_ibu,
+            'no_hp_ortu'     => $request->no_hp_ortu,
             
             // Alamat Asal
             'jalan_asal' => $request->jalan_asal,
@@ -498,9 +502,11 @@ class PetugasController extends Controller
             'prestasi' => 'nullable|string',
             
             // Orang Tua
-            'nama_ortu' => 'required|string|max:255',
-            'pekerjaan_ortu' => 'required|string|max:255',
-            'no_hp_ortu' => 'required|string|max:20',
+            'nama_ayah'      => 'required|string|max:255',
+            'pekerjaan_ayah' => 'required|string|max:255',
+            'nama_ibu'       => 'nullable|string|max:255',
+            'pekerjaan_ibu'  => 'nullable|string|max:255',
+            'no_hp_ortu'     => 'required|string|max:20',
             
             // Alamat Asal
             'rt_asal' => 'required|string|max:10',
@@ -568,9 +574,11 @@ class PetugasController extends Controller
             'prestasi' => $request->prestasi,
             
             // Orang Tua
-            'nama_ortu' => strtoupper($request->nama_ortu),
-            'pekerjaan_ortu' => $request->pekerjaan_ortu,
-            'no_hp_ortu' => $request->no_hp_ortu,
+            'nama_ayah'      => strtoupper($request->nama_ayah),
+            'pekerjaan_ayah' => $request->pekerjaan_ayah,
+            'nama_ibu'       => strtoupper($request->nama_ibu ?? ''),
+            'pekerjaan_ibu'  => $request->pekerjaan_ibu,
+            'no_hp_ortu'     => $request->no_hp_ortu,
             
             // Alamat Asal
             'jalan_asal' => $request->jalan_asal,

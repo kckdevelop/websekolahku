@@ -91,27 +91,36 @@
       {{-- Section 3: Alur Pendaftaran --}}
       <div>
         <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider pb-2 border-b border-slate-100 mb-4">
-          <i class="fas fa-list-ol mr-1 text-primary"></i> 3. Alur Pendaftaran (5 Tahapan)
+          <i class="fas fa-list-ol mr-1 text-primary"></i> 3. Alur Pendaftaran
         </h3>
-        <div class="space-y-4">
-          @for ($i = 0; $i < 5; $i++)
-            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-start gap-4">
-              <span class="w-8 h-8 rounded-full bg-primary text-white font-bold flex items-center justify-center flex-shrink-0">{{ $i + 1 }}</span>
-              <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div id="alur-container" class="space-y-4">
+          @php
+            $alurList = old('alur_pendaftaran', $spmbContent->alur_pendaftaran ?? []);
+          @endphp
+          @foreach ($alurList as $index => $step)
+            <div class="alur-row p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-start gap-4 relative">
+              <button type="button" onclick="removeAlur(this)" class="absolute top-2 right-2 p-1 text-red-500 hover:text-red-700 bg-red-55/20 hover:bg-red-100 rounded-lg transition-colors" title="Hapus Tahapan">
+                <i class="fas fa-trash-alt text-xs"></i>
+              </button>
+              <span class="alur-number w-8 h-8 rounded-full bg-primary text-white font-bold flex items-center justify-center flex-shrink-0">{{ $index + 1 }}</span>
+              <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 mt-2 md:mt-0">
                 <div class="md:col-span-1">
                   <label class="block text-xs font-semibold text-slate-600 mb-1">Judul Tahapan</label>
-                  <input type="text" name="alur_pendaftaran[{{ $i }}][judul]" value="{{ old("alur_pendaftaran.$i.judul", $spmbContent->alur_pendaftaran[$i]['judul'] ?? '') }}" required
-                    class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-xs">
+                  <input type="text" name="alur_pendaftaran[{{ $index }}][judul]" value="{{ $step['judul'] ?? '' }}" required
+                    class="alur-judul w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-xs">
                 </div>
                 <div class="md:col-span-2">
                   <label class="block text-xs font-semibold text-slate-600 mb-1">Deskripsi Singkat</label>
-                  <input type="text" name="alur_pendaftaran[{{ $i }}][deskripsi]" value="{{ old("alur_pendaftaran.$i.deskripsi", $spmbContent->alur_pendaftaran[$i]['deskripsi'] ?? '') }}" required
-                    class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-xs">
+                  <input type="text" name="alur_pendaftaran[{{ $index }}][deskripsi]" value="{{ $step['deskripsi'] ?? '' }}" required
+                    class="alur-desc w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-xs">
                 </div>
               </div>
             </div>
-          @endfor
+          @endforeach
         </div>
+        <button type="button" onclick="addAlur()" class="mt-4 inline-flex items-center gap-1 text-xs text-primary hover:text-secondary font-semibold bg-orange-50 hover:bg-orange-100 px-4 py-2.5 rounded-xl transition-colors">
+          <i class="fas fa-plus"></i> Tambah Tahapan Baru
+        </button>
       </div>
 
       {{-- Section 4: Persyaratan --}}
@@ -228,6 +237,30 @@
     </form>
   </div>
 </div>
+
+{{-- Confirmation Delete Modal --}}
+<div id="confirm-modal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden">
+  {{-- Backdrop --}}
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeConfirmModal()"></div>
+  {{-- Modal Box --}}
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6 transform transition-all duration-200" id="confirm-modal-box">
+    <div class="flex flex-col items-center text-center">
+      <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mb-4">
+        <i class="fas fa-trash-alt text-red-500 text-xl"></i>
+      </div>
+      <h3 class="text-slate-800 font-bold text-lg mb-1" id="confirm-modal-title">Hapus Item?</h3>
+      <p class="text-slate-500 text-sm mb-6" id="confirm-modal-desc">Tindakan ini tidak dapat dibatalkan.</p>
+      <div class="flex gap-3 w-full">
+        <button type="button" onclick="closeConfirmModal()" class="flex-1 py-2.5 px-4 rounded-xl border border-slate-200 text-slate-700 font-semibold text-sm hover:bg-slate-50 transition-colors">
+          Batal
+        </button>
+        <button type="button" id="confirm-modal-action" class="flex-1 py-2.5 px-4 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold text-sm transition-colors">
+          <i class="fas fa-trash-alt mr-1"></i> Hapus
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -287,8 +320,15 @@
 
   function removePhoto(button) {
     const row = button.closest('.photo-row');
-    row.remove();
-    reindexPhotos();
+    const label = row.querySelector('.photo-label')?.textContent || 'foto ini';
+    openConfirmModal(
+      'Hapus Foto?',
+      `${label} akan dihapus dari galeri dokumentasi SPMB.`,
+      () => {
+        row.remove();
+        reindexPhotos();
+      }
+    );
   }
 
   function reindexPhotos() {
@@ -307,6 +347,113 @@
     });
   }
 
+  function addAlur() {
+    const container = document.getElementById('alur-container');
+    const index = container.querySelectorAll('.alur-row').length;
+    const newRow = document.createElement('div');
+    newRow.className = 'alur-row p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-start gap-4 relative';
+    newRow.innerHTML = `
+      <button type="button" onclick="removeAlur(this)" class="absolute top-2 right-2 p-1 text-red-500 hover:text-red-700 bg-red-55/20 hover:bg-red-100 rounded-lg transition-colors" title="Hapus Tahapan">
+        <i class="fas fa-trash-alt text-xs"></i>
+      </button>
+      <span class="alur-number w-8 h-8 rounded-full bg-primary text-white font-bold flex items-center justify-center flex-shrink-0">\${index + 1}</span>
+      <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 mt-2 md:mt-0">
+        <div class="md:col-span-1">
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Judul Tahapan</label>
+          <input type="text" name="alur_pendaftaran[\${index}][judul]" value="" required
+            class="alur-judul w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-xs">
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Deskripsi Singkat</label>
+          <input type="text" name="alur_pendaftaran[\${index}][deskripsi]" value="" required
+            class="alur-desc w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-xs">
+        </div>
+      </div>
+    `;
+    container.appendChild(newRow);
+  }
+
+  // ─── Confirm Modal ───────────────────────────────────────────────
+  let _pendingDeleteFn = null;
+
+  function openConfirmModal(title, desc, onConfirm) {
+    _pendingDeleteFn = onConfirm;
+    document.getElementById('confirm-modal-title').textContent = title;
+    document.getElementById('confirm-modal-desc').textContent = desc;
+    const modal = document.getElementById('confirm-modal');
+    modal.classList.remove('hidden');
+    // Animate in
+    const box = document.getElementById('confirm-modal-box');
+    box.style.opacity = '0';
+    box.style.transform = 'scale(0.9)';
+    requestAnimationFrame(() => {
+      box.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+      box.style.opacity = '1';
+      box.style.transform = 'scale(1)';
+    });
+    document.getElementById('confirm-modal-action').onclick = () => {
+      if (_pendingDeleteFn) _pendingDeleteFn();
+      closeConfirmModal();
+    };
+  }
+
+  function closeConfirmModal() {
+    const modal = document.getElementById('confirm-modal');
+    const box = document.getElementById('confirm-modal-box');
+    box.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+    box.style.opacity = '0';
+    box.style.transform = 'scale(0.9)';
+    setTimeout(() => {
+      modal.classList.add('hidden');
+      _pendingDeleteFn = null;
+    }, 150);
+  }
+
+  // Esc key to close
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeConfirmModal();
+  });
+
+  // ─── Alur Pendaftaran ────────────────────────────────────────────
+  function removeAlur(button) {
+    const row = button.closest('.alur-row');
+    const container = document.getElementById('alur-container');
+    const judul = row.querySelector('.alur-judul')?.value || 'tahapan ini';
+    if (container.querySelectorAll('.alur-row').length > 1) {
+      openConfirmModal(
+        'Hapus Tahapan?',
+        `Tahapan "${judul}" akan dihapus dari daftar alur pendaftaran.`,
+        () => {
+          row.remove();
+          reindexAlur();
+        }
+      );
+    } else {
+      openConfirmModal(
+        'Kosongkan Tahapan?',
+        'Ini adalah satu-satunya tahapan. Field akan dikosongkan.',
+        () => {
+          row.querySelector('.alur-judul').value = '';
+          row.querySelector('.alur-desc').value = '';
+        }
+      );
+    }
+  }
+
+  function reindexAlur() {
+    const container = document.getElementById('alur-container');
+    container.querySelectorAll('.alur-row').forEach((row, index) => {
+      row.querySelector('.alur-number').textContent = index + 1;
+      
+      const judulInput = row.querySelector('.alur-judul');
+      if (judulInput) judulInput.name = `alur_pendaftaran[${index}][judul]`;
+      
+      const descInput = row.querySelector('.alur-desc');
+      if (descInput) descInput.name = `alur_pendaftaran[${index}][deskripsi]`;
+    });
+  }
+
+  // ─── Persyaratan ────────────────────────────────────────────────
   function addPersyaratan() {
     const container = document.getElementById('persyaratan-container');
     const newRow = document.createElement('div');
@@ -325,10 +472,19 @@
   function removePersyaratan(button) {
     const row = button.closest('.persyaratan-row');
     const container = document.getElementById('persyaratan-container');
+    const nilai = row.querySelector('input')?.value || 'persyaratan ini';
     if (container.querySelectorAll('.persyaratan-row').length > 1) {
-      row.remove();
+      openConfirmModal(
+        'Hapus Persyaratan?',
+        `Persyaratan "${nilai}" akan dihapus dari daftar.`,
+        () => row.remove()
+      );
     } else {
-      row.querySelector('input').value = '';
+      openConfirmModal(
+        'Kosongkan Persyaratan?',
+        'Ini adalah satu-satunya persyaratan. Field akan dikosongkan.',
+        () => row.querySelector('input').value = ''
+      );
     }
   }
 </script>

@@ -48,8 +48,10 @@
         <th>Asal Sekolah</th>
         <th>Alamat Sekolah</th>
         <th>Prestasi</th>
-        <th>Nama Orang Tua / Wali</th>
-        <th>Pekerjaan Orang Tua</th>
+        <th>Nama Ayah</th>
+        <th>Pekerjaan Ayah</th>
+        <th>Nama Ibu</th>
+        <th>Pekerjaan Ibu</th>
         <th>No. HP Orang Tua</th>
         <th>Alamat Lengkap</th>
         <th>Pilihan Jurusan 1</th>
@@ -98,8 +100,10 @@
         <td>{{ $p->asal_sekolah }}</td>
         <td>{{ $p->alamat_sekolah }}</td>
         <td>{{ $p->prestasi }}</td>
-        <td>{{ $p->nama_ortu }}</td>
-        <td>{{ $p->pekerjaan_ortu }}</td>
+        <td>{{ $p->nama_ayah }}</td>
+        <td>{{ $p->pekerjaan_ayah }}</td>
+        <td>{{ $p->nama_ibu }}</td>
+        <td>{{ $p->pekerjaan_ibu }}</td>
         <td>{{ $p->no_hp_ortu }}</td>
         <td>
           {{ $p->jalan_asal }} RT {{ $p->rt_asal }}/RW {{ $p->rw_asal ?? '-' }}, 

@@ -28,6 +28,8 @@ use App\Http\Controllers\AdminPetugasWawancaraController;
 use App\Http\Controllers\AdminResetController;
 use App\Http\Controllers\AdminDownloadPendaftaranController;
 use App\Http\Controllers\AdminBkkController;
+use App\Http\Controllers\TefaController;
+use App\Http\Controllers\AdminTefaController;
 use App\Models\RiwayatPembayaran;
 
 /*
@@ -81,6 +83,8 @@ Route::get('/bkk', function () {
     $lowongans = \App\Models\LowonganKerja::aktifTerbuka()->orderBy('urutan')->orderByDesc('created_at')->get();
     return view('pages.bkk.index', compact('bkk', 'lowongans'));
 })->name('bkk');
+Route::get('/tefa', [TefaController::class, 'index'])->name('tefa.index');
+Route::get('/tefa/{product}', [TefaController::class, 'show'])->name('tefa.show');
 Route::get('/jurusan/{slug}', function ($slug) {
     $content = \App\Models\JurusanContent::where('slug', $slug)->where('aktif', true)->first();
 
@@ -250,6 +254,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
         // Pendaftaran (Full CRUD + print)
         Route::get('/pendaftaran/laporan', [AdminPendaftaranController::class, 'laporan'])->name('pendaftaran.laporan');
+        Route::get('/pendaftaran/statistik', [AdminPendaftaranController::class, 'statistik'])->name('pendaftaran.statistik');
         Route::get('/pendaftaran/{pendaftaran}/cetak', [AdminPendaftaranController::class, 'cetak'])->name('pendaftaran.cetak');
         Route::patch('/pendaftaran/{pendaftaran}/status', [AdminPendaftaranController::class, 'updateStatus'])->name('pendaftaran.updateStatus');
         Route::resource('pendaftaran', AdminPendaftaranController::class);
@@ -304,6 +309,16 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         Route::put('/bkk/lowongan/{lowongan}', [AdminBkkController::class, 'updateLowongan'])->name('bkk.lowongan.update');
         Route::delete('/bkk/lowongan/{lowongan}', [AdminBkkController::class, 'destroyLowongan'])->name('bkk.lowongan.destroy');
         Route::post('/bkk/lowongan/{lowongan}/toggle-aktif', [AdminBkkController::class, 'toggleAktifLowongan'])->name('bkk.lowongan.toggle-aktif');
+
+        // Teaching Factory (Tefa)
+        Route::get('/tefa/setting', [AdminTefaController::class, 'editSetting'])->name('tefa.setting');
+        Route::put('/tefa/setting', [AdminTefaController::class, 'updateSetting'])->name('tefa.setting.update');
+        Route::get('/tefa/products', [AdminTefaController::class, 'indexProducts'])->name('tefa.products.index');
+        Route::get('/tefa/products/create', [AdminTefaController::class, 'createProduct'])->name('tefa.products.create');
+        Route::post('/tefa/products', [AdminTefaController::class, 'storeProduct'])->name('tefa.products.store');
+        Route::get('/tefa/products/{product}/edit', [AdminTefaController::class, 'editProduct'])->name('tefa.products.edit');
+        Route::put('/tefa/products/{product}', [AdminTefaController::class, 'updateProduct'])->name('tefa.products.update');
+        Route::delete('/tefa/products/{product}', [AdminTefaController::class, 'destroyProduct'])->name('tefa.products.destroy');
     });
 });
 

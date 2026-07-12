@@ -43,14 +43,52 @@
       text-transform: uppercase; color: rgba(255,255,255,0.35);
       padding: 16px 16px 4px; margin: 0;
     }
+
+    /* ===== MOBILE RESPONSIVE ===== */
+    #sidebar-petugas {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #sidebar-overlay-petugas {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 35;
+      backdrop-filter: blur(2px);
+    }
+    #sidebar-overlay-petugas.active { display: block; }
+    #hamburger-btn-petugas {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      #sidebar-petugas {
+        transform: translateX(-100%);
+      }
+      #sidebar-petugas.open {
+        transform: translateX(0);
+      }
+      #main-content-petugas {
+        margin-left: 0 !important;
+      }
+      #hamburger-btn-petugas {
+        display: flex;
+      }
+      #topbar-date-petugas {
+        display: none;
+      }
+    }
   </style>
   @stack('styles')
 </head>
 <body>
 <div style="display:flex; min-height:100vh;">
 
+  <!-- Mobile overlay backdrop -->
+  <div id="sidebar-overlay-petugas" onclick="closeSidebarPetugas()"></div>
+
   {{-- SIDEBAR --}}
-  <aside style="
+  <aside id="sidebar-petugas" style="
     width: 240px; flex-shrink: 0;
     background: linear-gradient(180deg,#1e3a8a 0%,#1d4ed8 60%,#2563eb 100%);
     display: flex; flex-direction: column;
@@ -173,22 +211,29 @@
   </aside>
 
   {{-- MAIN CONTENT --}}
-  <div style="flex:1; margin-left:240px; display:flex; flex-direction:column; min-height:100vh;">
+  <div id="main-content-petugas" style="flex:1; margin-left:240px; display:flex; flex-direction:column; min-height:100vh;">
 
-    {{-- Topbar --}}
     <header style="
       position:sticky; top:0; z-index:30;
       background:#fff; border-bottom:1px solid #e2e8f0;
       box-shadow:0 1px 3px rgba(0,0,0,0.06);
-      padding:14px 24px; display:flex; align-items:center; justify-content:space-between;
+      padding:12px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px;
     ">
-      <div>
-        <h1 style="font-size:16px; font-weight:700; color:#1e293b; margin:0;">@yield('title', 'Dashboard Petugas')</h1>
-        <p style="font-size:11px; color:#94a3b8; margin:2px 0 0;">
-          @yield('subtitle', 'Panel PPDB SMK Muhammadiyah 1 Bantul')
-        </p>
+      <div style="display:flex; align-items:center; gap:12px; min-width:0;">
+        <!-- Hamburger button (mobile only) -->
+        <button id="hamburger-btn-petugas" onclick="toggleSidebarPetugas()"
+          style="width:36px; height:36px; border:none; background:#f1f5f9; border-radius:8px; cursor:pointer; align-items:center; justify-content:center; flex-shrink:0; color:#1e293b;"
+          aria-label="Buka menu">
+          <i class="fas fa-bars" style="font-size:15px;"></i>
+        </button>
+        <div style="min-width:0;">
+          <h1 style="font-size:16px; font-weight:700; color:#1e293b; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">@yield('title', 'Dashboard Petugas')</h1>
+          <p style="font-size:11px; color:#94a3b8; margin:2px 0 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+            @yield('subtitle', 'Panel PPDB SMK Muhammadiyah 1 Bantul')
+          </p>
+        </div>
       </div>
-      <div style="display:flex; align-items:center; gap:10px;">
+      <div id="topbar-date-petugas" style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
         <span style="font-size:12px; color:#94a3b8;">{{ now()->translatedFormat('d F Y') }}</span>
         <div style="width:7px; height:7px; background:#22c55e; border-radius:50%;"></div>
         <span style="font-size:11px; color:#64748b;">Online</span>
@@ -215,5 +260,31 @@
   </div>
 </div>
 @stack('scripts')
+<script>
+  function toggleSidebarPetugas() {
+    const sidebar = document.getElementById('sidebar-petugas');
+    const overlay = document.getElementById('sidebar-overlay-petugas');
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('active');
+  }
+
+  function closeSidebarPetugas() {
+    const sidebar = document.getElementById('sidebar-petugas');
+    const overlay = document.getElementById('sidebar-overlay-petugas');
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+  }
+
+  // Auto-close sidebar on nav link click (mobile)
+  document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById('sidebar-petugas');
+    if (!sidebar) return;
+    sidebar.querySelectorAll('a.nav-link').forEach(function(link) {
+      link.addEventListener('click', function() {
+        if (window.innerWidth <= 768) closeSidebarPetugas();
+      });
+    });
+  });
+</script>
 </body>
 </html>

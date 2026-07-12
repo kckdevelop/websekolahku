@@ -6,7 +6,7 @@
 {{-- Filter, Search & Action --}}
 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
   <div class="flex gap-2 flex-wrap">
-    @foreach(['semua' => 'Semua', 'pending' => 'Pending', 'verifikasi' => 'Verifikasi', 'diterima' => 'Diterima', 'ditolak' => 'Ditolak'] as $val => $label)
+    @foreach(['semua' => 'Semua', 'pending' => 'Pending', 'verifikasi' => 'Verifikasi', 'diterima' => 'Diterima', 'ditolak' => 'Ditolak', 'mundur' => 'Mundur'] as $val => $label)
     <a href="{{ route('admin.pendaftaran.index', ['status' => $val === 'semua' ? null : $val, 'search' => request('search')]) }}"
        class="px-4 py-2 rounded-xl text-sm font-medium transition-colors
        {{ request('status', 'semua') === $val
@@ -64,7 +64,7 @@
           <th class="px-3 py-2.5">No Daftar</th>
           <th class="px-3 py-2.5">Tgl Daftar</th>
           <th class="px-3 py-2.5">Nama Lengkap</th>
-          <th class="px-3 py-2.5">Nama Ortu</th>
+          <th class="px-3 py-2.5">Nama Ayah/Ibu</th>
           <th class="px-3 py-2.5 text-center">JK</th>
           <th class="px-3 py-2.5">Agama</th>
           <th class="px-3 py-2.5">Asal Sekolah</th>
@@ -91,7 +91,7 @@
           </td>
           <td class="px-3 py-2.5 text-slate-400 whitespace-nowrap" style="font-size:11px;">{{ $item->created_at->format('d/m/Y') }}</td>
           <td class="px-3 py-2.5 font-medium text-slate-700 max-w-[140px] truncate cell-nama" title="{{ $item->nama_lengkap }}" style="font-size:12px;">{{ $item->nama_lengkap }}</td>
-          <td class="px-3 py-2.5 text-slate-500 max-w-[120px] truncate cell-ortu" title="{{ $item->nama_ortu }}" style="font-size:12px;">{{ $item->nama_ortu }}</td>
+          <td class="px-3 py-2.5 text-slate-500 max-w-[120px] truncate cell-ortu" title="{{ $item->nama_ayah }} / {{ $item->nama_ibu ?? '-' }}" style="font-size:12px;">{{ $item->nama_ayah }}</td>
           <td class="px-3 py-2.5 text-center text-slate-600 font-medium cell-jk" style="font-size:12px;">{{ $item->jenis_kelamin }}</td>
           <td class="px-3 py-2.5 text-slate-500 capitalize cell-agama" style="font-size:12px;">{{ $item->agama }}</td>
           <td class="px-3 py-2.5 text-slate-500 max-w-[120px] truncate cell-asal" title="{{ $item->asal_sekolah }}" style="font-size:12px;">{{ $item->asal_sekolah }}</td>
@@ -102,7 +102,7 @@
           <td class="px-2 py-2.5 text-center font-medium cell-pil3"><span class="bg-slate-50 text-slate-500 px-1.5 py-0.5 rounded" style="font-size:11px;">{{ $item->pil3 }}</span></td>
           <td class="px-3 py-2.5 cell-status">
             @php
-              $badge = ['pending' => 'bg-amber-50 text-amber-600 border border-amber-200', 'verifikasi' => 'bg-blue-50 text-blue-600 border border-blue-200', 'diterima' => 'bg-emerald-50 text-emerald-600 border border-emerald-200', 'ditolak' => 'bg-red-50 text-red-500 border border-red-200'];
+              $badge = ['pending' => 'bg-amber-50 text-amber-600 border border-amber-200', 'verifikasi' => 'bg-blue-50 text-blue-600 border border-blue-200', 'diterima' => 'bg-emerald-50 text-emerald-600 border border-emerald-200', 'ditolak' => 'bg-red-50 text-red-500 border border-red-200', 'mundur' => 'bg-slate-100 text-slate-600 border border-slate-300'];
             @endphp
             <span class="status-badge inline-flex items-center px-2 py-0.5 rounded-full font-medium {{ $badge[$item->status] ?? 'bg-slate-100 text-slate-500 border border-slate-200' }}" style="font-size:10.5px;">
               {{ ucfirst($item->status) }}
@@ -296,12 +296,20 @@
               </h4>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
                 <div>
-                  <span class="text-xxs font-bold text-slate-400 uppercase block">Nama Orang Tua</span>
-                  <span id="d-nama-ortu" class="text-sm font-semibold text-slate-800 block mt-1"></span>
+                  <span class="text-xxs font-bold text-slate-400 uppercase block">Nama Ayah</span>
+                  <span id="d-nama-ayah" class="text-sm font-semibold text-slate-800 block mt-1"></span>
                 </div>
                 <div>
-                  <span class="text-xxs font-bold text-slate-400 uppercase block">Pekerjaan Orang Tua</span>
-                  <span id="d-pekerjaan-ortu" class="text-sm font-semibold text-slate-800 block mt-1"></span>
+                  <span class="text-xxs font-bold text-slate-400 uppercase block">Pekerjaan Ayah</span>
+                  <span id="d-pekerjaan-ayah" class="text-sm font-semibold text-slate-800 block mt-1"></span>
+                </div>
+                <div>
+                  <span class="text-xxs font-bold text-slate-400 uppercase block">Nama Ibu</span>
+                  <span id="d-nama-ibu" class="text-sm font-semibold text-slate-800 block mt-1"></span>
+                </div>
+                <div>
+                  <span class="text-xxs font-bold text-slate-400 uppercase block">Pekerjaan Ibu</span>
+                  <span id="d-pekerjaan-ibu" class="text-sm font-semibold text-slate-800 block mt-1"></span>
                 </div>
                 <div>
                   <span class="text-xxs font-bold text-slate-400 uppercase block">No. HP Orang Tua</span>
@@ -586,13 +594,23 @@
             </h4>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
               <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nama Orang Tua <span class="text-red-500">*</span></label>
-                <input type="text" name="nama_ortu" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition text-sm">
+                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nama Ayah <span class="text-red-500">*</span></label>
+                <input type="text" name="nama_ayah" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition text-sm">
                 <span class="error-msg text-red-500 text-xs mt-1 block hidden"></span>
               </div>
               <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Pekerjaan Orang Tua <span class="text-red-500">*</span></label>
-                <input type="text" name="pekerjaan_ortu" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition text-sm">
+                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Pekerjaan Ayah <span class="text-red-500">*</span></label>
+                <input type="text" name="pekerjaan_ayah" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition text-sm">
+                <span class="error-msg text-red-500 text-xs mt-1 block hidden"></span>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nama Ibu</label>
+                <input type="text" name="nama_ibu" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition text-sm">
+                <span class="error-msg text-red-500 text-xs mt-1 block hidden"></span>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Pekerjaan Ibu</label>
+                <input type="text" name="pekerjaan_ibu" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition text-sm">
                 <span class="error-msg text-red-500 text-xs mt-1 block hidden"></span>
               </div>
               <div>
@@ -764,6 +782,7 @@
                   <option value="verifikasi">Verifikasi</option>
                   <option value="diterima">Diterima</option>
                   <option value="ditolak">Ditolak</option>
+                  <option value="mundur">Mundur</option>
                 </select>
               </div>
               <div>
@@ -904,6 +923,8 @@
       statusBadge.classList.add('bg-green-100', 'text-green-700');
     } else if (data.status === 'ditolak') {
       statusBadge.classList.add('bg-red-100', 'text-red-700');
+    } else if (data.status === 'mundur') {
+      statusBadge.classList.add('bg-slate-100', 'text-slate-700');
     }
     statusBadge.textContent = data.status;
     
@@ -926,8 +947,10 @@
     document.getElementById('d-prestasi').textContent = data.prestasi || '-';
     
     // Ortu
-    document.getElementById('d-nama-ortu').textContent = data.nama_ortu || '-';
-    document.getElementById('d-pekerjaan-ortu').textContent = data.pekerjaan_ortu || '-';
+    document.getElementById('d-nama-ayah').textContent = data.nama_ayah || '-';
+    document.getElementById('d-pekerjaan-ayah').textContent = data.pekerjaan_ayah || '-';
+    document.getElementById('d-nama-ibu').textContent = data.nama_ibu || '-';
+    document.getElementById('d-pekerjaan-ibu').textContent = data.pekerjaan_ibu || '-';
     document.getElementById('d-hp-ortu').textContent = data.no_hp_ortu || '-';
     
     // Alamat
@@ -1089,8 +1112,10 @@
     form.alamat_sekolah.value = data.alamat_sekolah || '';
     form.prestasi.value = data.prestasi || '';
     
-    form.nama_ortu.value = data.nama_ortu || '';
-    form.pekerjaan_ortu.value = data.pekerjaan_ortu || '';
+    form.nama_ayah.value = data.nama_ayah || '';
+    form.pekerjaan_ayah.value = data.pekerjaan_ayah || '';
+    form.nama_ibu.value = data.nama_ibu || '';
+    form.pekerjaan_ibu.value = data.pekerjaan_ibu || '';
     form.no_hp_ortu.value = data.no_hp_ortu || '';
     
     // Alamat
@@ -1353,8 +1378,8 @@
     // Ortu
     const cellOrtu = row.querySelector('.cell-ortu');
     if (cellOrtu) {
-      cellOrtu.textContent = data.nama_ortu;
-      cellOrtu.title = data.nama_ortu;
+      cellOrtu.textContent = data.nama_ayah;
+      cellOrtu.title = data.nama_ayah + ' / ' + (data.nama_ibu || '-');
     }
     
     // JK
@@ -1397,7 +1422,8 @@
           'pending': 'bg-yellow-100 text-yellow-700',
           'verifikasi': 'bg-blue-100 text-blue-700',
           'diterima': 'bg-green-100 text-green-700',
-          'ditolak': 'bg-red-100 text-red-700'
+          'ditolak': 'bg-red-100 text-red-700',
+          'mundur': 'bg-slate-100 text-slate-700'
         };
         
         badgeSpan.classList.add(...(badgeClasses[data.status] || 'bg-slate-100 text-slate-600').split(' '));

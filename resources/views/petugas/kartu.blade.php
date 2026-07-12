@@ -266,9 +266,14 @@
                 <td class="val">{{ $pendaftaran->nama_lengkap }}</td>
               </tr>
               <tr>
-                <td class="lbl">Nama Orang Tua</td>
+                <td class="lbl">Nama Ayah</td>
                 <td class="sep">:</td>
-                <td class="val">{{ strtoupper($pendaftaran->nama_ortu) }} ({{ strtoupper($pendaftaran->pekerjaan_ortu) }})</td>
+                <td class="val">{{ strtoupper($pendaftaran->nama_ayah) }} ({{ strtoupper($pendaftaran->pekerjaan_ayah) }})</td>
+              </tr>
+              <tr>
+                <td class="lbl">Nama Ibu</td>
+                <td class="sep">:</td>
+                <td class="val">{{ $pendaftaran->nama_ibu ? strtoupper($pendaftaran->nama_ibu) . ' (' . strtoupper($pendaftaran->pekerjaan_ibu ?? '-') . ')' : '-' }}</td>
               </tr>
               <tr>
                 <td class="lbl">Alamat</td>

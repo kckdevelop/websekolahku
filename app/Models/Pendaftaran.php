@@ -26,8 +26,10 @@ class Pendaftaran extends Model
         'asal_sekolah',
         'alamat_sekolah',
         'prestasi',
-        'nama_ortu',
-        'pekerjaan_ortu',
+        'nama_ayah',
+        'pekerjaan_ayah',
+        'nama_ibu',
+        'pekerjaan_ibu',
         'no_hp_ortu',
 
         // Alamat Asal

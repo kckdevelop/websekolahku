@@ -247,6 +247,11 @@
           </div>
         </div>
 
+        <!-- Tefa -->
+        <a href="{{ route('tefa.index') }}" class="nav-link font-medium {{ request()->routeIs('tefa.*') ? 'text-white font-bold' : '' }} flex items-center hover:text-white/90">
+          <i class="fas fa-industry mr-2"></i> Tefa
+        </a>
+
         <!-- Galeri Dropdown -->
         <div class="relative group">
           <button class="nav-link flex items-center hover:text-white/90 font-medium focus:outline-none">
@@ -292,12 +297,12 @@
           </div>
         </div>
 
-        <!-- Tombol Daftar Sekarang -->
+        <!-- Tombol Daftar Sekarang
         <a href="{{ route('spmb.daftar') }}#pendaftaran" class="bg-white text-primary dark:bg-slate-800 dark:text-white px-4 py-2 rounded-full font-bold hover:bg-orange-50 dark:hover:bg-slate-700 transition-all duration-300 shadow-md hover:shadow-lg flex items-center space-x-1 hover:scale-105 transform">
           <i class="fas fa-user-plus mr-1"></i>
-          <span>Daftar</span>
+          <span>SMPB Online</span>
         </a>
-      </div>
+      </div> -->
 
       <!-- Mobile Menu Button -->
       <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none p-2 rounded-md hover:bg-white/20 transition-colors duration-200">
@@ -311,13 +316,13 @@
   <!-- Mobile Menu -->
   <div id="mobile-menu" class="hidden md:hidden bg-secondary pb-4">
     <div class="px-4 pt-2 space-y-2">
-      <!-- Tombol Daftar Sekarang (Mobile) -->
+      <!-- Tombol Daftar Sekarang (Mobile)
       <div class="pb-3 border-b border-white/20">
         <a href="{{ route('spmb.daftar') }}#pendaftaran" class="block text-center bg-white text-primary py-2.5 rounded-full font-bold hover:bg-orange-50 transition-colors shadow-md">
-          <i class="fas fa-user-plus mr-2"></i> Daftar
+          <i class="fas fa-user-plus mr-2"></i> SMPB Online
         </a>
       </div>
-      
+       -->
       <a href="#home" class="block py-2 text-white hover:text-white/90 transition-colors duration-200">
         <i class="fas fa-home mr-2"></i> Home
       </a>
@@ -384,6 +389,11 @@
           
         </div>
       </div>
+
+      <!-- Mobile Tefa -->
+      <a href="{{ route('tefa.index') }}" class="flex items-center py-2 text-white hover:text-white/90 font-medium transition-colors duration-200">
+        <i class="fas fa-industry mr-2"></i> Tefa
+      </a>
 
       <!-- Mobile Galeri -->
       <div>
@@ -738,5 +748,6 @@
     }
   </script>
 
+  @stack('scripts')
 </body>
 </html>

@@ -22,7 +22,7 @@ class AdminPendaftaranController extends Controller
               ->orWhere('asal_sekolah', 'like', "%{$search}%")
         );
 
-        if ($request->has('status') && in_array($request->status, ['pending', 'verifikasi', 'diterima', 'ditolak'])) {
+        if ($request->has('status') && in_array($request->status, ['pending', 'verifikasi', 'diterima', 'ditolak', 'mundur'])) {
             $query->where('status', $request->status);
         }
 
@@ -70,9 +70,11 @@ class AdminPendaftaranController extends Controller
             'prestasi' => 'nullable|string',
             
             // Orang Tua
-            'nama_ortu' => 'required|string|max:255',
-            'pekerjaan_ortu' => 'required|string|max:255',
-            'no_hp_ortu' => 'required|string|max:20',
+            'nama_ayah'      => 'required|string|max:255',
+            'pekerjaan_ayah' => 'required|string|max:255',
+            'nama_ibu'       => 'nullable|string|max:255',
+            'pekerjaan_ibu'  => 'nullable|string|max:255',
+            'no_hp_ortu'     => 'required|string|max:20',
             
             // Alamat Asal
             'rt_asal' => 'required|string|max:10',
@@ -96,7 +98,7 @@ class AdminPendaftaranController extends Controller
             // Berkas Upload (Optional)
             'foto_akta' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'foto_kk' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-            'status' => 'required|in:pending,verifikasi,diterima,ditolak',
+            'status' => 'required|in:pending,verifikasi,diterima,ditolak,mundur',
             'gelombang_id' => 'required|exists:spmb_gelombangs,id',
         ]);
 
@@ -140,9 +142,11 @@ class AdminPendaftaranController extends Controller
             'prestasi' => $request->prestasi,
             
             // Orang Tua
-            'nama_ortu' => strtoupper($request->nama_ortu),
-            'pekerjaan_ortu' => $request->pekerjaan_ortu,
-            'no_hp_ortu' => $request->no_hp_ortu,
+            'nama_ayah'      => strtoupper($request->nama_ayah),
+            'pekerjaan_ayah' => $request->pekerjaan_ayah,
+            'nama_ibu'       => strtoupper($request->nama_ibu ?? ''),
+            'pekerjaan_ibu'  => $request->pekerjaan_ibu,
+            'no_hp_ortu'     => $request->no_hp_ortu,
             
             // Alamat Asal
             'jalan_asal' => $request->jalan_asal,
@@ -200,9 +204,11 @@ class AdminPendaftaranController extends Controller
             'prestasi' => 'nullable|string',
             
             // Orang Tua
-            'nama_ortu' => 'required|string|max:255',
-            'pekerjaan_ortu' => 'required|string|max:255',
-            'no_hp_ortu' => 'required|string|max:20',
+            'nama_ayah'      => 'required|string|max:255',
+            'pekerjaan_ayah' => 'required|string|max:255',
+            'nama_ibu'       => 'nullable|string|max:255',
+            'pekerjaan_ibu'  => 'nullable|string|max:255',
+            'no_hp_ortu'     => 'required|string|max:20',
             
             // Alamat Asal
             'rt_asal' => 'required|string|max:10',
@@ -226,7 +232,7 @@ class AdminPendaftaranController extends Controller
             // Berkas Upload (Optional)
             'foto_akta' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'foto_kk' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-            'status' => 'required|in:pending,verifikasi,diterima,ditolak',
+            'status' => 'required|in:pending,verifikasi,diterima,ditolak,mundur',
             'gelombang_id' => 'required|exists:spmb_gelombangs,id',
         ]);
 
@@ -288,9 +294,11 @@ class AdminPendaftaranController extends Controller
             'prestasi' => $request->prestasi,
             
             // Orang Tua
-            'nama_ortu' => strtoupper($request->nama_ortu),
-            'pekerjaan_ortu' => $request->pekerjaan_ortu,
-            'no_hp_ortu' => $request->no_hp_ortu,
+            'nama_ayah'      => strtoupper($request->nama_ayah),
+            'pekerjaan_ayah' => $request->pekerjaan_ayah,
+            'nama_ibu'       => strtoupper($request->nama_ibu ?? ''),
+            'pekerjaan_ibu'  => $request->pekerjaan_ibu,
+            'no_hp_ortu'     => $request->no_hp_ortu,
             
             // Alamat Asal
             'jalan_asal' => $request->jalan_asal,
@@ -373,7 +381,7 @@ class AdminPendaftaranController extends Controller
         }
 
         $request->validate([
-            'status' => 'required|in:pending,verifikasi,diterima,ditolak',
+            'status' => 'required|in:pending,verifikasi,diterima,ditolak,mundur',
         ]);
 
         $pendaftaran->update([
@@ -447,9 +455,185 @@ class AdminPendaftaranController extends Controller
         $totalVerified = Pendaftaran::where('status', 'verifikasi')->count();
         $totalDiterima = Pendaftaran::where('status', 'diterima')->count();
         $totalDitolak = Pendaftaran::where('status', 'ditolak')->count();
+        $totalMundur = Pendaftaran::where('status', 'mundur')->count();
 
         return view('admin.pendaftaran.laporan', compact(
-            'pendaftarans', 'gelombangs', 'totalAll', 'totalPending', 'totalVerified', 'totalDiterima', 'totalDitolak'
+            'pendaftarans', 'gelombangs', 'totalAll', 'totalPending', 'totalVerified', 'totalDiterima', 'totalDitolak', 'totalMundur'
+        ));
+    }
+
+    public function statistik(Request $request)
+    {
+        $jurusans = ['TAV', 'TPM', 'TKR', 'TBSM', 'RPL'];
+
+        // Ambil semua gelombang dari DB, urutkan by tanggal
+        $gelombangs = \App\Models\SpmbGelombang::orderBy('tanggal_mulai', 'asc')->get();
+
+        // Ambil semua pendaftaran dengan kolom yang dibutuhkan
+        $pendaftarans = Pendaftaran::select(
+            'gelombang', 'pil1', 'status', 'diterima_di_jurusan',
+            'jenis_kelamin',
+            'pembayaran_status', 'pembayaran_nominal', 'total_tagihan',
+            'biaya_spp', 'biaya_dana_awal_tahun'
+        )->get();
+
+        // Kumpulkan nama gelombang unik dari data aktual
+        $gelNamas = $gelombangs->pluck('nama_gelombang')->unique()->values()->toArray();
+        foreach ($pendaftarans->pluck('gelombang')->unique() as $gn) {
+            if ($gn && !in_array($gn, $gelNamas)) {
+                $gelNamas[] = $gn;
+            }
+        }
+
+        // Helper: buat struktur tabel kosong [gelombang][jurusan] = 0
+        $makeTable = function() use ($jurusans, $gelNamas) {
+            $tbl = [];
+            foreach ($gelNamas as $gn) {
+                $tbl[$gn] = array_fill_keys(array_merge($jurusans, ['total']), 0);
+            }
+            $tbl['__total__'] = array_fill_keys(array_merge($jurusans, ['total']), 0);
+            return $tbl;
+        };
+
+        $tblSemua      = $makeTable(); // semua pendaftar (semua status)
+        $tblSeleksi    = $makeTable(); // diterima
+        $tblMundur     = $makeTable(); // mundur
+        $tblBayar      = $makeTable(); // diterima + sudah bayar (cicilan/lunas)
+        $tblBelumBayar = $makeTable(); // diterima + belum bayar
+
+        // Tabel per-status breakdown: [status][jurusan] = count
+        $allStatuses = ['pending', 'verified', 'diterima', 'ditolak', 'mundur'];
+        $statusLabels = [
+            'pending'   => 'Pending',
+            'verified'  => 'Terverifikasi',
+            'diterima'  => 'Diterima',
+            'ditolak'   => 'Ditolak',
+            'mundur'    => 'Mundur',
+        ];
+        $tblStatus = [];
+        foreach ($allStatuses as $st) {
+            $tblStatus[$st] = array_fill_keys(array_merge($jurusans, ['total']), 0);
+        }
+        $tblStatus['__total__'] = array_fill_keys(array_merge($jurusans, ['total']), 0);
+
+        // Statistik diterima per Jenis Kelamin x Jurusan
+        // tblGender['L'|'P'][jurusan|'total'] = count
+        $tblGender = [
+            'L' => array_fill_keys(array_merge($jurusans, ['total']), 0),
+            'P' => array_fill_keys(array_merge($jurusans, ['total']), 0),
+            '__total__' => array_fill_keys(array_merge($jurusans, ['total']), 0),
+        ];
+
+        // Statistik pembayaran per Jurusan
+        // tblPembayaran[jurusan]['lunas'|'cicilan'|'belum'|'total_siswa'|'terkumpul'|'tagihan'] = value
+        $tblPembayaran = [];
+        foreach (array_merge($jurusans, ['__total__']) as $jur) {
+            $tblPembayaran[$jur] = [
+                'lunas'        => 0,
+                'cicilan'      => 0,
+                'belum'        => 0,
+                'total_siswa'  => 0,
+                'terkumpul'    => 0,   // sum pembayaran_nominal
+                'tagihan'      => 0,   // sum total_tagihan
+            ];
+        }
+
+        foreach ($pendaftarans as $p) {
+            $gel = $p->gelombang ?? null;
+            $jur = $p->pil1;
+
+            if (!in_array($jur, $jurusans)) continue;
+
+            // Semua pendaftar (tidak peduli gelombang/status)
+            $tblSemua['__total__'][$jur]++;
+            $tblSemua['__total__']['total']++;
+            if ($gel && array_key_exists($gel, $tblSemua)) {
+                $tblSemua[$gel][$jur]++;
+                $tblSemua[$gel]['total']++;
+            }
+
+            // Per-status breakdown
+            $st = $p->status ?? 'pending';
+            if (array_key_exists($st, $tblStatus)) {
+                $tblStatus[$st][$jur]++;
+                $tblStatus[$st]['total']++;
+            }
+            $tblStatus['__total__'][$jur]++;
+            $tblStatus['__total__']['total']++;
+
+            if (!$gel || !array_key_exists($gel, $tblSeleksi)) continue;
+
+            if ($p->status === 'diterima') {
+                $tblSeleksi[$gel][$jur]++;
+                $tblSeleksi[$gel]['total']++;
+                $tblSeleksi['__total__'][$jur]++;
+                $tblSeleksi['__total__']['total']++;
+
+                // Gender stats
+                $gk = in_array($p->jenis_kelamin, ['L','P']) ? $p->jenis_kelamin : 'L';
+                $tblGender[$gk][$jur]++;
+                $tblGender[$gk]['total']++;
+                $tblGender['__total__'][$jur]++;
+                $tblGender['__total__']['total']++;
+
+                // Pembayaran stats
+                $ps = $p->pembayaran_status ?? 'belum_bayar';
+                $nominal  = (float)($p->pembayaran_nominal ?? 0);
+                $tagihan  = (float)($p->total_tagihan ?? 0);
+
+                $tblPembayaran[$jur]['total_siswa']++;
+                $tblPembayaran[$jur]['terkumpul'] += $nominal;
+                $tblPembayaran[$jur]['tagihan']   += $tagihan;
+                $tblPembayaran['__total__']['total_siswa']++;
+                $tblPembayaran['__total__']['terkumpul'] += $nominal;
+                $tblPembayaran['__total__']['tagihan']   += $tagihan;
+
+                if ($ps === 'lunas') {
+                    $tblPembayaran[$jur]['lunas']++;
+                    $tblPembayaran['__total__']['lunas']++;
+                    $tblBayar[$gel][$jur]++;
+                    $tblBayar[$gel]['total']++;
+                    $tblBayar['__total__'][$jur]++;
+                    $tblBayar['__total__']['total']++;
+                } elseif ($ps === 'cicilan') {
+                    $tblPembayaran[$jur]['cicilan']++;
+                    $tblPembayaran['__total__']['cicilan']++;
+                    $tblBayar[$gel][$jur]++;
+                    $tblBayar[$gel]['total']++;
+                    $tblBayar['__total__'][$jur]++;
+                    $tblBayar['__total__']['total']++;
+                } else {
+                    $tblPembayaran[$jur]['belum']++;
+                    $tblPembayaran['__total__']['belum']++;
+                    $tblBelumBayar[$gel][$jur]++;
+                    $tblBelumBayar[$gel]['total']++;
+                    $tblBelumBayar['__total__'][$jur]++;
+                    $tblBelumBayar['__total__']['total']++;
+                }
+            }
+
+            if ($p->status === 'mundur') {
+                $tblMundur[$gel][$jur]++;
+                $tblMundur[$gel]['total']++;
+                $tblMundur['__total__'][$jur]++;
+                $tblMundur['__total__']['total']++;
+            }
+        }
+
+        $grandTotal = [
+            'semua'       => $tblSemua['__total__']['total'],
+            'seleksi'     => $tblSeleksi['__total__']['total'],
+            'mundur'      => $tblMundur['__total__']['total'],
+            'bayar'       => $tblBayar['__total__']['total'],
+            'belum_bayar' => $tblBelumBayar['__total__']['total'],
+        ];
+
+        return view('admin.pendaftaran.statistik', compact(
+            'jurusans', 'gelNamas',
+            'tblSemua', 'tblStatus', 'statusLabels', 'allStatuses',
+            'tblGender', 'tblPembayaran',
+            'tblSeleksi', 'tblMundur', 'tblBayar', 'tblBelumBayar',
+            'grandTotal'
         ));
     }
 }

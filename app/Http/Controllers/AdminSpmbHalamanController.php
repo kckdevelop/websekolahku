@@ -27,7 +27,7 @@ class AdminSpmbHalamanController extends Controller
             'kuota_tpm' => 'required|string|max:255',
             'kuota_tav' => 'required|string|max:255',
             'kuota_rpl' => 'required|string|max:255',
-            'alur_pendaftaran' => 'required|array|size:5',
+            'alur_pendaftaran' => 'required|array|min:1',
             'alur_pendaftaran.*.judul' => 'required|string|max:255',
             'alur_pendaftaran.*.deskripsi' => 'required|string|max:500',
             'persyaratan' => 'required|array',

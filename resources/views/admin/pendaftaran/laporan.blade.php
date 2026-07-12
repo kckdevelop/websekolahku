@@ -6,7 +6,7 @@
 <div class="space-y-6">
 
   {{-- Stats Cards (Hidden on print) --}}
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 no-print">
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 no-print">
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 flex items-center justify-between">
       <div>
         <span class="text-xxs font-bold text-slate-400 uppercase tracking-wider block">Total Pendaftaran</span>
@@ -52,6 +52,15 @@
         <i class="fas fa-user-times"></i>
       </div>
     </div>
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 flex items-center justify-between">
+      <div>
+        <span class="text-xxs font-bold text-slate-400 uppercase tracking-wider block">Mundur</span>
+        <span class="text-xl font-bold text-slate-600 mt-1 block">{{ $totalMundur }}</span>
+      </div>
+      <div class="w-10 h-10 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center text-lg">
+        <i class="fas fa-user-slash"></i>
+      </div>
+    </div>
   </div>
 
   {{-- Filters Form (Hidden on print) --}}
@@ -75,6 +84,7 @@
           <option value="verifikasi" {{ request('status') === 'verifikasi' ? 'selected' : '' }}>Verifikasi</option>
           <option value="diterima" {{ request('status') === 'diterima' ? 'selected' : '' }}>Diterima</option>
           <option value="ditolak" {{ request('status') === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+          <option value="mundur" {{ request('status') === 'mundur' ? 'selected' : '' }}>Mundur</option>
         </select>
       </div>
 
@@ -174,6 +184,8 @@
                 <span class="inline-flex items-center px-2 py-1 rounded-full text-xxs font-bold bg-rose-100 text-rose-700">Ditolak</span>
               @elseif($p->status === 'verifikasi')
                 <span class="inline-flex items-center px-2 py-1 rounded-full text-xxs font-bold bg-indigo-100 text-indigo-700">Verifikasi</span>
+              @elseif($p->status === 'mundur')
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xxs font-bold bg-slate-100 text-slate-700">Mundur</span>
               @else
                 <span class="inline-flex items-center px-2 py-1 rounded-full text-xxs font-bold bg-amber-100 text-amber-700">Pending</span>
               @endif

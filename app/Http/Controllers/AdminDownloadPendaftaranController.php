@@ -55,8 +55,10 @@ class AdminDownloadPendaftaranController extends Controller
                 'icon'  => 'fas fa-users',
                 'color' => '#ec4899',
                 'cols'  => [
-                    'Nama Orang Tua'    => fn($p) => $p->nama_ortu ?? '',
-                    'Pekerjaan Ortu'    => fn($p) => $p->pekerjaan_ortu ?? '',
+                    'Nama Ayah'         => fn($p) => $p->nama_ayah ?? '',
+                    'Pekerjaan Ayah'    => fn($p) => $p->pekerjaan_ayah ?? '',
+                    'Nama Ibu'          => fn($p) => $p->nama_ibu ?? '',
+                    'Pekerjaan Ibu'     => fn($p) => $p->pekerjaan_ibu ?? '',
                     'No HP Orang Tua'   => fn($p) => $p->no_hp_ortu ?? '',
                 ],
             ],

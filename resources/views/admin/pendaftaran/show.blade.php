@@ -41,7 +41,7 @@
       <form method="POST" action="{{ route('admin.pendaftaran.updateStatus', $pendaftaran) }}" class="flex items-center gap-2">
         @csrf @method('PATCH')
         <select name="status" class="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary/30">
-          @foreach(['pending','verifikasi','diterima','ditolak'] as $s)
+          @foreach(['pending','verifikasi','diterima','ditolak','mundur'] as $s)
             <option value="{{ $s }}" {{ $pendaftaran->status == $s ? 'selected' : '' }}>{{ ucfirst($s) }}</option>
           @endforeach
         </select>
@@ -159,14 +159,22 @@
         <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
           <i class="fas fa-users text-primary text-xs"></i> Orang Tua / Wali
         </h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
           <div>
-            <p class="text-xxs font-bold text-slate-400 uppercase">Nama Orang Tua</p>
-            <p class="text-sm font-semibold text-slate-800 mt-0.5">{{ $pendaftaran->nama_ortu }}</p>
+            <p class="text-xxs font-bold text-slate-400 uppercase">Nama Ayah</p>
+            <p class="text-sm font-semibold text-slate-800 mt-0.5">{{ $pendaftaran->nama_ayah }}</p>
           </div>
           <div>
-            <p class="text-xxs font-bold text-slate-400 uppercase">Pekerjaan Orang Tua</p>
-            <p class="text-sm font-semibold text-slate-800 mt-0.5">{{ $pendaftaran->pekerjaan_ortu }}</p>
+            <p class="text-xxs font-bold text-slate-400 uppercase">Pekerjaan Ayah</p>
+            <p class="text-sm font-semibold text-slate-800 mt-0.5">{{ $pendaftaran->pekerjaan_ayah }}</p>
+          </div>
+          <div>
+            <p class="text-xxs font-bold text-slate-400 uppercase">Nama Ibu</p>
+            <p class="text-sm font-semibold text-slate-800 mt-0.5">{{ $pendaftaran->nama_ibu ?? '-' }}</p>
+          </div>
+          <div>
+            <p class="text-xxs font-bold text-slate-400 uppercase">Pekerjaan Ibu</p>
+            <p class="text-sm font-semibold text-slate-800 mt-0.5">{{ $pendaftaran->pekerjaan_ibu ?? '-' }}</p>
           </div>
           <div>
             <p class="text-xxs font-bold text-slate-400 uppercase">No. HP Orang Tua</p>

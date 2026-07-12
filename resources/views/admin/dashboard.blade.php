@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('title', 'Dashboard')
-@section('subtitle', 'Ringkasan data dan statistik website sekolah')
+@section('subtitle', auth()->user()->role === 'admin' ? 'Ringkasan data dan statistik website sekolah' : 'Ringkasan data dan statistik pendaftaran siswa baru (PPDB)')
 
 @section('content')
 @if(auth()->user()->role === 'admin')
@@ -115,9 +115,8 @@
       <p class="text-xs text-slate-555 dark:text-slate-400">Ringkasan pendaftaran siswa berdasarkan jurusan dan gelombang</p>
     </div>
   </div>
-@endif
 
-  <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
     {{-- Card 1: Statistik Pendaftar --}}
     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col">
       <div class="bg-slate-500 dark:bg-slate-700 px-6 py-4 flex items-center justify-between">
@@ -235,6 +234,44 @@
                 <td class="py-2.5 px-2 text-slate-850 dark:text-slate-100 text-center border-r border-slate-200 dark:border-slate-700">{{ $totalDiterima[$gelKey] ?? 0 }}</td>
               @endforeach
               <td class="py-2.5 px-2 text-primary dark:text-orange-400 text-center bg-slate-100/80 dark:bg-slate-900 font-extrabold">{{ $totalDiterima['total'] }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    {{-- Card 4: Statistik Jenis Kelamin (Siswa Diterima) --}}
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col">
+      <div class="bg-slate-500 dark:bg-slate-700 px-6 py-4 flex items-center justify-between">
+        <h3 class="font-bold text-white text-sm tracking-wide">Statistik Gender (Diterima)</h3>
+        <span class="text-xs bg-slate-600 dark:bg-slate-800 text-slate-200 px-2.5 py-1 rounded-full font-semibold">Total: L:{{ $totalGenderL }} | P:{{ $totalGenderP }}</span>
+      </div>
+      <div class="p-4 overflow-x-auto flex-grow">
+        <table class="w-full text-xs text-left border-collapse border border-slate-200 dark:border-slate-700">
+          <thead>
+            <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
+              <th class="py-2.5 px-2 font-semibold text-slate-700 dark:text-slate-300 text-center border-r border-slate-200 dark:border-slate-700">Jurusan</th>
+              <th class="py-2.5 px-2 font-semibold text-slate-700 dark:text-slate-300 text-center border-r border-slate-200 dark:border-slate-700">Laki-laki (L)</th>
+              <th class="py-2.5 px-2 font-semibold text-slate-700 dark:text-slate-300 text-center border-r border-slate-200 dark:border-slate-700">Perempuan (P)</th>
+              <th class="py-2.5 px-2 font-semibold text-slate-800 dark:text-slate-200 text-center">Total</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+            @foreach($jurusans as $jur)
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors">
+                <td class="py-2.5 px-2 font-bold text-slate-800 dark:text-slate-200 text-center border-r border-slate-200 dark:border-slate-700">{{ $jur === 'TKR' ? 'TKRO' : $jur }}</td>
+                <td class="py-2.5 px-2 text-slate-600 dark:text-slate-400 text-center font-medium border-r border-slate-200 dark:border-slate-700">{{ $genderByJurusan[$jur]['L'] ?? 0 }}</td>
+                <td class="py-2.5 px-2 text-slate-600 dark:text-slate-400 text-center font-medium border-r border-slate-200 dark:border-slate-700">{{ $genderByJurusan[$jur]['P'] ?? 0 }}</td>
+                <td class="py-2.5 px-2 font-bold text-slate-800 dark:text-slate-200 text-center bg-slate-50/50 dark:bg-slate-900/50">{{ ($genderByJurusan[$jur]['L'] ?? 0) + ($genderByJurusan[$jur]['P'] ?? 0) }}</td>
+              </tr>
+            @endforeach
+          </tbody>
+          <tfoot>
+            <tr class="border-t border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/70 font-bold">
+              <td class="py-2.5 px-2 text-slate-850 dark:text-slate-100 text-center border-r border-slate-200 dark:border-slate-700 text-xs">Total Gender</td>
+              <td class="py-2.5 px-2 text-slate-850 dark:text-slate-100 text-center border-r border-slate-200 dark:border-slate-700">{{ $totalGenderL }}</td>
+              <td class="py-2.5 px-2 text-slate-850 dark:text-slate-100 text-center border-r border-slate-200 dark:border-slate-700">{{ $totalGenderP }}</td>
+              <td class="py-2.5 px-2 text-primary dark:text-orange-400 text-center bg-slate-100/80 dark:bg-slate-900 font-extrabold">{{ $totalGenderL + $totalGenderP }}</td>
             </tr>
           </tfoot>
         </table>
@@ -442,11 +479,12 @@
     </div>
   </div>
 </div>
+@endif
 
 @endsection
 
 @section('scripts')
-
+@if(auth()->user()->role === 'admin_pendaftaran')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 
 
@@ -540,4 +578,5 @@
   }
 })();
 </script>
+@endif
 @endsection

@@ -15,12 +15,19 @@ class AdminDashboardController extends Controller
 {
     public function index()
     {
+        if (auth()->user()->role === 'admin') {
+            $stats = [
+                'berita' => Berita::count(),
+                'prestasi' => Prestasi::count(),
+                'galeri_foto' => GaleriFoto::count(),
+                'galeri_video' => GaleriVideo::count(),
+                'testimoni' => Testimoni::count(),
+            ];
+
+            return view('admin.dashboard', compact('stats'));
+        }
+
         $stats = [
-            'berita' => Berita::count(),
-            'prestasi' => Prestasi::count(),
-            'galeri_foto' => GaleriFoto::count(),
-            'galeri_video' => GaleriVideo::count(),
-            'testimoni' => Testimoni::count(),
             'pendaftaran_pending' => Pendaftaran::where('status', 'pending')->count(),
             'pendaftaran_total' => Pendaftaran::count(),
         ];

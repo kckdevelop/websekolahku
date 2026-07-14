@@ -29,10 +29,10 @@ use Illuminate\Support\Str;
  *          ter-download dan akan menggunakan fallback (ui-avatars).
  *
  * Jalankan:
- *   php artisan db:seed --class=DummyDataSeeder
+ *   php artisan db:seed --class=DummyPendaftarSeeder
  * ============================================================
  */
-class DummyDataSeeder extends Seeder
+class DummyPendaftarSeeder extends Seeder
 {
     public function run(): void
     {

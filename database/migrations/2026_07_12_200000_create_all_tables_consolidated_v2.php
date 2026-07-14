@@ -380,11 +380,9 @@ return new class extends Migration
         // ── 15. JURUSAN CONTENT ───────────────────────────────
         Schema::create('jurusan_contents', function (Blueprint $table) {
             $table->id();
-            $table->string('kode_jurusan')->unique()
-                  ->comment('tkr | tbsm | tpm | tav | rpl');
+            $table->string('slug')->unique()->comment('tkr | tbsm | tpm | tav | rpl');
             $table->string('nama_jurusan');
             $table->string('icon')->nullable()->default('fas fa-graduation-cap');
-            $table->string('slug')->nullable();
             $table->integer('urutan')->default(0);
             $table->boolean('aktif')->default(true);
             $table->string('hero_gambar')->nullable();
@@ -524,6 +522,7 @@ return new class extends Migration
             $table->text('deskripsi')->nullable();
             $table->unsignedBigInteger('harga')->nullable();
             $table->string('gambar')->nullable();
+            $table->json('gambar_tambahan')->nullable()->comment('Array path gambar tambahan / galeri produk');
             $table->boolean('aktif')->default(true);
             $table->integer('urutan')->default(0);
             $table->foreignId('jurusan_content_id')

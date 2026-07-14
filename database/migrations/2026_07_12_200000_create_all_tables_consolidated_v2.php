@@ -402,8 +402,9 @@ return new class extends Migration
         // ── 16. SAMBUTAN KEPALA SEKOLAH ───────────────────────
         Schema::create('sambutans', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_kepala_sekolah');
-            $table->string('foto')->nullable();
+            $table->string('nama_kepala');
+            $table->string('gelar_kepala')->nullable();
+            $table->string('foto_kepala')->nullable();
             $table->text('isi_sambutan');
             $table->timestamps();
         });

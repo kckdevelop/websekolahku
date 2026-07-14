@@ -81,7 +81,7 @@
 </section>
 
 {{-- ===== PRODUK PER PROGRAM KEAHLIAN ===== --}}
-@if($products->count() > 0)
+@if($totalActiveCount > 0)
 <section class="py-16 bg-slate-50">
   <div class="container mx-auto px-4 max-w-6xl">
 
@@ -102,7 +102,7 @@
         class="tab-btn active-tab px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 border
                bg-primary text-white border-primary shadow-sm">
         <i class="fas fa-th-large mr-1.5"></i> Semua
-        <span class="ml-1.5 bg-white/30 text-white text-xs px-2 py-0.5 rounded-full">{{ $products->count() }}</span>
+        <span class="ml-1.5 bg-white/30 text-white text-xs px-2 py-0.5 rounded-full">{{ $totalActiveCount }}</span>
       </button>
 
       {{-- Tab per Jurusan --}}
@@ -116,12 +116,12 @@
                bg-white text-slate-600 border-slate-200 hover:border-primary hover:text-primary">
         <i class="{{ $j->icon ?? 'fas fa-tools' }} mr-1.5"></i>
         {{ $j->nama_jurusan }}
-        <span class="ml-1.5 bg-slate-100 text-slate-500 text-xs px-2 py-0.5 rounded-full">{{ $productsByJurusan[$j->id]->count() }}</span>
+        <span class="ml-1.5 bg-slate-100 text-slate-500 text-xs px-2 py-0.5 rounded-full">{{ $countsByJurusan[$j->id] ?? 0 }}</span>
       </button>
       @endforeach
 
       {{-- Tab: Umum (jika ada produk tanpa jurusan) --}}
-      @if($productsTanpaJurusan->count() > 0)
+      @if($totalTanpaJurusan > 0)
       <button
         role="tab"
         aria-selected="false"
@@ -130,7 +130,7 @@
         class="tab-btn px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 border
                bg-white text-slate-600 border-slate-200 hover:border-primary hover:text-primary">
         <i class="fas fa-box mr-1.5"></i> Umum
-        <span class="ml-1.5 bg-slate-100 text-slate-500 text-xs px-2 py-0.5 rounded-full">{{ $productsTanpaJurusan->count() }}</span>
+        <span class="ml-1.5 bg-slate-100 text-slate-500 text-xs px-2 py-0.5 rounded-full">{{ $totalTanpaJurusan }}</span>
       </button>
       @endif
     </div>
@@ -139,22 +139,24 @@
     <div id="panel-semua" class="tab-panel">
       @if($jurusansWithProducts->count() > 0)
         @foreach($jurusansWithProducts as $j)
-          {{-- Section Header per Jurusan --}}
-          <div class="flex items-center gap-3 mb-5 mt-8 first:mt-0">
-            <div class="w-9 h-9 rounded-xl bg-orange-100 text-primary flex items-center justify-center flex-shrink-0">
-              <i class="{{ $j->icon ?? 'fas fa-tools' }} text-sm"></i>
+          @if(isset($productsByJurusan[$j->id]) && $productsByJurusan[$j->id]->count() > 0)
+            {{-- Section Header per Jurusan --}}
+            <div class="flex items-center gap-3 mb-5 mt-8 first:mt-0">
+              <div class="w-9 h-9 rounded-xl bg-orange-100 text-primary flex items-center justify-center flex-shrink-0">
+                <i class="{{ $j->icon ?? 'fas fa-tools' }} text-sm"></i>
+              </div>
+              <div>
+                <h3 class="font-extrabold text-slate-800 text-lg leading-tight">{{ $j->nama_jurusan }}</h3>
+                <p class="text-xs text-slate-400">{{ $productsByJurusan[$j->id]->count() }} produk tersedia di halaman ini</p>
+              </div>
+              <div class="flex-1 h-px bg-slate-200 ml-2"></div>
             </div>
-            <div>
-              <h3 class="font-extrabold text-slate-800 text-lg leading-tight">{{ $j->nama_jurusan }}</h3>
-              <p class="text-xs text-slate-400">{{ $productsByJurusan[$j->id]->count() }} produk tersedia</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-4">
+              @foreach($productsByJurusan[$j->id] as $product)
+                @include('pages.tefa._product_card', ['product' => $product, 'setting' => $setting])
+              @endforeach
             </div>
-            <div class="flex-1 h-px bg-slate-200 ml-2"></div>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-4">
-            @foreach($productsByJurusan[$j->id] as $product)
-              @include('pages.tefa._product_card', ['product' => $product, 'setting' => $setting])
-            @endforeach
-          </div>
+          @endif
         @endforeach
 
         @if($productsTanpaJurusan->count() > 0)
@@ -192,25 +194,93 @@
         </div>
         <div>
           <h3 class="font-extrabold text-slate-800 text-xl">{{ $j->nama_jurusan }}</h3>
-          <p class="text-sm text-slate-400">{{ $productsByJurusan[$j->id]->count() }} produk tersedia</p>
+          <p class="text-sm text-slate-400">{{ $countsByJurusan[$j->id] ?? 0 }} produk tersedia</p>
         </div>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        @foreach($productsByJurusan[$j->id] as $product)
-          @include('pages.tefa._product_card', ['product' => $product, 'setting' => $setting])
-        @endforeach
-      </div>
+      @if(isset($productsByJurusan[$j->id]) && $productsByJurusan[$j->id]->count() > 0)
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          @foreach($productsByJurusan[$j->id] as $product)
+            @include('pages.tefa._product_card', ['product' => $product, 'setting' => $setting])
+          @endforeach
+        </div>
+      @else
+        <div class="text-center py-12 bg-white rounded-2xl border border-slate-100 shadow-sm">
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-50 text-slate-400 mb-3">
+            <i class="fas fa-box-open text-lg"></i>
+          </div>
+          <p class="text-slate-500 text-sm">Tidak ada produk untuk jurusan ini di halaman ini.</p>
+          <p class="text-slate-400 text-xs mt-1">Silakan cari di halaman lain menggunakan navigasi halaman di bawah.</p>
+        </div>
+      @endif
     </div>
     @endforeach
 
     {{-- TAB PANEL: UMUM --}}
-    @if($productsTanpaJurusan->count() > 0)
+    @if($totalTanpaJurusan > 0)
     <div id="panel-umum" class="tab-panel hidden">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        @foreach($productsTanpaJurusan as $product)
-          @include('pages.tefa._product_card', ['product' => $product, 'setting' => $setting])
-        @endforeach
+      @if($productsTanpaJurusan->count() > 0)
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          @foreach($productsTanpaJurusan as $product)
+            @include('pages.tefa._product_card', ['product' => $product, 'setting' => $setting])
+          @endforeach
+        </div>
+      @else
+        <div class="text-center py-12 bg-white rounded-2xl border border-slate-100 shadow-sm">
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-50 text-slate-400 mb-3">
+            <i class="fas fa-box-open text-lg"></i>
+          </div>
+          <p class="text-slate-500 text-sm">Tidak ada produk umum di halaman ini.</p>
+          <p class="text-slate-400 text-xs mt-1">Silakan cari di halaman lain menggunakan navigasi halaman di bawah.</p>
+        </div>
+      @endif
+    </div>
+    @endif
+
+    {{-- PAGINATION --}}
+    @if($products->hasPages())
+    <div class="mt-14 flex flex-col items-center justify-center gap-4" id="tefa-pagination">
+      <div class="text-xs text-slate-400 font-medium">
+        Menampilkan {{ $products->firstItem() }}-{{ $products->lastItem() }} dari {{ $products->total() }} produk
       </div>
+      <nav class="flex items-center gap-1.5" aria-label="Pagination">
+        {{-- Previous Button --}}
+        @if($products->onFirstPage())
+          <span class="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center pointer-events-none transition-all">
+            <i class="fas fa-chevron-left text-xs"></i>
+          </span>
+        @else
+          <a href="{{ $products->previousPageUrl() }}" 
+             class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-primary hover:border-primary hover:shadow-sm flex items-center justify-center transition-all">
+            <i class="fas fa-chevron-left text-xs"></i>
+          </a>
+        @endif
+
+        {{-- Page Buttons --}}
+        @for($i = 1; $i <= $products->lastPage(); $i++)
+          @if($i == $products->currentPage())
+            <span class="w-10 h-10 rounded-xl bg-primary text-white font-bold flex items-center justify-center shadow-md shadow-primary/20 transition-all">
+              {{ $i }}
+            </span>
+          @else
+            <a href="{{ $products->url($i) }}" 
+               class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-primary hover:border-primary hover:shadow-sm flex items-center justify-center transition-all font-semibold text-sm">
+              {{ $i }}
+            </a>
+          @endif
+        @endfor
+
+        {{-- Next Button --}}
+        @if($products->hasMorePages())
+          <a href="{{ $products->nextPageUrl() }}" 
+             class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-primary hover:border-primary hover:shadow-sm flex items-center justify-center transition-all">
+            <i class="fas fa-chevron-right text-xs"></i>
+          </a>
+        @else
+          <span class="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center pointer-events-none transition-all">
+            <i class="fas fa-chevron-right text-xs"></i>
+          </span>
+        @endif
+      </nav>
     </div>
     @endif
 
@@ -249,7 +319,35 @@ function switchTab(tabId, btn) {
   btn.classList.add('bg-primary', 'text-white', 'border-primary', 'shadow-sm', 'active-tab');
   btn.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
   btn.setAttribute('aria-selected', 'true');
+
+  // Simpan active tab di URL parameter tanpa reload halaman
+  const url = new URL(window.location);
+  url.searchParams.set('tab', tabId);
+  window.history.pushState({}, '', url);
+
+  // Update URL di link pagination agar menyertakan tab yang sedang aktif
+  document.querySelectorAll('#tefa-pagination a').forEach(link => {
+    try {
+      const pageUrl = new URL(link.href);
+      pageUrl.searchParams.set('tab', tabId);
+      link.href = pageUrl.toString();
+    } catch (e) {
+      console.error(e);
+    }
+  });
 }
+
+// Aktifkan tab yang sesuai saat halaman pertama kali dimuat (jika ada param 'tab' di URL)
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const tabId = urlParams.get('tab');
+  if (tabId) {
+    const btn = document.querySelector(`[data-tab="${tabId}"]`);
+    if (btn) {
+      switchTab(tabId, btn);
+    }
+  }
+});
 </script>
 @endpush
 @endsection

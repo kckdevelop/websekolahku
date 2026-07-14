@@ -16,23 +16,31 @@ class TefaController extends Controller
         // Ambil semua jurusan aktif
         $jurusans = JurusanContent::aktif()->get();
 
-        // Produk aktif dengan relasi jurusan, diurutkan
+        // Hitung total produk aktif & produk per jurusan untuk badge tab secara keseluruhan
+        $activeProductsInfo = TefaProduct::active()->select('id', 'jurusan_content_id')->get();
+        $totalActiveCount = $activeProductsInfo->count();
+        $countsByJurusan = $activeProductsInfo->groupBy('jurusan_content_id')->map->count();
+
+        // Jurusan yang benar-benar punya produk aktif secara keseluruhan
+        $jurusansWithProducts = $jurusans->filter(
+            fn($j) => isset($countsByJurusan[$j->id]) && $countsByJurusan[$j->id] > 0
+        );
+
+        // Produk tanpa jurusan (umum) secara keseluruhan
+        $totalTanpaJurusan = $countsByJurusan->get(null) ?? 0;
+
+        // Produk terpaginasi (hanya 20 produk per halaman)
         $products = TefaProduct::active()
             ->with('jurusanContent')
             ->orderBy('jurusan_content_id')
             ->orderBy('urutan')
             ->orderBy('id')
-            ->get();
+            ->paginate(20);
 
-        // Group produk per jurusan (id => collection)
+        // Group produk halaman ini per jurusan (id => collection)
         $productsByJurusan = $products->groupBy('jurusan_content_id');
 
-        // Jurusan yang benar-benar punya produk aktif
-        $jurusansWithProducts = $jurusans->filter(
-            fn($j) => isset($productsByJurusan[$j->id]) && $productsByJurusan[$j->id]->count() > 0
-        );
-
-        // Produk tanpa jurusan (umum)
+        // Produk tanpa jurusan (umum) di halaman ini
         $productsTanpaJurusan = $productsByJurusan->get(null) ?? collect();
 
         return view('pages.tefa.index', compact(
@@ -41,7 +49,10 @@ class TefaController extends Controller
             'jurusans',
             'jurusansWithProducts',
             'productsByJurusan',
-            'productsTanpaJurusan'
+            'productsTanpaJurusan',
+            'totalActiveCount',
+            'countsByJurusan',
+            'totalTanpaJurusan'
         ));
     }
 

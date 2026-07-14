@@ -323,7 +323,7 @@
         </a>
       </div>
        -->
-      <a href="#home" class="block py-2 text-white hover:text-white/90 transition-colors duration-200">
+      <a href="/home" class="block py-2 text-white hover:text-white/90 transition-colors duration-200">
         <i class="fas fa-home mr-2"></i> Home
       </a>
 

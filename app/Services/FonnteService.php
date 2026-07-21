@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\WhatsappSetting;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -11,8 +12,7 @@ use Illuminate\Support\Facades\Log;
  * Endpoint: POST https://api.fonnte.com/send
  * Header  : Authorization: <token>
  *
- * KONFIGURASI diambil dari tabel nobox_settings (kolom api_key sebagai token).
- * Atau dari config/services.php => 'fonnte.token'
+ * Token diambil dari tabel whatsapp_settings (kolom api_key).
  */
 class FonnteService
 {
@@ -24,11 +24,11 @@ class FonnteService
     public function __construct()
     {
         try {
-            $setting = \App\Models\NoboxSetting::getSingle();
-            $this->token     = $setting->api_key ?: config('services.fonnte.token', '');
+            $setting = WhatsappSetting::getSingle();
+            $this->token     = $setting->api_key ?? '';
             $this->otpViaLog = (bool) ($setting->otp_via_log ?? false);
         } catch (\Exception $e) {
-            $this->token     = config('services.fonnte.token', '');
+            $this->token     = env('FONNTE_TOKEN', '');
             $this->otpViaLog = false;
         }
     }
@@ -61,7 +61,7 @@ class FonnteService
     public function sendOTP(string $noWa, string $otp): bool
     {
         if ($this->otpViaLog) {
-            Log::info("FonnteService [BYPASS LOG MODE]: OTP for {$noWa} is {$otp}");
+            Log::info("FonnteService [DEV MODE]: OTP for {$noWa} is {$otp}");
             return true;
         }
 

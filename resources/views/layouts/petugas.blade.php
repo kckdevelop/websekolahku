@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="{{ asset('storage/logomusaba.png') }}" type="image/png">
-  <title>@yield('title', 'Panel Petugas') — PPDB SMK Muh 1 Bantul</title>
+  <link rel="icon" href="{{ $schoolSetting->favicon_url }}" type="image/png">
+  <title>@yield('title', 'Panel Petugas') — PPDB {{ $schoolSetting->singkatan }}</title>
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -99,7 +99,7 @@
     <a href="/" style="padding:20px 16px 16px; border-bottom:1px solid rgba(255,255,255,0.1); text-decoration:none; display:block;" class="group">
       <div style="display:flex; align-items:center; gap:10px;">
         <div style="width:38px; height:38px; background:#fff; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden;">
-          <img src="{{ asset('storage/logomusaba.png') }}" alt="Logo" style="width:30px; height:30px; object-fit:contain;">
+          <img src="{{ $schoolSetting->logo_url }}" alt="Logo {{ $schoolSetting->singkatan }}" style="width:30px; height:30px; object-fit:contain;">
         </div>
         <div>
           <p style="color:#fff; font-size:13px; font-weight:700; margin:0;">
@@ -109,7 +109,7 @@
             @else Panel Petugas
             @endif
           </p>
-          <p style="color:rgba(255,255,255,0.5); font-size:10px; margin:0;">PPDB SMK Muh 1 Bantul</p>
+          <p style="color:rgba(255,255,255,0.5); font-size:10px; margin:0;">PPDB {{ $schoolSetting->singkatan }}</p>
         </div>
       </div>
     </a>

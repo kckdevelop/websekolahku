@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\NoboxSetting;
+use App\Models\WhatsappSetting;
 use App\Services\FonnteService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -14,7 +14,7 @@ class AdminNoboxController extends Controller
      */
     public function edit()
     {
-        $setting = NoboxSetting::getSingle();
+        $setting = WhatsappSetting::getSingle();
         return view('admin.nobox.edit', compact('setting'));
     }
 
@@ -29,9 +29,9 @@ class AdminNoboxController extends Controller
             'api_key.required' => 'Token Fonnte wajib diisi.',
         ]);
 
-        $setting = NoboxSetting::getSingle();
+        $setting = WhatsappSetting::getSingle();
         $setting->update([
-            'api_key'     => $request->api_key,
+            'api_key'     => trim($request->api_key),
             'otp_via_log' => $request->has('otp_via_log'),
         ]);
 
@@ -60,17 +60,17 @@ class AdminNoboxController extends Controller
             if ($success) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Pesan uji coba WhatsApp berhasil dikirim! Silakan periksa nomor tujuan.',
+                    'message' => '✅ Pesan uji coba berhasil dikirim! Silakan periksa nomor tujuan.',
                 ]);
             }
 
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal mengirim pesan uji coba. Pastikan Token Fonnte Anda valid dan nomor tujuan terdaftar.',
+                'message' => 'Gagal mengirim pesan. Pastikan Token Fonnte valid, device WhatsApp terhubung, dan nomor tujuan benar.',
             ], 400);
 
         } catch (\Exception $e) {
-            Log::error('AdminNoboxController: Test send exception: ' . $e->getMessage());
+            Log::error('AdminNoboxController: testSend exception: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage(),

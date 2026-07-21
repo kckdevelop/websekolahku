@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <link rel="icon" href="{{ asset('storage/logomusaba.png') }}" type="image/png">
-  <title>{{ trim(strip_tags(View::yieldContent('title', 'Admin'))) }} - Admin SMK Muhammadiyah 1 Bantul</title>
+  <link rel="icon" href="{{ $schoolSetting->favicon_url }}" type="image/png">
+  <title>{{ trim(strip_tags(View::yieldContent('title', 'Admin'))) }} - Admin {{ $schoolSetting->nama_sekolah }}</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -132,11 +132,11 @@
     {{-- Logo --}}
     <a href="/" style="display:flex; align-items:center; gap:12px; padding:20px 24px; border-bottom:1px solid rgba(255,255,255,0.08); text-decoration:none;" class="group">
       <div style="width:38px; height:38px; background:#fff; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden;">
-        <img src="{{ asset('storage/logomusaba.png') }}" alt="Logo" style="width:30px; height:30px; object-fit:contain;">
+        <img src="{{ $schoolSetting->logo_url }}" alt="Logo {{ $schoolSetting->singkatan }}" style="width:30px; height:30px; object-fit:contain;">
       </div>
       <div>
         <p style="color:#fff; font-weight:700; font-size:14px; line-height:1.2;">Admin Panel</p>
-        <p style="color:#64748b; font-size:11px;">SMK Muh. 1 Bantul</p>
+        <p style="color:#64748b; font-size:11px;">{{ $schoolSetting->singkatan }}</p>
       </div>
     </a>
 
@@ -260,6 +260,12 @@
       </div>
 
       <p class="nav-section">Sistem</p>
+
+      <a href="{{ route('admin.school-setting.edit') }}"
+         class="nav-link {{ request()->routeIs('admin.school-setting.*') ? 'active' : '' }}">
+        <i class="fas fa-school nav-icon"></i>
+        <span class="nav-label">Identitas Sekolah</span>
+      </a>
 
       <a href="{{ route('admin.nobox.edit') }}"
          class="nav-link {{ request()->routeIs('admin.nobox.*') ? 'active' : '' }}">

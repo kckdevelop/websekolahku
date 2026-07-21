@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" href="{{ asset('storage/logomusaba.png') }}" type="image/png">
-  <title>@yield('title') - SMK Muhammadiyah 1 Bantul</title>
+  <link rel="icon" href="{{ $schoolSetting->favicon_url }}" type="image/png">
+  <title>@yield('title') - {{ $schoolSetting->nama_sekolah }}</title>
   <!-- Google Fonts: Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- Tailwind CSS -->
@@ -170,9 +170,9 @@
     <div class="flex justify-between h-16 items-center">
       <a href="/" class="flex items-center space-x-2 group">
         <div class="logo-container bg-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg overflow-hidden transition-transform group-hover:scale-105">
-          <img src="{{ asset('storage/logomusaba.png') }}" alt="Logo" class="w-8 h-8 object-contain">
+          <img src="{{ $schoolSetting->logo_url }}" alt="Logo {{ $schoolSetting->singkatan }}" class="w-8 h-8 object-contain">
         </div>
-        <span class="font-bold text-lg hidden sm:block group-hover:text-white/90 transition-colors">SMK MUSABA</span>
+        <span class="font-bold text-lg hidden sm:block group-hover:text-white/90 transition-colors">{{ $schoolSetting->singkatan }}</span>
       </a>
 
       <!-- Desktop Menu -->

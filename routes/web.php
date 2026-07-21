@@ -30,6 +30,7 @@ use App\Http\Controllers\AdminDownloadPendaftaranController;
 use App\Http\Controllers\AdminBkkController;
 use App\Http\Controllers\TefaController;
 use App\Http\Controllers\AdminTefaController;
+use App\Http\Controllers\AdminSchoolSettingController;
 use App\Models\RiwayatPembayaran;
 
 /*
@@ -291,6 +292,9 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/nobox', [AdminNoboxController::class, 'edit'])->name('nobox.edit');
         Route::put('/nobox', [AdminNoboxController::class, 'update'])->name('nobox.update');
         Route::post('/nobox/test', [AdminNoboxController::class, 'testSend'])->name('nobox.test');
+
+        Route::get('/school-setting', [AdminSchoolSettingController::class, 'edit'])->name('school-setting.edit');
+        Route::put('/school-setting', [AdminSchoolSettingController::class, 'update'])->name('school-setting.update');
 
         Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
         Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');

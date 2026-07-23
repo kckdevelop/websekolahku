@@ -72,8 +72,8 @@
               </div>
               
               <!-- Preview Container -->
-              <div id="preview-container" class="mt-3">
-                <img id="image-preview" src="{{ $berita->gambar ? asset('storage/' . $berita->gambar) : '' }}" class="mx-auto w-48 h-27 object-cover rounded-lg border border-slate-200 shadow-sm">
+              <div id="preview-container" class="mt-3 {{ $berita->gambar ? '' : 'hidden' }}">
+                <img id="image-preview" src="{{ $berita->gambar_src }}" class="mx-auto w-48 h-27 object-cover rounded-lg border border-slate-200 shadow-sm">
               </div>
             </div>
           </div>
@@ -114,7 +114,7 @@
         <div class="px-5 py-3 flex items-start gap-3 hover:bg-slate-50 transition-colors group {{ $item->id === $berita->id ? 'bg-orange-50 border-l-2 border-primary' : '' }}">
           {{-- Thumbnail --}}
           @if($item->gambar)
-            <img src="{{ asset('storage/' . $item->gambar) }}" class="w-10 h-10 rounded-lg object-cover flex-shrink-0 mt-0.5">
+            <img src="{{ $item->gambar_src }}" class="w-10 h-10 rounded-lg object-cover flex-shrink-0 mt-0.5">
           @else
             <div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center flex-shrink-0 mt-0.5">
               <i class="fas fa-newspaper text-primary text-sm"></i>

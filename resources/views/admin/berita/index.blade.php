@@ -50,7 +50,7 @@
           <td class="px-6 py-4">
             <div class="flex items-center gap-3">
               @if($item->gambar)
-                <img src="{{ asset('storage/' . $item->gambar) }}" class="w-10 h-10 rounded-lg object-cover flex-shrink-0">
+                <img src="{{ $item->gambar_src }}" class="w-10 h-10 rounded-lg object-cover flex-shrink-0">
               @else
                 <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
                   <i class="fas fa-newspaper text-slate-400"></i>

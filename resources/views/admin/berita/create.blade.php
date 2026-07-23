@@ -120,7 +120,7 @@
         <div class="px-5 py-3 flex items-start gap-3 hover:bg-slate-50 transition-colors group">
           {{-- Thumbnail --}}
           @if($item->gambar)
-            <img src="{{ asset('storage/' . $item->gambar) }}" class="w-10 h-10 rounded-lg object-cover flex-shrink-0 mt-0.5">
+            <img src="{{ $item->gambar_src }}" class="w-10 h-10 rounded-lg object-cover flex-shrink-0 mt-0.5">
           @else
             <div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center flex-shrink-0 mt-0.5">
               <i class="fas fa-newspaper text-primary text-sm"></i>

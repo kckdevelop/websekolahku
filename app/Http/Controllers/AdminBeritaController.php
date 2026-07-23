@@ -31,7 +31,7 @@ class AdminBeritaController extends Controller
             'judul' => 'required|string|max:255',
             'konten' => 'required|string',
             'tanggal' => 'required|date',
-            'gambar' => 'nullable|image|max:2048',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:10240',
             'draft' => 'nullable|boolean',
         ]);
 
@@ -73,7 +73,7 @@ class AdminBeritaController extends Controller
             'judul' => 'required|string|max:255',
             'konten' => 'required|string',
             'tanggal' => 'required|date',
-            'gambar' => 'nullable|image|max:2048',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:10240',
             'draft' => 'nullable|boolean',
         ]);
 
@@ -97,8 +97,14 @@ class AdminBeritaController extends Controller
 
         if ($request->hasFile('gambar')) {
             // Delete old image if exists
-            if ($berita->gambar) {
-                Storage::disk('public')->delete($berita->gambar);
+            if ($berita->gambar && !Str::startsWith($berita->gambar, ['http://', 'https://'])) {
+                $cleanPath = ltrim(str_replace('public/', '', $berita->gambar), '/');
+                if (Str::startsWith($cleanPath, 'storage/')) {
+                    $cleanPath = substr($cleanPath, 8);
+                }
+                if (Storage::disk('public')->exists($cleanPath)) {
+                    Storage::disk('public')->delete($cleanPath);
+                }
             }
             $data['gambar'] = $request->file('gambar')->store('berita', 'public');
         }
@@ -110,8 +116,14 @@ class AdminBeritaController extends Controller
 
     public function destroy(Berita $berita)
     {
-        if ($berita->gambar) {
-            Storage::disk('public')->delete($berita->gambar);
+        if ($berita->gambar && !Str::startsWith($berita->gambar, ['http://', 'https://'])) {
+            $cleanPath = ltrim(str_replace('public/', '', $berita->gambar), '/');
+            if (Str::startsWith($cleanPath, 'storage/')) {
+                $cleanPath = substr($cleanPath, 8);
+            }
+            if (Storage::disk('public')->exists($cleanPath)) {
+                Storage::disk('public')->delete($cleanPath);
+            }
         }
         $berita->delete();
 

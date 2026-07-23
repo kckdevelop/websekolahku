@@ -613,15 +613,7 @@
     }
 
     function closeCropperModal() {
-      document.getElementById('cropper-modal').style.display = 'none';
-      if (cropperInstance) {
-        cropperInstance.destroy();
-        cropperInstance = null;
-      }
-      if (currentFileInput) {
-        currentFileInput.value = '';
-      }
-      currentFileInput = null;
+      useOriginalImage();
     }
 
     function useOriginalImage() {

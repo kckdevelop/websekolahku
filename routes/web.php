@@ -30,6 +30,8 @@ use App\Http\Controllers\AdminDownloadPendaftaranController;
 use App\Http\Controllers\AdminBkkController;
 use App\Http\Controllers\TefaController;
 use App\Http\Controllers\AdminTefaController;
+use App\Http\Controllers\DojoController;
+use App\Http\Controllers\AdminDojoController;
 use App\Http\Controllers\AdminSchoolSettingController;
 use App\Models\RiwayatPembayaran;
 
@@ -86,6 +88,7 @@ Route::get('/bkk', function () {
 })->name('bkk');
 Route::get('/tefa', [TefaController::class, 'index'])->name('tefa.index');
 Route::get('/tefa/{product}', [TefaController::class, 'show'])->name('tefa.show');
+Route::get('/dojo', [DojoController::class, 'index'])->name('dojo.index');
 Route::get('/jurusan/{slug}', function ($slug) {
     $content = \App\Models\JurusanContent::where('slug', $slug)->where('aktif', true)->first();
 
@@ -323,6 +326,17 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/tefa/products/{product}/edit', [AdminTefaController::class, 'editProduct'])->name('tefa.products.edit');
         Route::put('/tefa/products/{product}', [AdminTefaController::class, 'updateProduct'])->name('tefa.products.update');
         Route::delete('/tefa/products/{product}', [AdminTefaController::class, 'destroyProduct'])->name('tefa.products.destroy');
+
+        // Dojo SMK
+        Route::get('/dojo/setting', [AdminDojoController::class, 'editSetting'])->name('dojo.setting');
+        Route::put('/dojo/setting', [AdminDojoController::class, 'updateSetting'])->name('dojo.setting.update');
+        Route::get('/dojo/photos', [AdminDojoController::class, 'indexPhotos'])->name('dojo.photos.index');
+        Route::get('/dojo/photos/create', [AdminDojoController::class, 'createPhoto'])->name('dojo.photos.create');
+        Route::post('/dojo/photos', [AdminDojoController::class, 'storePhoto'])->name('dojo.photos.store');
+        Route::get('/dojo/photos/{photo}/edit', [AdminDojoController::class, 'editPhoto'])->name('dojo.photos.edit');
+        Route::put('/dojo/photos/{photo}', [AdminDojoController::class, 'updatePhoto'])->name('dojo.photos.update');
+        Route::delete('/dojo/photos/{photo}', [AdminDojoController::class, 'destroyPhoto'])->name('dojo.photos.destroy');
+        Route::post('/dojo/photos/{photo}/toggle-aktif', [AdminDojoController::class, 'toggleAktifPhoto'])->name('dojo.photos.toggle-aktif');
     });
 });
 

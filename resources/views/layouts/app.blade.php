@@ -252,6 +252,11 @@
           <i class="fas fa-industry mr-2"></i> Tefa
         </a>
 
+        <!-- Dojo SMK -->
+        <a href="{{ route('dojo.index') }}" class="nav-link font-medium {{ request()->routeIs('dojo.*') ? 'text-white font-bold' : '' }} flex items-center hover:text-white/90">
+          <i class="fas fa-user-ninja mr-2"></i> Dojo SMK
+        </a>
+
         <!-- Galeri Dropdown -->
         <div class="relative group">
           <button class="nav-link flex items-center hover:text-white/90 font-medium focus:outline-none">
@@ -395,6 +400,11 @@
         <i class="fas fa-industry mr-2"></i> Tefa
       </a>
 
+      <!-- Mobile Dojo SMK -->
+      <a href="{{ route('dojo.index') }}" class="flex items-center py-2 text-white hover:text-white/90 font-medium transition-colors duration-200">
+        <i class="fas fa-user-ninja mr-2"></i> Dojo SMK
+      </a>
+
       <!-- Mobile Galeri -->
       <div>
         <button id="mobile-galeri-btn" class="flex justify-between items-center w-full py-2 text-white hover:text-white/90 text-left font-medium transition-colors duration-200">
@@ -458,6 +468,7 @@
           <ul class="space-y-2 text-slate-300">
             <li><a href="/profil/identitas" class="hover:text-primary">Profil</a></li>
             <li><a href="{{ route('jurusan.show', 'tkr') }}" class="hover:text-primary">Program Keahlian</a></li>
+            <li><a href="{{ route('dojo.index') }}" class="hover:text-primary">Dojo SMK</a></li>
             <li><a href="/informasi/kontak" class="hover:text-primary">Layanan</a></li>
             <li><a href="/galeri/galerifoto" class="hover:text-primary">Galeri</a></li>
           </ul>

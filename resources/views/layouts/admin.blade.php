@@ -259,6 +259,25 @@
         </div>
       </div>
 
+      {{-- Dropdown 6: Dojo SMK --}}
+      <div class="dropdown-container">
+        <button type="button" class="nav-link w-full text-left dropdown-toggle {{ request()->routeIs('admin.dojo.*') ? 'active' : '' }}" onclick="toggleDropdown(this)">
+          <i class="fas fa-user-ninja nav-icon"></i>
+          <span class="nav-label">Dojo SMK</span>
+          <i class="fas fa-chevron-right dropdown-chevron text-xs transition-transform duration-200 ml-auto {{ request()->routeIs('admin.dojo.*') ? 'rotate-90' : '' }}"></i>
+        </button>
+        <div class="dropdown-menu pl-4 space-y-1 mt-1 transition-all duration-300 {{ request()->routeIs('admin.dojo.*') ? '' : 'hidden' }}">
+          <a href="{{ route('admin.dojo.setting') }}" class="nav-link py-2 {{ request()->routeIs('admin.dojo.setting') ? 'active' : '' }}">
+            <i class="far fa-circle nav-icon text-xxs scale-75"></i>
+            <span class="nav-label text-xs">Pengaturan Halaman</span>
+          </a>
+          <a href="{{ route('admin.dojo.photos.index') }}" class="nav-link py-2 {{ request()->routeIs('admin.dojo.photos.*') ? 'active' : '' }}">
+            <i class="far fa-circle nav-icon text-xxs scale-75"></i>
+            <span class="nav-label text-xs">Foto Kegiatan</span>
+          </a>
+        </div>
+      </div>
+
       <p class="nav-section">Sistem</p>
 
       <a href="{{ route('admin.school-setting.edit') }}"

@@ -41,6 +41,7 @@ class DatabaseSeeder extends Seeder
             GaleriFotoSeeder::class,
             GaleriVideoSeeder::class,
             JurusanContentSeeder::class,
+            DojoSeeder::class,
         ]);
     }
 }

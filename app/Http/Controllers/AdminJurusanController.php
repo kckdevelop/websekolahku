@@ -95,6 +95,14 @@ class AdminJurusanController extends Controller
     }
 
     /**
+     * Display the specified jurusan page (redirect to edit form).
+     */
+    public function show(JurusanContent $jurusan)
+    {
+        return redirect()->route('admin.jurusan.edit', $jurusan);
+    }
+
+    /**
      * Show the edit form for the specific jurusan.
      */
     public function edit(JurusanContent $jurusan)

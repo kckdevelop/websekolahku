@@ -394,7 +394,7 @@ return new class extends Migration
             $table->json('kompetensi')->nullable();
             $table->json('fasilitas')->nullable();
             $table->json('peluang_karir')->nullable();
-            $table->string('foto_kegiatan')->nullable()
+            $table->longText('foto_kegiatan')->nullable()
                   ->comment('Foto kegiatan/praktikum jurusan');
             $table->timestamps();
         });

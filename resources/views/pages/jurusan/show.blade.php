@@ -56,8 +56,7 @@
       <img src="{{ asset('storage/' . $content->hero_gambar) }}"
            alt="{{ $content->nama_jurusan }}" class="w-full h-full object-cover">
     @else
-      <img src="https://picsum.photos/seed/jurusan-{{ $content->slug }}-hero/1920/600"
-           alt="{{ $content->nama_jurusan }}" class="w-full h-full object-cover">
+      <div class="w-full h-full bg-gradient-to-r from-slate-900 via-primary/80 to-slate-900"></div>
     @endif
     <div class="absolute top-1/2 left-8 md:left-16 transform -translate-y-1/2 text-white z-20">
       <h1 class="text-3xl md:text-5xl font-bold mb-2">{{ $content->hero_judul }}</h1>
@@ -84,73 +83,49 @@
 
   {{-- Profil Jurusan --}}
   <section class="py-12 bg-white dark:bg-slate-800 fade-in-scroll">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-        <div>
-          <h2 class="text-2xl font-bold text-primary mb-4">Tentang Jurusan {{ $content->nama_jurusan }}</h2>
-          <div class="text-slate-700 dark:text-slate-300 space-y-4 mb-6">
-            <p class="leading-relaxed">{{ $content->deskripsi_1 }}</p>
-            @if($content->deskripsi_2)
-              <p class="leading-relaxed">{{ $content->deskripsi_2 }}</p>
-            @endif
-          </div>
-          @if(is_array($content->poin_unggulan) && count($content->poin_unggulan) > 0)
-            <ul class="list-none space-y-2">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div>
+        <h2 class="text-2xl md:text-3xl font-bold text-primary mb-4">Tentang Jurusan {{ $content->nama_jurusan }}</h2>
+        <div class="text-slate-700 dark:text-slate-300 space-y-4 mb-6 text-base leading-relaxed">
+          <p class="leading-relaxed">{{ $content->deskripsi_1 }}</p>
+          @if($content->deskripsi_2)
+            <p class="leading-relaxed">{{ $content->deskripsi_2 }}</p>
+          @endif
+        </div>
+        @if(is_array($content->poin_unggulan) && count($content->poin_unggulan) > 0)
+          <div class="mt-6 bg-slate-50 dark:bg-slate-700/40 p-6 rounded-2xl border border-slate-100 dark:border-slate-700">
+            <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Keunggulan & Fasilitas</h3>
+            <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-700 dark:text-slate-300">
               @foreach($content->poin_unggulan as $point)
-                <li class="flex items-start gap-2 text-slate-700 dark:text-slate-300">
-                  <div class="w-5 h-5 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <i class="fas fa-check text-primary text-xxs"></i>
+                <li class="flex items-start gap-2.5 text-sm">
+                  <div class="w-5 h-5 rounded-full bg-orange-100 dark:bg-orange-950/60 flex items-center justify-center flex-shrink-0 mt-0.5 text-primary">
+                    <i class="fas fa-check text-xs"></i>
                   </div>
-                  {{ $point }}
+                  <span>{{ $point }}</span>
                 </li>
               @endforeach
             </ul>
-          @endif
-        </div>
-        <div class="grid grid-cols-2 gap-4">
-          @php $previews = array_slice($content->foto_kegiatan ?? [], 0, 4); @endphp
-          @forelse($previews as $foto)
-            @if(!empty($foto['gambar']))
-              <img src="{{ Str::startsWith($foto['gambar'], 'http') ? $foto['gambar'] : asset('storage/' . $foto['gambar']) }}"
-                   alt="{{ $foto['deskripsi'] ?? $content->nama_jurusan }}"
-                   data-desc="{{ $foto['deskripsi'] ?? '' }}"
-                   class="gallery-img w-full h-40 object-cover shadow-md activity-preview-img cursor-pointer">
-            @else
-              <img src="https://picsum.photos/seed/{{ $content->slug }}-preview-{{ $loop->index }}/300/200"
-                   alt="{{ $content->nama_jurusan }}"
-                   class="gallery-img w-full h-40 object-cover shadow-md activity-preview-img cursor-pointer">
-            @endif
-          @empty
-            @for($i = 0; $i < 4; $i++)
-              <img src="https://picsum.photos/seed/{{ $content->slug }}-{{ $i }}/300/200"
-                   alt="{{ $content->nama_jurusan }}"
-                   class="gallery-img w-full h-40 object-cover shadow-md">
-            @endfor
-          @endforelse
-        </div>
+          </div>
+        @endif
       </div>
     </div>
   </section>
 
   {{-- Galeri Foto Kegiatan --}}
-  @if(!empty($content->foto_kegiatan) && count($content->foto_kegiatan) > 0)
+  @php
+    $validPhotos = array_filter($content->foto_kegiatan ?? [], fn($f) => !empty($f['gambar']));
+  @endphp
+  @if(count($validPhotos) > 0)
   <section class="py-12 bg-slate-100 dark:bg-slate-800/50 fade-in-scroll">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-3xl font-bold text-center text-primary mb-10">Galeri Kegiatan {{ $content->nama_jurusan }}</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        @foreach($content->foto_kegiatan as $foto)
+        @foreach($validPhotos as $foto)
           <div class="card-gradient rounded-xl overflow-hidden shadow-md">
-            @if(!empty($foto['gambar']))
-              <img src="{{ Str::startsWith($foto['gambar'], 'http') ? $foto['gambar'] : asset('storage/' . $foto['gambar']) }}"
-                   alt="{{ $foto['deskripsi'] ?? '' }}"
-                   data-desc="{{ $foto['deskripsi'] ?? '' }}"
-                   class="w-full h-48 object-cover cursor-pointer hover:scale-105 transition-transform duration-300 activity-preview-img">
-            @else
-              <img src="https://picsum.photos/seed/kegiatan-{{ $content->slug }}-{{ $loop->index }}/400/300"
-                   alt="{{ $foto['deskripsi'] ?? '' }}"
-                   data-desc="{{ $foto['deskripsi'] ?? '' }}"
-                   class="w-full h-48 object-cover cursor-pointer hover:scale-105 transition-transform duration-300 activity-preview-img">
-            @endif
+            <img src="{{ Str::startsWith($foto['gambar'], 'http') ? $foto['gambar'] : asset('storage/' . $foto['gambar']) }}"
+                 alt="{{ $foto['deskripsi'] ?? '' }}"
+                 data-desc="{{ $foto['deskripsi'] ?? '' }}"
+                 class="w-full h-48 object-cover cursor-pointer hover:scale-105 transition-transform duration-300 activity-preview-img">
             @if(!empty($foto['deskripsi']))
               <p class="mt-2 text-center text-sm text-slate-700 dark:text-slate-300 px-2 pb-3">{{ $foto['deskripsi'] }}</p>
             @endif

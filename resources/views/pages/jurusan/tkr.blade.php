@@ -55,7 +55,7 @@
     @if($content->hero_gambar)
       <img src="{{ asset('storage/' . $content->hero_gambar) }}" alt="Jurusan {{ $content->nama_jurusan }}" class="w-full h-full object-cover">
     @else
-      <img src="https://picsum.photos/seed/tkr-hero/1920/600" alt="Jurusan {{ $content->nama_jurusan }}" class="w-full h-full object-cover">
+      <div class="w-full h-full bg-gradient-to-r from-slate-900 via-primary/80 to-slate-900"></div>
     @endif
     <div class="absolute top-1/2 left-8 md:left-16 transform -translate-y-1/2 text-white z-20">
       <h1 class="text-3xl md:text-5xl font-bold mb-2">{{ $content->hero_judul }}</h1>
@@ -80,61 +80,59 @@
 
   <!-- Profil Jurusan -->
   <section class="py-12 bg-white dark:bg-slate-800 fade-in-scroll">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-        <div>
-          <h2 class="text-2xl font-bold text-primary mb-4">Tentang Jurusan {{ $content->nama_jurusan }}</h2>
-          <div class="text-slate-700 dark:text-slate-300 space-y-4 mb-6">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div>
+        <h2 class="text-2xl md:text-3xl font-bold text-primary mb-4">Tentang Jurusan {{ $content->nama_jurusan }}</h2>
+        <div class="text-slate-700 dark:text-slate-300 space-y-4 mb-6 text-base leading-relaxed">
+          <p class="leading-relaxed">
+            {{ $content->deskripsi_1 }}
+          </p>
+          @if($content->deskripsi_2)
             <p class="leading-relaxed">
-              {{ $content->deskripsi_1 }}
+              {{ $content->deskripsi_2 }}
             </p>
-            @if($content->deskripsi_2)
-              <p class="leading-relaxed">
-                {{ $content->deskripsi_2 }}
-              </p>
-            @endif
-          </div>
-          @if(is_array($content->poin_unggulan) && count($content->poin_unggulan) > 0)
-            <ul class="list-disc pl-5 space-y-2 text-slate-700 dark:text-slate-300">
-              @foreach($content->poin_unggulan as $point)
-                <li>{{ $point }}</li>
-              @endforeach
-            </ul>
           @endif
         </div>
-        <div class="grid grid-cols-2 gap-4">
-          <img src="https://picsum.photos/seed/tkr1/300/200" alt="Praktikum 1" class="gallery-img w-full h-40 object-cover shadow-md activity-preview-img cursor-pointer">
-          <img src="https://picsum.photos/seed/tkr2/300/200" alt="Praktikum 2" class="gallery-img w-full h-40 object-cover shadow-md activity-preview-img cursor-pointer">
-          <img src="https://picsum.photos/seed/tkr3/300/200" alt="Praktikum 3" class="gallery-img w-full h-40 object-cover shadow-md activity-preview-img cursor-pointer">
-          <img src="https://picsum.photos/seed/tkr4/300/200" alt="Praktikum 4" class="gallery-img w-full h-40 object-cover shadow-md activity-preview-img cursor-pointer">
-        </div>
+        @if(is_array($content->poin_unggulan) && count($content->poin_unggulan) > 0)
+          <div class="mt-6 bg-slate-50 dark:bg-slate-700/40 p-6 rounded-2xl border border-slate-100 dark:border-slate-700">
+            <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Keunggulan & Fasilitas</h3>
+            <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-700 dark:text-slate-300">
+              @foreach($content->poin_unggulan as $point)
+                <li class="flex items-start gap-2.5 text-sm">
+                  <div class="w-5 h-5 rounded-full bg-orange-100 dark:bg-orange-950/60 flex items-center justify-center flex-shrink-0 mt-0.5 text-primary">
+                    <i class="fas fa-check text-xs"></i>
+                  </div>
+                  <span>{{ $point }}</span>
+                </li>
+              @endforeach
+            </ul>
+          </div>
+        @endif
       </div>
     </div>
   </section>
 
   <!-- Galeri Foto -->
+  @php
+    $validPhotos = array_filter($content->foto_kegiatan ?? [], fn($f) => !empty($f['gambar']));
+  @endphp
+  @if(count($validPhotos) > 0)
   <section class="py-12 bg-slate-100 dark:bg-slate-800/50 fade-in-scroll">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-3xl font-bold text-center text-primary mb-10">Galeri Kegiatan {{ $content->nama_jurusan }}</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        @forelse($content->foto_kegiatan ?? [] as $foto)
+        @foreach($validPhotos as $foto)
           <div class="card-gradient rounded-xl overflow-hidden shadow-md">
-            @if(!empty($foto['gambar']))
-              <img src="{{ Str::startsWith($foto['gambar'], 'http') ? $foto['gambar'] : asset('storage/' . $foto['gambar']) }}" alt="{{ $foto['deskripsi'] ?? '' }}" data-desc="{{ $foto['deskripsi'] ?? '' }}" class="w-full h-48 object-cover cursor-pointer hover:scale-105 transition-transform duration-300 activity-preview-img">
-            @else
-              <img src="https://picsum.photos/seed/kegiatan/400/300" alt="{{ $foto['deskripsi'] ?? '' }}" data-desc="{{ $foto['deskripsi'] ?? '' }}" class="w-full h-48 object-cover cursor-pointer hover:scale-105 transition-transform duration-300 activity-preview-img">
+            <img src="{{ Str::startsWith($foto['gambar'], 'http') ? $foto['gambar'] : asset('storage/' . $foto['gambar']) }}" alt="{{ $foto['deskripsi'] ?? '' }}" data-desc="{{ $foto['deskripsi'] ?? '' }}" class="w-full h-48 object-cover cursor-pointer hover:scale-105 transition-transform duration-300 activity-preview-img">
+            @if(!empty($foto['deskripsi']))
+              <p class="mt-2 text-center text-sm text-slate-700 dark:text-slate-300 px-2 pb-3">{{ $foto['deskripsi'] }}</p>
             @endif
-            <p class="mt-2 text-center text-sm text-slate-700 dark:text-slate-300 px-2 pb-3">{{ $foto['deskripsi'] ?? '' }}</p>
           </div>
-        @empty
-          <div class="col-span-full py-12 text-center text-slate-400">
-            <i class="fas fa-images text-4xl mb-3 block"></i>
-            <p class="text-sm">Belum ada foto kegiatan.</p>
-          </div>
-        @endforelse
+        @endforeach
       </div>
     </div>
   </section>
+  @endif
 
   <!-- CTA Daftar -->
   <section class="py-12 bg-gradient-to-r from-primary to-secondary text-white fade-in-scroll">

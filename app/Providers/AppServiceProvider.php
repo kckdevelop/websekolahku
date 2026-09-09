@@ -22,6 +22,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Force HTTPS jika diakses lewat SSL / Reverse Proxy
+        if (request()->server('HTTP_X_FORWARDED_PROTO') == 'https' || request()->isSecure()) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         // Set Carbon locale ke Bahasa Indonesia
         Carbon::setLocale('id');
         setlocale(LC_TIME, 'id_ID.UTF-8', 'id_ID', 'Indonesian');

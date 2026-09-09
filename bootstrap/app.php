@@ -12,6 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*');
+
         $middleware->alias([
             'siswa.auth'   => \App\Http\Middleware\SiswaAuth::class,
             'petugas.auth' => \App\Http\Middleware\PetugasAuth::class,

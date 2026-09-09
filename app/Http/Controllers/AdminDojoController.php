@@ -24,7 +24,7 @@ class AdminDojoController extends Controller
         $request->validate([
             'hero_title' => 'required|string|max:255',
             'hero_subtitle' => 'required|string|max:255',
-            'hero_gambar' => 'nullable|image|max:3072',
+            'hero_gambar' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
             'deskripsi_utama' => 'required|string',
             'fungsi_1_judul' => 'required|string|max:255',
             'fungsi_1_deskripsi' => 'nullable|string',
@@ -57,7 +57,7 @@ class AdminDojoController extends Controller
         ]);
 
         if ($request->hasFile('hero_gambar')) {
-            if ($setting->hero_gambar && Storage::disk('public')->exists($setting->hero_gambar)) {
+            if ($setting->hero_gambar && !str_starts_with($setting->hero_gambar, 'http') && Storage::disk('public')->exists($setting->hero_gambar)) {
                 Storage::disk('public')->delete($setting->hero_gambar);
             }
             $data['hero_gambar'] = $request->file('hero_gambar')->store('dojo', 'public');

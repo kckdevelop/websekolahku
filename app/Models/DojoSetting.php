@@ -29,6 +29,9 @@ class DojoSetting extends Model
     public function getHeroGambarSrcAttribute(): string
     {
         if ($this->hero_gambar) {
+            if (str_starts_with($this->hero_gambar, 'http://') || str_starts_with($this->hero_gambar, 'https://')) {
+                return $this->hero_gambar;
+            }
             return asset('storage/' . $this->hero_gambar);
         }
         return 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1600&q=80';

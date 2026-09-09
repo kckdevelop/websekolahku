@@ -6,7 +6,7 @@
 <!-- Hero Section -->
 <section class="relative bg-slate-900 text-white py-20 lg:py-28 overflow-hidden">
   <div class="absolute inset-0 z-0">
-    <img src="{{ $dojoSetting->hero_gambar_src }}" alt="Dojo SMK Header" class="w-full h-full object-cover opacity-25 filter blur-xs scale-105 transform">
+    <img src="{{ $dojoSetting->hero_gambar_src }}" alt="Dojo SMK Header" class="w-full h-full object-cover opacity-25 filter blur-sm scale-105 transform">
     <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900/90 to-primary/30"></div>
   </div>
 

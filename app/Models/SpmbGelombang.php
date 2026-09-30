@@ -17,6 +17,8 @@ class SpmbGelombang extends Model
         'tahun_ajaran',
         'tanggal_mulai',
         'tanggal_selesai',
+        'tanggal_buka',
+        'tanggal_tutup',
         'is_aktif',
         'keterangan',
         'biaya_pendaftaran',
@@ -30,11 +32,23 @@ class SpmbGelombang extends Model
         'kode_gelombang'     => 'integer',
         'tanggal_mulai'      => 'date',
         'tanggal_selesai'    => 'date',
+        'tanggal_buka'       => 'date',
+        'tanggal_tutup'      => 'date',
         'biaya_pendaftaran'  => 'decimal:2',
         'biaya_spp_default'  => 'decimal:2',
         'biaya_zakat_default'=> 'decimal:2',
         'potongan_subsidi'   => 'decimal:2',
     ];
+
+    public function getTanggalMulaiAttribute($value)
+    {
+        return $value ?? ($this->attributes['tanggal_buka'] ?? null);
+    }
+
+    public function getTanggalSelesaiAttribute($value)
+    {
+        return $value ?? ($this->attributes['tanggal_tutup'] ?? null);
+    }
 
     /**
      * Activate this wave and deactivate all other waves.

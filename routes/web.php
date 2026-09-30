@@ -244,8 +244,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/logout', [AdminAuthController::class, 'logout'])->name('logout.get');
     });
 
-    // SPMB / PPDB routes (accessible ONLY by admin_pendaftaran)
-    Route::middleware('admin.role:admin_pendaftaran')->group(function() {
+    // SPMB / PPDB routes (accessible by admin & admin_pendaftaran)
+    Route::middleware('admin.role:admin,admin_pendaftaran')->group(function() {
         // Pengaturan Gelombang SPMB
         Route::post('/gelombang/{gelombang}/toggle-active', [AdminSpmbGelombangController::class, 'toggleActive'])->name('gelombang.toggleActive');
         Route::resource('gelombang', AdminSpmbGelombangController::class);

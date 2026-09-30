@@ -1,19 +1,68 @@
 <?php
-
+ 
 namespace App\Http\Controllers;
 
 use App\Models\SpmbGelombang;
+use App\Models\SpmbPageContent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class AdminSpmbGelombangController extends Controller
 {
+    /**
+     * Dapatkan daftar gelombang secara aman dengan urutan yang fleksibel.
+     */
+    private function getGelombangs()
+    {
+        $hasTanggalMulai = Schema::hasColumn('spmb_gelombangs', 'tanggal_mulai');
+        $orderCol = $hasTanggalMulai ? 'tanggal_mulai' : (Schema::hasColumn('spmb_gelombangs', 'tanggal_buka') ? 'tanggal_buka' : 'id');
+        return SpmbGelombang::orderBy($orderCol, 'asc')->get();
+    }
+
+    /**
+     * Siapkan payload data sesuai kolom yang tersedia di database.
+     */
+    private function prepareData(Request $request): array
+    {
+        $data = [
+            'nama_gelombang'      => $request->nama_gelombang,
+            'kode_gelombang'      => $request->kode_gelombang,
+            'keterangan'          => $request->keterangan,
+            'biaya_pendaftaran'   => $request->biaya_pendaftaran ?? 0,
+            'biaya_zakat_default' => $request->biaya_zakat_default ?? 0,
+            'potongan_subsidi'    => $request->potongan_subsidi ?? 0,
+        ];
+
+        if (Schema::hasColumn('spmb_gelombangs', 'tahun_ajaran')) {
+            $data['tahun_ajaran'] = $request->tahun_ajaran;
+        }
+
+        if (Schema::hasColumn('spmb_gelombangs', 'tanggal_mulai')) {
+            $data['tanggal_mulai'] = $request->tanggal_mulai;
+        }
+        if (Schema::hasColumn('spmb_gelombangs', 'tanggal_selesai')) {
+            $data['tanggal_selesai'] = $request->tanggal_selesai;
+        }
+
+        // Fallback untuk tabel yang masih menggunakan nama kolom lama (tanggal_buka / tanggal_tutup)
+        if (Schema::hasColumn('spmb_gelombangs', 'tanggal_buka')) {
+            $data['tanggal_buka'] = $request->tanggal_mulai ?? now()->toDateString();
+        }
+        if (Schema::hasColumn('spmb_gelombangs', 'tanggal_tutup')) {
+            $data['tanggal_tutup'] = $request->tanggal_selesai ?? now()->addMonths(3)->toDateString();
+        }
+
+        return $data;
+    }
+
     /**
      * Tampilkan daftar gelombang pendaftaran.
      */
     public function index()
     {
-        $gelombangs = SpmbGelombang::orderBy('tanggal_mulai', 'asc')->get();
-        $isPendaftaranOpen = \App\Models\SpmbPageContent::getSingle()->is_pendaftaran_open;
+        $gelombangs = $this->getGelombangs();
+        $isPendaftaranOpen = SpmbPageContent::getSingle()->is_pendaftaran_open;
         return view('admin.gelombang.index', compact('gelombangs', 'isPendaftaranOpen'));
     }
 
@@ -41,29 +90,27 @@ class AdminSpmbGelombangController extends Controller
             'tanggal_selesai.after_or_equal' => 'Tanggal selesai harus setelah atau sama dengan tanggal mulai.',
         ]);
 
-        // Jika ini gelombang pertama, atau jika is_aktif dicentang
-        $isFirst = SpmbGelombang::count() === 0;
-        $shouldBeActive = $isFirst || $request->has('is_aktif');
+        try {
+            $isFirst = SpmbGelombang::count() === 0;
+            $shouldBeActive = $isFirst || $request->has('is_aktif');
 
-        $gelombang = SpmbGelombang::create([
-            'nama_gelombang'      => $request->nama_gelombang,
-            'kode_gelombang'      => $request->kode_gelombang,
-            'tahun_ajaran'        => $request->tahun_ajaran,
-            'tanggal_mulai'       => $request->tanggal_mulai,
-            'tanggal_selesai'     => $request->tanggal_selesai,
-            'is_aktif'            => false,
-            'keterangan'          => $request->keterangan,
-            'biaya_pendaftaran'   => $request->biaya_pendaftaran ?? 0,
-            'biaya_zakat_default' => $request->biaya_zakat_default ?? 0,
-            'potongan_subsidi'    => $request->potongan_subsidi ?? 0,
-        ]);
+            $data = $this->prepareData($request);
+            $data['is_aktif'] = false;
 
-        if ($shouldBeActive) {
-            $gelombang->activate();
+            $gelombang = SpmbGelombang::create($data);
+
+            if ($shouldBeActive) {
+                $gelombang->activate();
+            }
+
+            return redirect()->route('admin.gelombang.index')
+                ->with('success', 'Gelombang pendaftaran berhasil ditambahkan!');
+        } catch (\Exception $e) {
+            Log::error('Error storing SPMB Gelombang: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal menyimpan gelombang: ' . $e->getMessage());
         }
-
-        return redirect()->route('admin.gelombang.index')
-            ->with('success', 'Gelombang pendaftaran berhasil ditambahkan!');
     }
 
     /**
@@ -71,8 +118,8 @@ class AdminSpmbGelombangController extends Controller
      */
     public function edit(SpmbGelombang $gelombang)
     {
-        $gelombangs = SpmbGelombang::orderBy('tanggal_mulai', 'asc')->get();
-        $isPendaftaranOpen = \App\Models\SpmbPageContent::getSingle()->is_pendaftaran_open;
+        $gelombangs = $this->getGelombangs();
+        $isPendaftaranOpen = SpmbPageContent::getSingle()->is_pendaftaran_open;
         return view('admin.gelombang.index', compact('gelombangs', 'gelombang', 'isPendaftaranOpen'));
     }
 
@@ -100,24 +147,22 @@ class AdminSpmbGelombangController extends Controller
             'tanggal_selesai.after_or_equal' => 'Tanggal selesai harus setelah atau sama dengan tanggal mulai.',
         ]);
 
-        $gelombang->update([
-            'nama_gelombang'      => $request->nama_gelombang,
-            'kode_gelombang'      => $request->kode_gelombang,
-            'tahun_ajaran'        => $request->tahun_ajaran,
-            'tanggal_mulai'       => $request->tanggal_mulai,
-            'tanggal_selesai'     => $request->tanggal_selesai,
-            'keterangan'          => $request->keterangan,
-            'biaya_pendaftaran'   => $request->biaya_pendaftaran ?? 0,
-            'biaya_zakat_default' => $request->biaya_zakat_default ?? 0,
-            'potongan_subsidi'    => $request->potongan_subsidi ?? 0,
-        ]);
+        try {
+            $data = $this->prepareData($request);
+            $gelombang->update($data);
 
-        if ($request->has('is_aktif')) {
-            $gelombang->activate();
+            if ($request->has('is_aktif')) {
+                $gelombang->activate();
+            }
+
+            return redirect()->route('admin.gelombang.index')
+                ->with('success', 'Gelombang pendaftaran berhasil diperbarui!');
+        } catch (\Exception $e) {
+            Log::error('Error updating SPMB Gelombang: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal memperbarui gelombang: ' . $e->getMessage());
         }
-
-        return redirect()->route('admin.gelombang.index')
-            ->with('success', 'Gelombang pendaftaran berhasil diperbarui!');
     }
 
     /**
@@ -125,19 +170,25 @@ class AdminSpmbGelombangController extends Controller
      */
     public function destroy(SpmbGelombang $gelombang)
     {
-        $wasActive = $gelombang->is_aktif;
-        $gelombang->delete();
+        try {
+            $wasActive = $gelombang->is_aktif;
+            $gelombang->delete();
 
-        // Jika yang dihapus aktif, aktifkan gelombang lain yang ada (jika ada)
-        if ($wasActive) {
-            $nextActive = SpmbGelombang::first();
-            if ($nextActive) {
-                $nextActive->activate();
+            // Jika yang dihapus aktif, aktifkan gelombang lain yang ada (jika ada)
+            if ($wasActive) {
+                $nextActive = SpmbGelombang::first();
+                if ($nextActive) {
+                    $nextActive->activate();
+                }
             }
-        }
 
-        return redirect()->route('admin.gelombang.index')
-            ->with('success', 'Gelombang pendaftaran berhasil dihapus.');
+            return redirect()->route('admin.gelombang.index')
+                ->with('success', 'Gelombang pendaftaran berhasil dihapus.');
+        } catch (\Exception $e) {
+            Log::error('Error deleting SPMB Gelombang: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('admin.gelombang.index')
+                ->with('error', 'Gagal menghapus gelombang: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -145,9 +196,15 @@ class AdminSpmbGelombangController extends Controller
      */
     public function toggleActive(SpmbGelombang $gelombang)
     {
-        $gelombang->activate();
+        try {
+            $gelombang->activate();
 
-        return redirect()->route('admin.gelombang.index')
-            ->with('success', 'Gelombang "' . $gelombang->nama_gelombang . '" sekarang menjadi gelombang aktif!');
+            return redirect()->route('admin.gelombang.index')
+                ->with('success', 'Gelombang "' . $gelombang->nama_gelombang . '" sekarang menjadi gelombang aktif!');
+        } catch (\Exception $e) {
+            Log::error('Error activating SPMB Gelombang: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('admin.gelombang.index')
+                ->with('error', 'Gagal mengaktifkan gelombang: ' . $e->getMessage());
+        }
     }
 }

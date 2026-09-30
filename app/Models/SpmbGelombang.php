@@ -42,12 +42,28 @@ class SpmbGelombang extends Model
 
     public function getTanggalMulaiAttribute($value)
     {
-        return $value ?? ($this->attributes['tanggal_buka'] ?? null);
+        $val = $value ?? ($this->attributes['tanggal_buka'] ?? null);
+        if ($val && !($val instanceof \Carbon\Carbon)) {
+            try {
+                return \Carbon\Carbon::parse($val);
+            } catch (\Throwable $e) {
+                return null;
+            }
+        }
+        return $val;
     }
 
     public function getTanggalSelesaiAttribute($value)
     {
-        return $value ?? ($this->attributes['tanggal_tutup'] ?? null);
+        $val = $value ?? ($this->attributes['tanggal_tutup'] ?? null);
+        if ($val && !($val instanceof \Carbon\Carbon)) {
+            try {
+                return \Carbon\Carbon::parse($val);
+            } catch (\Throwable $e) {
+                return null;
+            }
+        }
+        return $val;
     }
 
     /**

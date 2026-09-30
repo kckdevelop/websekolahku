@@ -181,8 +181,12 @@
                   @endif
                 </td>
                 <td class="py-3 px-4">
-                  @if($item->tanggal_mulai && $item->tanggal_selesai)
-                    {{ $item->tanggal_mulai->translatedFormat('d F Y') }} – {{ $item->tanggal_selesai->translatedFormat('d F Y') }}
+                  @php
+                    $tm = $item->tanggal_mulai ? (is_string($item->tanggal_mulai) ? \Carbon\Carbon::parse($item->tanggal_mulai) : $item->tanggal_mulai) : null;
+                    $ts = $item->tanggal_selesai ? (is_string($item->tanggal_selesai) ? \Carbon\Carbon::parse($item->tanggal_selesai) : $item->tanggal_selesai) : null;
+                  @endphp
+                  @if($tm && $ts)
+                    {{ $tm->translatedFormat('d F Y') }} – {{ $ts->translatedFormat('d F Y') }}
                   @else
                     Akan ditentukan kemudian
                   @endif

@@ -21,7 +21,7 @@ class AdminUserController extends Controller
             'name'     => 'required|string|max:100',
             'email'    => 'required|email|unique:users,email',
             'password' => ['required', Password::min(6)],
-            'role'     => 'required|in:admin,petugas,petugas_kesehatan,petugas_wawancara,petugas_pembayaran',
+            'role'     => 'required|in:admin,admin_pendaftaran,petugas,petugas_kesehatan,petugas_wawancara,petugas_pembayaran',
         ], [
             'email.unique'   => 'Email sudah digunakan oleh user lain.',
             'password.min'   => 'Password minimal 6 karakter.',
@@ -43,7 +43,7 @@ class AdminUserController extends Controller
         $request->validate([
             'name'     => 'required|string|max:100',
             'email'    => 'required|email|unique:users,email,' . $user->id,
-            'role'     => 'required|in:admin,petugas,petugas_kesehatan,petugas_wawancara,petugas_pembayaran',
+            'role'     => 'required|in:admin,admin_pendaftaran,petugas,petugas_kesehatan,petugas_wawancara,petugas_pembayaran',
             'password' => ['nullable', Password::min(6)],
         ]);
 

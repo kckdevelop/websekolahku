@@ -372,7 +372,7 @@ class AdminPendaftaranController extends Controller
             $pendaftaran->update([
                 'berkas_lengkap' => $berkasLengkap,
                 'catatan_petugas' => $catatanPetugas,
-                'verified_at' => $tandaiVerif ? now() : null,
+                'verified_at' => $tandaiVerif ? ($pendaftaran->verified_at ?? now()) : null,
                 'status' => $statusBaru,
             ]);
 
@@ -386,7 +386,7 @@ class AdminPendaftaranController extends Controller
 
         $pendaftaran->update([
             'status' => $request->status,
-            'verified_at' => $request->status === 'verifikasi' ? now() : $pendaftaran->verified_at,
+            'verified_at' => $request->status === 'verifikasi' ? ($pendaftaran->verified_at ?? now()) : null,
         ]);
 
         return redirect()->route('admin.pendaftaran.show', $pendaftaran->id)

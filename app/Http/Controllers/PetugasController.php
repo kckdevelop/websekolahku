@@ -416,7 +416,7 @@ class PetugasController extends Controller
         $pendaftaran->update([
             'berkas_lengkap'   => $berkasLengkap,
             'catatan_petugas'  => $catatanPetugas,
-            'verified_at'      => $tandaiVerif ? now() : $pendaftaran->verified_at,
+            'verified_at'      => $tandaiVerif ? ($pendaftaran->verified_at ?? now()) : null,
             'status'           => $statusBaru,
         ]);
 

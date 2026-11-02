@@ -237,11 +237,13 @@ Route::redirect('/admin', '/admin/dashboard');
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
+    // Logout bisa diakses semua role yang sudah login (tanpa cek role)
+    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+    Route::get('/logout', [AdminAuthController::class, 'logout'])->name('logout.get');
+
     // Common routes (accessible by both admin & admin_pendaftaran)
     Route::middleware('admin.role:admin,admin_pendaftaran')->group(function() {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
-        Route::get('/logout', [AdminAuthController::class, 'logout'])->name('logout.get');
     });
 
     // SPMB / PPDB routes (accessible by admin & admin_pendaftaran)

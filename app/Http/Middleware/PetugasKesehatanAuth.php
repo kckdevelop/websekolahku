@@ -17,7 +17,7 @@ class PetugasKesehatanAuth
 
         $user = Auth::user();
 
-        if (!in_array($user->role, ['petugas_kesehatan', 'admin'])) {
+        if (!in_array($user->role, ['petugas_kesehatan', 'admin', 'super_admin'])) {
             Auth::logout();
             return redirect()->route('login')
                 ->with('error', 'Akun Anda tidak memiliki akses ke halaman kesehatan.');

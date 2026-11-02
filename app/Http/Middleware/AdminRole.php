@@ -25,6 +25,11 @@ class AdminRole
 
         $user = Auth::user();
 
+        // Super admin melewati semua pengecekan role
+        if ($user->role === 'super_admin') {
+            return $next($request);
+        }
+
         if (!in_array($user->role, $roles)) {
             abort(403, 'Anda tidak memiliki hak akses untuk halaman ini.');
         }

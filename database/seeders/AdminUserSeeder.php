@@ -25,6 +25,12 @@ class AdminUserSeeder extends Seeder
                 'role'     => 'admin',
             ],
             [
+                'name'     => 'Super Administrator',
+                'email'    => 'superadmin@admin.com',
+                'password' => Hash::make('superadmin123'),
+                'role'     => 'super_admin',
+            ],
+            [
                 'name'     => 'Administrator Admin.com',
                 'email'    => 'admin@admin.com',
                 'password' => Hash::make('admin123'),
@@ -73,6 +79,7 @@ class AdminUserSeeder extends Seeder
         $this->command->table(
             ['Role', 'Email', 'Password Default'],
             [
+                ['Super Admin',        'superadmin@admin.com',            'superadmin123'],
                 ['Admin',              'admin@smkmuh1bantul.sch.id',      'admin123'],
                 ['Petugas',            'petugas@smkmuh1bantul.sch.id',    'petugas123'],
                 ['Petugas Kesehatan',  'kesehatan@smkmuh1bantul.sch.id',  'kesehatan123'],

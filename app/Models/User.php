@@ -31,27 +31,33 @@ class User extends Authenticatable
         ];
     }
 
+    /** Apakah user adalah super admin? */
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'super_admin';
+    }
+
     /** Apakah user adalah admin penuh? */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return in_array($this->role, ['admin', 'super_admin']);
     }
 
     /** Apakah user adalah admin pendaftaran? */
     public function isAdminPendaftaran(): bool
     {
-        return $this->role === 'admin_pendaftaran';
+        return in_array($this->role, ['admin_pendaftaran', 'super_admin']);
     }
 
     /** Apakah user adalah petugas pendaftaran? */
     public function isPetugas(): bool
     {
-        return $this->role === 'petugas';
+        return in_array($this->role, ['petugas', 'super_admin']);
     }
 
     /** Apakah user bisa akses panel admin? */
     public function canAccessAdmin(): bool
     {
-        return in_array($this->role, ['admin', 'admin_pendaftaran']);
+        return in_array($this->role, ['admin', 'admin_pendaftaran', 'super_admin']);
     }
 }

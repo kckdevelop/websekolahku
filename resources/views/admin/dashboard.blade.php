@@ -1,9 +1,75 @@
 @extends('layouts.admin')
 @section('title', 'Dashboard')
-@section('subtitle', auth()->user()->role === 'admin' ? 'Ringkasan data dan statistik website sekolah' : 'Ringkasan data dan statistik pendaftaran siswa baru (PPDB)')
+@section('subtitle', auth()->user()->role === 'super_admin' ? 'Pusat kendali dan ringkasan seluruh ketugasan sistem & PPDB' : (auth()->user()->role === 'admin' ? 'Ringkasan data dan statistik website sekolah' : 'Ringkasan data dan statistik pendaftaran siswa baru (PPDB)'))
 
 @section('content')
-@if(auth()->user()->role === 'admin')
+@if(auth()->user()->role === 'super_admin')
+{{-- Hub Akses Cepat Semua Ketugasan Petugas --}}
+<div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white rounded-2xl p-6 shadow-md border border-slate-800 mb-8">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pb-3 border-b border-white/10">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center font-bold text-lg">
+        <i class="fas fa-crown"></i>
+      </div>
+      <div>
+        <h2 class="text-base font-bold text-white">Pusat Kendali Ketugasan Seluruh Petugas</h2>
+        <p class="text-xs text-slate-400">Super Admin memiliki wewenang penuh untuk memantau dan mengerjakan tugas di seluruh loket PPDB &amp; sistem</p>
+      </div>
+    </div>
+    <span class="text-xs font-semibold px-3 py-1 bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-full self-start sm:self-auto">
+      Super Admin Access
+    </span>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    {{-- Loket 1: Pendaftaran & Berkas --}}
+    <a href="{{ route('petugas.pendaftar') }}" class="flex items-center gap-3.5 p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition group">
+      <div class="w-10 h-10 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition">
+        <i class="fas fa-clipboard-list text-lg"></i>
+      </div>
+      <div class="min-w-0">
+        <p class="text-sm font-semibold text-white group-hover:text-orange-400 transition truncate">Loket Pendaftaran</p>
+        <p class="text-xs text-slate-400 truncate">Verifikasi data &amp; berkas</p>
+      </div>
+    </a>
+
+    {{-- Loket 2: Kesehatan & UKS --}}
+    <a href="{{ route('petugas.kesehatan.dashboard') }}" class="flex items-center gap-3.5 p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition group">
+      <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition">
+        <i class="fas fa-heartbeat text-lg"></i>
+      </div>
+      <div class="min-w-0">
+        <p class="text-sm font-semibold text-white group-hover:text-emerald-400 transition truncate">Pemeriksaan UKS</p>
+        <p class="text-xs text-slate-400 truncate">Fisik, mata &amp; kesehatan</p>
+      </div>
+    </a>
+
+    {{-- Loket 3: Wawancara & Gaya Belajar --}}
+    <a href="{{ route('petugas.wawancara.dashboard') }}" class="flex items-center gap-3.5 p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition group">
+      <div class="w-10 h-10 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition">
+        <i class="fas fa-comments text-lg"></i>
+      </div>
+      <div class="min-w-0">
+        <p class="text-sm font-semibold text-white group-hover:text-purple-400 transition truncate">Loket Wawancara</p>
+        <p class="text-xs text-slate-400 truncate">Minat bakat &amp; rekomendasi</p>
+      </div>
+    </a>
+
+    {{-- Loket 4: Kasir & Pembayaran --}}
+    <a href="{{ route('petugas.pembayaran.dashboard') }}" class="flex items-center gap-3.5 p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition group">
+      <div class="w-10 h-10 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition">
+        <i class="fas fa-cash-register text-lg"></i>
+      </div>
+      <div class="min-w-0">
+        <p class="text-sm font-semibold text-white group-hover:text-rose-400 transition truncate">Kasir &amp; Pembayaran</p>
+        <p class="text-xs text-slate-400 truncate">Tagihan, cicilan &amp; lunas</p>
+      </div>
+    </a>
+  </div>
+</div>
+@endif
+
+@if(in_array(auth()->user()->role, ['admin', 'super_admin']))
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
   {{-- Card Berita --}}
   <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex items-center gap-4">
@@ -52,7 +118,7 @@
 
 {{-- Quick Access Admin --}}
 <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-  <h2 class="text-base font-semibold text-slate-800 mb-4">Akses Cepat</h2>
+  <h2 class="text-base font-semibold text-slate-800 mb-4">Akses Cepat Website</h2>
   <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
     @php
       $shortcutsAdmin = [
@@ -79,7 +145,7 @@
 </div>
 @endif
 
-@if(auth()->user()->role === 'admin_pendaftaran')
+@if(in_array(auth()->user()->role, ['admin_pendaftaran', 'super_admin']))
 
 {{-- Quick Access Admin Pendaftaran --}}
 <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">

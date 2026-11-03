@@ -135,39 +135,67 @@
         <span>Dashboard</span>
       </a>
 
-      @if(auth()->user()->role === 'admin' || auth()->user()->role === 'petugas')
+      @if(in_array(auth()->user()->role, ['admin', 'super_admin']))
+      <p class="nav-section">Akses Semua Ketugasan</p>
+
       <a href="{{ route('petugas.pendaftar') }}"
-         class="nav-link {{ request()->routeIs('petugas.pendaftar') || request()->is('petugas/pendaftar*') ? 'active' : '' }}">
+         class="nav-link {{ request()->routeIs('petugas.pendaftar*') || request()->is('petugas/pendaftar*') || request()->is('petugas/pendaftaran*') ? 'active' : '' }}">
         <i class="fas fa-users nav-icon"></i>
-        <span>Data Pendaftar</span>
+        <span>1. Loket Pendaftaran &amp; Berkas</span>
       </a>
 
-      <a href="{{ route('petugas.laporan') }}"
-         class="nav-link {{ request()->routeIs('petugas.laporan') ? 'active' : '' }}">
-        <i class="fas fa-chart-line nav-icon"></i>
-        <span>Laporan Pendaftaran</span>
+      <a href="{{ route('petugas.kesehatan.dashboard') }}"
+         class="nav-link {{ request()->is('petugas/kesehatan*') ? 'active' : '' }}">
+        <i class="fas fa-heartbeat nav-icon"></i>
+        <span>2. Loket UKS &amp; Kesehatan</span>
       </a>
-      @endif
 
-      @if(auth()->user()->role === 'petugas_kesehatan')
-      <a href="{{ route('petugas.kesehatan.laporan') }}" class="nav-link {{ request()->routeIs('petugas.kesehatan.laporan') ? 'active' : '' }}">
-        <i class="fas fa-chart-line nav-icon"></i>
-        <span>Laporan Kesehatan</span>
+      <a href="{{ route('petugas.wawancara.dashboard') }}"
+         class="nav-link {{ request()->is('petugas/wawancara*') ? 'active' : '' }}">
+        <i class="fas fa-comments nav-icon"></i>
+        <span>3. Loket Wawancara</span>
       </a>
-      @endif
 
-      @if(auth()->user()->role === 'petugas_wawancara')
-      <a href="{{ route('petugas.wawancara.laporan') }}" class="nav-link {{ request()->routeIs('petugas.wawancara.laporan') ? 'active' : '' }}">
-        <i class="fas fa-chart-line nav-icon"></i>
-        <span>Laporan Wawancara</span>
+      <a href="{{ route('petugas.pembayaran.dashboard') }}"
+         class="nav-link {{ request()->is('petugas/pembayaran*') ? 'active' : '' }}">
+        <i class="fas fa-cash-register nav-icon"></i>
+        <span>4. Loket Kasir &amp; Pembayaran</span>
       </a>
-      @endif
+      @else
+        @if(auth()->user()->role === 'petugas')
+        <a href="{{ route('petugas.pendaftar') }}"
+           class="nav-link {{ request()->routeIs('petugas.pendaftar') || request()->is('petugas/pendaftar*') ? 'active' : '' }}">
+          <i class="fas fa-users nav-icon"></i>
+          <span>Data Pendaftar</span>
+        </a>
 
-      @if(auth()->user()->role === 'petugas_pembayaran')
-      <a href="{{ route('petugas.pembayaran.laporan') }}" class="nav-link {{ request()->routeIs('petugas.pembayaran.laporan') ? 'active' : '' }}">
-        <i class="fas fa-chart-line nav-icon"></i>
-        <span>Laporan Pembayaran</span>
-      </a>
+        <a href="{{ route('petugas.laporan') }}"
+           class="nav-link {{ request()->routeIs('petugas.laporan') ? 'active' : '' }}">
+          <i class="fas fa-chart-line nav-icon"></i>
+          <span>Laporan Pendaftaran</span>
+        </a>
+        @endif
+
+        @if(auth()->user()->role === 'petugas_kesehatan')
+        <a href="{{ route('petugas.kesehatan.laporan') }}" class="nav-link {{ request()->routeIs('petugas.kesehatan.laporan') ? 'active' : '' }}">
+          <i class="fas fa-chart-line nav-icon"></i>
+          <span>Laporan Kesehatan</span>
+        </a>
+        @endif
+
+        @if(auth()->user()->role === 'petugas_wawancara')
+        <a href="{{ route('petugas.wawancara.laporan') }}" class="nav-link {{ request()->routeIs('petugas.wawancara.laporan') ? 'active' : '' }}">
+          <i class="fas fa-chart-line nav-icon"></i>
+          <span>Laporan Wawancara</span>
+        </a>
+        @endif
+
+        @if(auth()->user()->role === 'petugas_pembayaran')
+        <a href="{{ route('petugas.pembayaran.laporan') }}" class="nav-link {{ request()->routeIs('petugas.pembayaran.laporan') ? 'active' : '' }}">
+          <i class="fas fa-chart-line nav-icon"></i>
+          <span>Laporan Pembayaran</span>
+        </a>
+        @endif
       @endif
 
       <p class="nav-section">Sistem</p>
@@ -175,7 +203,7 @@
       @if(auth()->user()->isAdmin())
       <a href="{{ route('admin.dashboard') }}" class="nav-link">
         <i class="fas fa-shield-alt nav-icon"></i>
-        <span>Panel Admin</span>
+        <span>Panel Admin Utama</span>
       </a>
       @endif
     </nav>
@@ -188,8 +216,10 @@
         </div>
         <div style="flex:1; min-width:0;">
           <p style="color:#fff; font-size:12px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ auth()->user()->name }}</p>
-          <p style="color:rgba(255,255,255,0.45); font-size:10px;">
-            @if(auth()->user()->role === 'petugas_kesehatan') Bagian Kesehatan
+          <p style="color:rgba(255,255,255,0.7); font-size:10px;">
+            @if(auth()->user()->role === 'super_admin') Super Administrator
+            @elseif(auth()->user()->role === 'admin') Administrator
+            @elseif(auth()->user()->role === 'petugas_kesehatan') Bagian Kesehatan
             @elseif(auth()->user()->role === 'petugas_wawancara') Bagian Wawancara/Tes
             @elseif(auth()->user()->role === 'petugas_pembayaran') Bagian Keuangan/Kasir
             @else Bagian Pendaftaran

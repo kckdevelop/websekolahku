@@ -149,7 +149,7 @@
         <span class="nav-label">Dashboard</span>
       </a>
 
-      @if(auth()->user()->role === 'admin')
+      @if(in_array(auth()->user()->role, ['admin', 'super_admin']))
       <p class="nav-section">Konten</p>
 
       {{-- Dropdown 1: Informasi --}}
@@ -310,7 +310,7 @@
       </a>
       @endif
 
-      @if(auth()->user()->role === 'admin_pendaftaran')
+      @if(in_array(auth()->user()->role, ['admin_pendaftaran', 'super_admin']))
       <p class="nav-section">SPMB</p>
 
       @php $spmbStatusContent = \App\Models\SpmbPageContent::getSingle(); @endphp
@@ -397,6 +397,37 @@
       </div>
       @endif
 
+      @if(in_array(auth()->user()->role, ['super_admin', 'admin']))
+      <p class="nav-section">Ketugasan Petugas PPDB</p>
+
+      {{-- Dropdown: Meja & Loket Petugas --}}
+      <div class="dropdown-container">
+        <button type="button" class="nav-link w-full text-left dropdown-toggle {{ request()->is('petugas*') ? 'active' : '' }}" onclick="toggleDropdown(this)">
+          <i class="fas fa-clipboard-check nav-icon"></i>
+          <span class="nav-label">Meja &amp; Loket Petugas</span>
+          <i class="fas fa-chevron-right dropdown-chevron text-xs transition-transform duration-200 ml-auto {{ request()->is('petugas*') ? 'rotate-90' : '' }}"></i>
+        </button>
+        <div class="dropdown-menu pl-4 space-y-1 mt-1 transition-all duration-300 {{ request()->is('petugas*') ? '' : 'hidden' }}">
+          <a href="{{ route('petugas.pendaftar') }}" class="nav-link py-2 {{ request()->routeIs('petugas.pendaftar*') || request()->is('petugas/pendaftaran*') ? 'active' : '' }}">
+            <i class="far fa-circle nav-icon text-xxs scale-75"></i>
+            <span class="nav-label text-xs">Loket Pendaftaran &amp; Berkas</span>
+          </a>
+          <a href="{{ route('petugas.kesehatan.dashboard') }}" class="nav-link py-2 {{ request()->is('petugas/kesehatan*') ? 'active' : '' }}">
+            <i class="far fa-circle nav-icon text-xxs scale-75"></i>
+            <span class="nav-label text-xs">Pemeriksaan UKS &amp; Kesehatan</span>
+          </a>
+          <a href="{{ route('petugas.wawancara.dashboard') }}" class="nav-link py-2 {{ request()->is('petugas/wawancara*') ? 'active' : '' }}">
+            <i class="far fa-circle nav-icon text-xxs scale-75"></i>
+            <span class="nav-label text-xs">Wawancara &amp; Minat Bakat</span>
+          </a>
+          <a href="{{ route('petugas.pembayaran.dashboard') }}" class="nav-link py-2 {{ request()->is('petugas/pembayaran*') ? 'active' : '' }}">
+            <i class="far fa-circle nav-icon text-xxs scale-75"></i>
+            <span class="nav-label text-xs">Kasir &amp; Pembayaran</span>
+          </a>
+        </div>
+      </div>
+      @endif
+
       <p class="nav-section">Website</p>
 
       <a href="{{ url('/') }}" target="_blank" class="nav-link">
@@ -415,6 +446,15 @@
         <div style="flex:1; min-width:0;">
           <p style="color:#fff; font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ auth()->user()->name }}</p>
           <p style="color:#64748b; font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ auth()->user()->email }}</p>
+          <div style="margin-top:2px;">
+            <span style="font-size:10px; padding:1px 6px; border-radius:4px; font-weight:600;
+              @if(auth()->user()->role === 'super_admin') background:rgba(168,85,247,0.2); color:#c084fc;
+              @elseif(auth()->user()->role === 'admin') background:rgba(249,115,22,0.2); color:#fb923c;
+              @else background:rgba(59,130,246,0.2); color:#60a5fa;
+              @endif">
+              {{ auth()->user()->role === 'super_admin' ? 'Super Administrator' : (auth()->user()->role === 'admin' ? 'Administrator' : 'Admin Pendaftaran') }}
+            </span>
+          </div>
         </div>
       </div>
       <form method="POST" action="{{ route('admin.logout') }}">

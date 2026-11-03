@@ -56,6 +56,7 @@
             <option value="petugas_wawancara" {{ old('role') === 'petugas_wawancara' ? 'selected' : '' }}>Petugas Wawancara / Gaya Belajar</option>
             <option value="petugas_pembayaran" {{ old('role') === 'petugas_pembayaran' ? 'selected' : '' }}>Petugas Pembayaran (Keuangan)</option>
             <option value="admin"   {{ old('role') === 'admin'   ? 'selected' : '' }}>Admin (Akses Penuh)</option>
+            <option value="super_admin" {{ old('role') === 'super_admin' ? 'selected' : '' }}>👑 Super Admin (Akses Semua Ketugasan &amp; Modul)</option>
           </select>
         </div>
       </div>
@@ -82,8 +83,8 @@
           {{-- Info User --}}
           <div class="flex items-center gap-4">
             <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0
-              {{ in_array($user->role, ['admin', 'admin_pendaftaran']) ? 'bg-orange-100' : 'bg-blue-100' }}">
-              <i class="fas {{ in_array($user->role, ['admin', 'admin_pendaftaran']) ? 'fa-shield-alt text-orange-600' : 'fa-clipboard-check text-blue-600' }} text-sm"></i>
+              {{ $user->role === 'super_admin' ? 'bg-purple-100' : (in_array($user->role, ['admin', 'admin_pendaftaran']) ? 'bg-orange-100' : 'bg-blue-100') }}">
+              <i class="fas {{ $user->role === 'super_admin' ? 'fa-crown text-purple-600' : (in_array($user->role, ['admin', 'admin_pendaftaran']) ? 'fa-shield-alt text-orange-600' : 'fa-clipboard-check text-blue-600') }} text-sm"></i>
             </div>
             <div>
               <div class="flex items-center gap-2">
@@ -99,14 +100,16 @@
           {{-- Role Badge + Actions --}}
           <div class="flex items-center gap-3">
             <span class="text-xs font-semibold px-3 py-1 rounded-full
-              @if($user->role === 'admin') bg-orange-100 text-orange-700
+              @if($user->role === 'super_admin') bg-purple-100 text-purple-700
+              @elseif($user->role === 'admin') bg-orange-100 text-orange-700
               @elseif($user->role === 'admin_pendaftaran') bg-amber-100 text-amber-700
               @elseif($user->role === 'petugas_kesehatan') bg-emerald-100 text-emerald-700
               @elseif($user->role === 'petugas_wawancara') bg-purple-100 text-purple-700
               @elseif($user->role === 'petugas_pembayaran') bg-rose-100 text-rose-700
               @else bg-blue-100 text-blue-700
               @endif">
-              @if($user->role === 'admin') ⭐ Admin
+              @if($user->role === 'super_admin') 👑 Super Admin
+              @elseif($user->role === 'admin') ⭐ Admin
               @elseif($user->role === 'admin_pendaftaran') 🛡️ Admin Pendaftaran
               @elseif($user->role === 'petugas_kesehatan') 🩺 Kesehatan (UKS)
               @elseif($user->role === 'petugas_wawancara') 🗣️ Wawancara / Gaya Belajar
@@ -162,6 +165,7 @@
                   <option value="petugas_wawancara" {{ $user->role === 'petugas_wawancara' ? 'selected' : '' }}>Petugas Wawancara / Gaya Belajar</option>
                   <option value="petugas_pembayaran" {{ $user->role === 'petugas_pembayaran' ? 'selected' : '' }}>Petugas Pembayaran (Keuangan)</option>
                   <option value="admin"   {{ $user->role === 'admin'   ? 'selected' : '' }}>Admin (Akses Penuh)</option>
+                  <option value="super_admin" {{ $user->role === 'super_admin' ? 'selected' : '' }}>👑 Super Admin (Akses Semua Ketugasan &amp; Modul)</option>
                 </select>
               </div>
             </div>

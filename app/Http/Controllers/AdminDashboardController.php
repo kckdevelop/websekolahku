@@ -15,7 +15,9 @@ class AdminDashboardController extends Controller
 {
     public function index()
     {
-        if (auth()->user()->role === 'admin') {
+        $role = auth()->user()->role;
+
+        if ($role === 'admin') {
             $stats = [
                 'berita' => Berita::count(),
                 'prestasi' => Prestasi::count(),
@@ -31,6 +33,14 @@ class AdminDashboardController extends Controller
             'pendaftaran_pending' => Pendaftaran::where('status', 'pending')->count(),
             'pendaftaran_total' => Pendaftaran::count(),
         ];
+
+        if ($role === 'super_admin') {
+            $stats['berita'] = Berita::count();
+            $stats['prestasi'] = Prestasi::count();
+            $stats['galeri_foto'] = GaleriFoto::count();
+            $stats['galeri_video'] = GaleriVideo::count();
+            $stats['testimoni'] = Testimoni::count();
+        }
 
         // Ambil data gelombang dari database (dinamis)
         $gelombangs = SpmbGelombang::orderBy('tanggal_mulai', 'asc')->get();

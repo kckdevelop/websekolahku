@@ -21,7 +21,7 @@ class PetugasAuth
 
         $user = Auth::user();
 
-        if (!in_array($user->role, ['petugas', 'admin', 'super_admin'])) {
+        if (!in_array($user->role, ['petugas', 'admin', 'super_admin', 'admin_pendaftaran'])) {
             Auth::logout();
             return redirect()->route('login')
                 ->with('error', 'Akun Anda tidak memiliki akses ke halaman ini.');

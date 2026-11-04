@@ -79,12 +79,13 @@ class AdminUserSeeder extends Seeder
         $this->command->table(
             ['Role', 'Email', 'Password Default'],
             [
-                ['Super Admin',        'superadmin@admin.com',            'superadmin123'],
-                ['Admin',              'admin@smkmuh1bantul.sch.id',      'admin123'],
-                ['Petugas',            'petugas@smkmuh1bantul.sch.id',    'petugas123'],
-                ['Petugas Kesehatan',  'kesehatan@smkmuh1bantul.sch.id',  'kesehatan123'],
-                ['Petugas Wawancara',  'wawancara@smkmuh1bantul.sch.id',  'wawancara123'],
-                ['Petugas Pembayaran', 'pembayaran@smkmuh1bantul.sch.id', 'pembayaran123'],
+                ['Super Admin',          'superadmin@admin.com',            'superadmin123'],
+                ['Admin',                'admin@smkmuh1bantul.sch.id',      'admin123'],
+                ['Admin Pendaftaran',    'pendaftaran@admin.com',           'pendaftar123'],
+                ['Petugas Pendaftaran',  'petugas@smkmuh1bantul.sch.id',    'petugas123'],
+                ['Petugas Kesehatan',    'kesehatan@smkmuh1bantul.sch.id',  'kesehatan123'],
+                ['Petugas Wawancara',    'wawancara@smkmuh1bantul.sch.id',  'wawancara123'],
+                ['Petugas Pembayaran',   'pembayaran@smkmuh1bantul.sch.id', 'pembayaran123'],
             ]
         );
         $this->command->warn('⚠️  Segera ganti semua password default setelah login pertama!');

@@ -167,11 +167,11 @@
         <span>Dashboard</span>
       </a>
 
-      @if(in_array(auth()->user()->role, ['admin', 'super_admin']))
+      @if(in_array(auth()->user()->role, ['admin', 'super_admin', 'admin_pendaftaran']))
       <p class="nav-section">Akses Semua Ketugasan</p>
 
       {{-- Loket 1: Pendaftaran & Berkas --}}
-      @php $isLoket1 = request()->routeIs('petugas.pendaftar*') || request()->is('petugas/pendaftar*') || request()->is('petugas/pendaftaran*') || request()->routeIs('petugas.laporan'); @endphp
+      @php $isLoket1 = request()->routeIs('petugas.pendaftar*') || request()->is('petugas/pendaftar*') || request()->is('petugas/pendaftaran*') || request()->routeIs('petugas.laporan') || request()->routeIs('petugas.create'); @endphp
       <div class="dropdown-container-petugas">
         <button type="button" onclick="toggleDropdownPetugas(this)"
           class="nav-link {{ $isLoket1 ? 'active' : '' }}"
@@ -181,8 +181,11 @@
           <i class="fas fa-chevron-right dropdown-chevron-petugas {{ $isLoket1 ? 'rotated' : '' }}"></i>
         </button>
         <div class="dropdown-menu-petugas {{ $isLoket1 ? 'open' : '' }}">
-          <a href="{{ route('petugas.pendaftar') }}" class="sub-nav-link {{ request()->routeIs('petugas.pendaftar') && !request()->routeIs('petugas.laporan') ? 'active' : '' }}">
+          <a href="{{ route('petugas.pendaftar') }}" class="sub-nav-link {{ request()->routeIs('petugas.pendaftar') && !request()->routeIs('petugas.laporan') && !request()->routeIs('petugas.create') ? 'active' : '' }}">
             <span class="dot"></span> Dashboard Loket
+          </a>
+          <a href="{{ route('petugas.create') }}" class="sub-nav-link {{ request()->routeIs('petugas.create') ? 'active' : '' }}">
+            <span class="dot"></span> Tambah Pendaftar Baru
           </a>
           <a href="{{ route('petugas.laporan') }}" class="sub-nav-link {{ request()->routeIs('petugas.laporan') ? 'active' : '' }}">
             <span class="dot"></span> Laporan Pendaftaran
@@ -258,6 +261,12 @@
           <span>Data Pendaftar</span>
         </a>
 
+        <a href="{{ route('petugas.create') }}"
+           class="nav-link {{ request()->routeIs('petugas.create') ? 'active' : '' }}">
+          <i class="fas fa-user-plus nav-icon"></i>
+          <span>Tambah Pendaftar Baru</span>
+        </a>
+
         <a href="{{ route('petugas.laporan') }}"
            class="nav-link {{ request()->routeIs('petugas.laporan') ? 'active' : '' }}">
           <i class="fas fa-chart-line nav-icon"></i>
@@ -308,6 +317,7 @@
           <p style="color:rgba(255,255,255,0.7); font-size:10px;">
             @if(auth()->user()->role === 'super_admin') Super Administrator
             @elseif(auth()->user()->role === 'admin') Administrator
+            @elseif(auth()->user()->role === 'admin_pendaftaran') Admin Pendaftaran
             @elseif(auth()->user()->role === 'petugas_kesehatan') Bagian Kesehatan
             @elseif(auth()->user()->role === 'petugas_wawancara') Bagian Wawancara/Tes
             @elseif(auth()->user()->role === 'petugas_pembayaran') Bagian Keuangan/Kasir

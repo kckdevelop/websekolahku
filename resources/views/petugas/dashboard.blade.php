@@ -3,6 +3,24 @@
 @section('subtitle', 'Daftar pendaftaran siswa untuk diverifikasi')
 
 @section('content')
+{{-- Quick Action Header --}}
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 bg-white p-4 sm:p-5 rounded-2xl border border-slate-100 shadow-sm">
+  <div>
+    <h3 class="text-sm sm:text-base font-bold text-slate-800 flex items-center gap-2">
+      <i class="fas fa-id-card text-blue-600"></i> Loket Pendaftaran Siswa Baru (PPDB)
+    </h3>
+    <p class="text-xs text-slate-500 mt-0.5">Input data calon siswa yang datang langsung atau verifikasi kelengkapan berkas.</p>
+  </div>
+  <div class="flex items-center gap-2 flex-wrap">
+    <a href="{{ route('petugas.create') }}" class="inline-flex items-center gap-2 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-xl shadow-sm transition">
+      <i class="fas fa-user-plus"></i> Tambah Pendaftar Baru
+    </a>
+    <a href="{{ route('petugas.pendaftar') }}" class="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition">
+      <i class="fas fa-list"></i> Data Pendaftar
+    </a>
+  </div>
+</div>
+
 {{-- Stat Cards --}}
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
   <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex items-center gap-4">

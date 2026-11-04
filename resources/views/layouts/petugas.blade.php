@@ -33,15 +33,47 @@
       padding: 10px 16px; border-radius: 10px;
       color: rgba(255,255,255,0.7); font-size: 13.5px; font-weight: 500;
       text-decoration: none; transition: all 0.15s;
+      width: 100%; box-sizing: border-box;
     }
     .nav-link:hover, .nav-link.active {
       background: rgba(255,255,255,0.12); color: #fff;
     }
-    .nav-link .nav-icon { width: 18px; text-align: center; font-size: 14px; }
+    .nav-link .nav-icon { width: 18px; text-align: center; font-size: 14px; flex-shrink: 0; }
     .nav-section {
       font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
       text-transform: uppercase; color: rgba(255,255,255,0.35);
       padding: 16px 16px 4px; margin: 0;
+    }
+
+    /* ===== DROPDOWN SUB-MENU ===== */
+    .dropdown-menu-petugas {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.3s ease, opacity 0.25s ease;
+    }
+    .dropdown-menu-petugas.open {
+      max-height: 300px;
+      opacity: 1;
+    }
+    .dropdown-chevron-petugas {
+      transition: transform 0.25s ease;
+      margin-left: auto;
+      flex-shrink: 0;
+      font-size: 11px;
+    }
+    .dropdown-chevron-petugas.rotated { transform: rotate(90deg); }
+    .sub-nav-link {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 16px 7px 44px; border-radius: 8px;
+      color: rgba(255,255,255,0.6); font-size: 12.5px; font-weight: 400;
+      text-decoration: none; transition: all 0.15s;
+    }
+    .sub-nav-link:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    .sub-nav-link.active { background: rgba(255,255,255,0.12); color: #fff; font-weight: 500; }
+    .sub-nav-link .dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: currentColor; flex-shrink: 0;
     }
 
     /* ===== MOBILE RESPONSIVE ===== */
@@ -138,29 +170,86 @@
       @if(in_array(auth()->user()->role, ['admin', 'super_admin']))
       <p class="nav-section">Akses Semua Ketugasan</p>
 
-      <a href="{{ route('petugas.pendaftar') }}"
-         class="nav-link {{ request()->routeIs('petugas.pendaftar*') || request()->is('petugas/pendaftar*') || request()->is('petugas/pendaftaran*') ? 'active' : '' }}">
-        <i class="fas fa-users nav-icon"></i>
-        <span>1. Loket Pendaftaran &amp; Berkas</span>
-      </a>
+      {{-- Loket 1: Pendaftaran & Berkas --}}
+      @php $isLoket1 = request()->routeIs('petugas.pendaftar*') || request()->is('petugas/pendaftar*') || request()->is('petugas/pendaftaran*') || request()->routeIs('petugas.laporan'); @endphp
+      <div class="dropdown-container-petugas">
+        <button type="button" onclick="toggleDropdownPetugas(this)"
+          class="nav-link {{ $isLoket1 ? 'active' : '' }}"
+          style="border:none; cursor:pointer;">
+          <i class="fas fa-users nav-icon"></i>
+          <span style="flex:1; text-align:left;">1. Loket Pendaftaran</span>
+          <i class="fas fa-chevron-right dropdown-chevron-petugas {{ $isLoket1 ? 'rotated' : '' }}"></i>
+        </button>
+        <div class="dropdown-menu-petugas {{ $isLoket1 ? 'open' : '' }}">
+          <a href="{{ route('petugas.pendaftar') }}" class="sub-nav-link {{ request()->routeIs('petugas.pendaftar') && !request()->routeIs('petugas.laporan') ? 'active' : '' }}">
+            <span class="dot"></span> Dashboard Loket
+          </a>
+          <a href="{{ route('petugas.laporan') }}" class="sub-nav-link {{ request()->routeIs('petugas.laporan') ? 'active' : '' }}">
+            <span class="dot"></span> Laporan Pendaftaran
+          </a>
+        </div>
+      </div>
 
-      <a href="{{ route('petugas.kesehatan.dashboard') }}"
-         class="nav-link {{ request()->is('petugas/kesehatan*') ? 'active' : '' }}">
-        <i class="fas fa-heartbeat nav-icon"></i>
-        <span>2. Loket UKS &amp; Kesehatan</span>
-      </a>
+      {{-- Loket 2: UKS & Kesehatan --}}
+      @php $isLoket2 = request()->is('petugas/kesehatan*'); @endphp
+      <div class="dropdown-container-petugas">
+        <button type="button" onclick="toggleDropdownPetugas(this)"
+          class="nav-link {{ $isLoket2 ? 'active' : '' }}"
+          style="border:none; cursor:pointer;">
+          <i class="fas fa-heartbeat nav-icon"></i>
+          <span style="flex:1; text-align:left;">2. Loket UKS &amp; Kesehatan</span>
+          <i class="fas fa-chevron-right dropdown-chevron-petugas {{ $isLoket2 ? 'rotated' : '' }}"></i>
+        </button>
+        <div class="dropdown-menu-petugas {{ $isLoket2 ? 'open' : '' }}">
+          <a href="{{ route('petugas.kesehatan.dashboard') }}" class="sub-nav-link {{ request()->routeIs('petugas.kesehatan.dashboard') ? 'active' : '' }}">
+            <span class="dot"></span> Dashboard Loket
+          </a>
+          <a href="{{ route('petugas.kesehatan.laporan') }}" class="sub-nav-link {{ request()->routeIs('petugas.kesehatan.laporan') ? 'active' : '' }}">
+            <span class="dot"></span> Laporan Kesehatan
+          </a>
+        </div>
+      </div>
 
-      <a href="{{ route('petugas.wawancara.dashboard') }}"
-         class="nav-link {{ request()->is('petugas/wawancara*') ? 'active' : '' }}">
-        <i class="fas fa-comments nav-icon"></i>
-        <span>3. Loket Wawancara</span>
-      </a>
+      {{-- Loket 3: Wawancara --}}
+      @php $isLoket3 = request()->is('petugas/wawancara*'); @endphp
+      <div class="dropdown-container-petugas">
+        <button type="button" onclick="toggleDropdownPetugas(this)"
+          class="nav-link {{ $isLoket3 ? 'active' : '' }}"
+          style="border:none; cursor:pointer;">
+          <i class="fas fa-comments nav-icon"></i>
+          <span style="flex:1; text-align:left;">3. Loket Wawancara</span>
+          <i class="fas fa-chevron-right dropdown-chevron-petugas {{ $isLoket3 ? 'rotated' : '' }}"></i>
+        </button>
+        <div class="dropdown-menu-petugas {{ $isLoket3 ? 'open' : '' }}">
+          <a href="{{ route('petugas.wawancara.dashboard') }}" class="sub-nav-link {{ request()->routeIs('petugas.wawancara.dashboard') ? 'active' : '' }}">
+            <span class="dot"></span> Dashboard Loket
+          </a>
+          <a href="{{ route('petugas.wawancara.laporan') }}" class="sub-nav-link {{ request()->routeIs('petugas.wawancara.laporan') ? 'active' : '' }}">
+            <span class="dot"></span> Laporan Wawancara
+          </a>
+        </div>
+      </div>
 
-      <a href="{{ route('petugas.pembayaran.dashboard') }}"
-         class="nav-link {{ request()->is('petugas/pembayaran*') ? 'active' : '' }}">
-        <i class="fas fa-cash-register nav-icon"></i>
-        <span>4. Loket Kasir &amp; Pembayaran</span>
-      </a>
+      {{-- Loket 4: Kasir & Pembayaran --}}
+      @php $isLoket4 = request()->is('petugas/pembayaran*'); @endphp
+      <div class="dropdown-container-petugas">
+        <button type="button" onclick="toggleDropdownPetugas(this)"
+          class="nav-link {{ $isLoket4 ? 'active' : '' }}"
+          style="border:none; cursor:pointer;">
+          <i class="fas fa-cash-register nav-icon"></i>
+          <span style="flex:1; text-align:left;">4. Loket Kasir &amp; Pembayaran</span>
+          <i class="fas fa-chevron-right dropdown-chevron-petugas {{ $isLoket4 ? 'rotated' : '' }}"></i>
+        </button>
+        <div class="dropdown-menu-petugas {{ $isLoket4 ? 'open' : '' }}">
+          <a href="{{ route('petugas.pembayaran.dashboard') }}" class="sub-nav-link {{ request()->routeIs('petugas.pembayaran.dashboard') ? 'active' : '' }}">
+            <span class="dot"></span> Dashboard Loket
+          </a>
+          <a href="{{ route('petugas.pembayaran.laporan') }}" class="sub-nav-link {{ request()->routeIs('petugas.pembayaran.laporan') ? 'active' : '' }}">
+            <span class="dot"></span> Laporan Pembayaran
+          </a>
+        </div>
+      </div>
+
       @else
         @if(auth()->user()->role === 'petugas')
         <a href="{{ route('petugas.pendaftar') }}"
@@ -291,25 +380,31 @@
 </div>
 @stack('scripts')
 <script>
+  // ===== Dropdown Toggle =====
+  function toggleDropdownPetugas(btn) {
+    const container = btn.closest('.dropdown-container-petugas');
+    const menu      = container.querySelector('.dropdown-menu-petugas');
+    const chevron   = container.querySelector('.dropdown-chevron-petugas');
+    const isOpen    = menu.classList.contains('open');
+    menu.classList.toggle('open', !isOpen);
+    chevron.classList.toggle('rotated', !isOpen);
+  }
+
   function toggleSidebarPetugas() {
-    const sidebar = document.getElementById('sidebar-petugas');
-    const overlay = document.getElementById('sidebar-overlay-petugas');
-    sidebar.classList.toggle('open');
-    overlay.classList.toggle('active');
+    document.getElementById('sidebar-petugas').classList.toggle('open');
+    document.getElementById('sidebar-overlay-petugas').classList.toggle('active');
   }
 
   function closeSidebarPetugas() {
-    const sidebar = document.getElementById('sidebar-petugas');
-    const overlay = document.getElementById('sidebar-overlay-petugas');
-    sidebar.classList.remove('open');
-    overlay.classList.remove('active');
+    document.getElementById('sidebar-petugas').classList.remove('open');
+    document.getElementById('sidebar-overlay-petugas').classList.remove('active');
   }
 
   // Auto-close sidebar on nav link click (mobile)
   document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.getElementById('sidebar-petugas');
     if (!sidebar) return;
-    sidebar.querySelectorAll('a.nav-link').forEach(function(link) {
+    sidebar.querySelectorAll('a.nav-link, a.sub-nav-link').forEach(function(link) {
       link.addEventListener('click', function() {
         if (window.innerWidth <= 768) closeSidebarPetugas();
       });

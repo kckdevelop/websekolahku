@@ -44,9 +44,13 @@
       </div>
 
       <div>
-        <label for="deskripsi" class="block text-sm font-medium text-slate-700 mb-1.5">Deskripsi Produk</label>
-        <textarea id="deskripsi" name="deskripsi" rows="4"
-          class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition text-sm resize-y">{{ old('deskripsi') }}</textarea>
+        @include('admin.components.word-editor', [
+          'name' => 'deskripsi',
+          'id' => 'deskripsi',
+          'value' => old('deskripsi'),
+          'label' => 'Deskripsi Produk',
+          'placeholder' => 'Ketik atau tempel deskripsi produk di sini layaknya menggunakan Microsoft Word...'
+        ])
         @error('deskripsi') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
       </div>
 

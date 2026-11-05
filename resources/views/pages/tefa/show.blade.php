@@ -101,7 +101,17 @@
 
             <div class="prose prose-slate max-w-none text-sm text-slate-600 leading-relaxed">
               <h3 class="text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide">Deskripsi Layanan / Produk:</h3>
-              <p class="whitespace-pre-line">{{ $product->deskripsi ?? 'Belum ada deskripsi untuk produk ini.' }}</p>
+              <div class="prose-content">
+                @if($product->deskripsi)
+                  @if(str_contains($product->deskripsi, '<'))
+                    {!! $product->deskripsi !!}
+                  @else
+                    <p class="whitespace-pre-line">{{ $product->deskripsi }}</p>
+                  @endif
+                @else
+                  <p class="text-slate-400 italic">Belum ada deskripsi untuk produk ini.</p>
+                @endif
+              </div>
             </div>
           </div>
 

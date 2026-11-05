@@ -27,7 +27,7 @@
       </h3>
       @if($product->deskripsi)
         <p class="text-sm text-slate-500 leading-relaxed line-clamp-3 mb-4">
-          {{ $product->deskripsi }}
+          {{ strip_tags($product->deskripsi) }}
         </p>
       @endif
     </div>
